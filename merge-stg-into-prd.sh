@@ -4,20 +4,20 @@ source .env
 
 echo "【本番のDBをバックアップ】"
 ssh $PRD_SERVER_HOST -p $PRD_SERVER_PORT \
-  mysqldump -u$PRD_DB_USER -p$PRD_DB_PASSWORD -h$PRD_DB_HOST $PRD_DB_NAME --no-tablespaces > $BAK_PRD
+  mysqldump -u$PRD_DB_USER -p$PRD_DB_PASSWORD -h$PRD_DB_HOST $PRD_DB_NAME --no-tablespaces > $BACKUP_PRD
 #ファイルがない場合は終了
-if [ ! -s $BAK_PRD ]; then
-  echo "dump failed: check $BAK_PRD"
+if [ ! -s $BACKUP_PRD ]; then
+  echo "dump failed!"
   exit
 fi
 echo "【完了】\n"
 
 echo "【ステージングのDBをダンプ】"
 ssh $STG_SERVER_HOST -p $STG_SERVER_PORT \
-  mysqldump -u$STG_DB_USER -p$STG_DB_PASSWORD -h$STG_DB_HOST $STG_DB_NAME --no-tablespaces > $BAK_STG
+  mysqldump -u$STG_DB_USER -p$STG_DB_PASSWORD -h$STG_DB_HOST $STG_DB_NAME --no-tablespaces > $BACKUP_STG
 #ファイルがない場合は終了
-if [ ! -s $BAK_STG ]; then
-  echo "dump failed: check $BAK_STG"
+if [ ! -s $BACKUP_STG ]; then
+  echo "dump failed!"
   exit
 fi
 echo "【完了】\n"
@@ -35,7 +35,7 @@ echo "【完了】\n"
 
 echo "【本番のDBをステージングのDBで上書き】"
 ssh $PRD_SERVER_HOST -p $PRD_SERVER_PORT \
-  mysql -u$PRD_DB_USER -p$PRD_DB_PASSWORD -h$PRD_DB_HOST $PRD_DB_NAME < $BAK_STG
+  mysql -u$PRD_DB_USER -p$PRD_DB_PASSWORD -h$PRD_DB_HOST $PRD_DB_NAME < $BACKUP_STG
 echo "【完了】\n"
 
 echo "【本番のDB内のドメイン部分を書き換え】"
