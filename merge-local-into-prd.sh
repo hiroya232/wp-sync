@@ -22,7 +22,7 @@ echo "【完了】\n"
 echo "【ローカルのpublic_htmlを本番にコピー】"
 rsync --checksum -arv \
   -e "ssh -p ${PRD_SERVER_PORT}" \
-  --exclude ${STG_DOMAIN} \
+  --exclude $STG_DOMAIN \
   $LOCAL_PUBLIC_DIR/ $PRD_PUBLIC_DIR/
 echo "【完了】\n"
 

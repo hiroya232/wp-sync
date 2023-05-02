@@ -23,7 +23,7 @@ echo "【完了】\n"
 echo "【ローカルのpublic_htmlをステージングにコピー】"
 rsync --checksum -arv \
   -e "ssh -p ${STG_SERVER_PORT}" \
-  --exclude ${STG_DOMAIN} \
+  --exclude $STG_DOMAIN \
   $LOCAL_PUBLIC_DIR/ $STG_PUBLIC_DIR/
 echo "【完了】\n"
 
