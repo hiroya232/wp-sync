@@ -25,7 +25,7 @@ echo "【完了】\n"
 echo "【本番のpublic_htmlをステージングにコピー】"
 ssh $PRD_SERVER_HOST -p $PRD_SERVER_PORT \
   rsync --checksum -arv \
-  --exclude 'stg.hiro8blog.com' \
+  --exclude ${STG_DOMAIN} \
   $PRD_PUBLIC_DIR_PATH/ $STG_PUBLIC_DIR_PATH
 echo "【完了】\n"
 
@@ -41,5 +41,5 @@ echo "【完了】\n"
 
 echo "【ステージングのDB内のドメイン部分を書き換え】"
 ssh $STG_SERVER_HOST -p $STG_SERVER_PORT \
-  /usr/bin/php7.3 srdb.cli.php -h $STG_DB_HOST -u $STG_DB_USER -p $STG_DB_PASSWORD -n $STG_DB_NAME -s $PRD_DOMAIN -r $STG_DOMAIN
+  /usr/bin/php7.3 srdb.cli.php -h $STG_DB_HOST -u $STG_DB_USER -p $STG_DB_PASSWORD -n $STG_DB_NAME -s "https://${PRD_DOMAIN}" -r "https://${STG_DOMAIN}"
 echo "【完了】\n"

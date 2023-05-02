@@ -40,5 +40,5 @@ echo "【完了】\n"
 
 echo "【本番のDB内のドメイン部分を書き換え】"
 ssh $PRD_SERVER_HOST -p $PRD_SERVER_PORT \
-  /usr/bin/php7.3 srdb.cli.php -h $PRD_DB_HOST -u $PRD_DB_USER -p $PRD_DB_PASSWORD -n $PRD_DB_NAME -s $STG_DOMAIN -r $PRD_DOMAIN
+  /usr/bin/php7.3 srdb.cli.php -h $PRD_DB_HOST -u $PRD_DB_USER -p $PRD_DB_PASSWORD -n $PRD_DB_NAME -s "https://${STG_DOMAIN}" -r "https://${PRD_DOMAIN}"
 echo "【完了】\n"

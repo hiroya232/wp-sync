@@ -22,7 +22,7 @@ echo "【完了】\n"
 echo "【ローカルのpublic_htmlを本番にコピー】"
 rsync --checksum -arv \
   -e "ssh -p ${PRD_SERVER_PORT}" \
-  --exclude 'stg.hiro8blog.com' \
+  --exclude ${STG_DOMAIN} \
   $LOCAL_PUBLIC_DIR/ $PRD_PUBLIC_DIR/
 echo "【完了】\n"
 
@@ -38,5 +38,5 @@ echo "【完了】\n"
 
 echo "【本番のDB内のドメイン部分を書き換え】"
 ssh $PRD_SERVER_HOST -p $PRD_SERVER_PORT \
-  /usr/bin/php7.3 srdb.cli.php -h $PRD_DB_HOST -u $PRD_DB_USER -p $PRD_DB_PASSWORD -n $PRD_DB_NAME -s $LOCAL_DOMAIN -r $PRD_DOMAIN
+  /usr/bin/php7.3 srdb.cli.php -h $PRD_DB_HOST -u $PRD_DB_USER -p $PRD_DB_PASSWORD -n $PRD_DB_NAME -s "http://${LOCAL_DOMAIN}" -r "https://${PRD_DOMAIN}"
 echo "【完了】\n"

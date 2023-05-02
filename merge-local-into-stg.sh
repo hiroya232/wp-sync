@@ -23,7 +23,7 @@ echo "【完了】\n"
 echo "【ローカルのpublic_htmlをステージングにコピー】"
 rsync --checksum -arv \
   -e "ssh -p ${STG_SERVER_PORT}" \
-  --exclude 'stg.hiro8blog.com' \
+  --exclude ${STG_DOMAIN} \
   $LOCAL_PUBLIC_DIR/ $STG_PUBLIC_DIR/
 echo "【完了】\n"
 
@@ -39,5 +39,5 @@ echo "【完了】\n"
 
 echo "【ステージングのDB内のドメイン部分を書き換え】"
 ssh $STG_SERVER_HOST -p $STG_SERVER_PORT \
-  /usr/bin/php7.3 srdb.cli.php -h $STG_DB_HOST -u $STG_DB_USER -p $STG_DB_PASSWORD -n $STG_DB_NAME -s $LOCAL_DOMAIN -r $STG_DOMAIN
+  /usr/bin/php7.3 srdb.cli.php -h $STG_DB_HOST -u $STG_DB_USER -p $STG_DB_PASSWORD -n $STG_DB_NAME -s "http://${LOCAL_DOMAIN}" -r "https://${STG_DOMAIN}"
 echo "【完了】\n"

@@ -23,7 +23,7 @@ echo "【完了】\n"
 echo "【本番のpublic_htmlをローカルにコピー】"
 rsync --checksum -arv \
   -e "ssh -p ${PRD_SERVER_PORT}" \
-  --exclude 'stg.hiro8blog.com' \
+  --exclude ${STG_DOMAIN} \
   $PRD_PUBLIC_DIR/ $LOCAL_PUBLIC_DIR/
 echo "【完了】\n"
 
@@ -36,5 +36,5 @@ mysql -u$LOCAL_DB_USER -p$LOCAL_DB_PASSWORD -h$LOCAL_DB_HOST -P$LOCAL_DB_PORT $L
 echo "【完了】\n"
 
 echo "【ローカルのDB内のドメイン部分を書き換え】"
-php srdb.cli.php -h $LOCAL_DB_HOST -P $LOCAL_DB_PORT -u $LOCAL_DB_USER -p $LOCAL_DB_PASSWORD -n $LOCAL_DB_NAME -s $PRD_DOMAIN -r $LOCAL_DOMAIN
+php srdb.cli.php -h $LOCAL_DB_HOST -P $LOCAL_DB_PORT -u $LOCAL_DB_USER -p $LOCAL_DB_PASSWORD -n $LOCAL_DB_NAME -s "https://${PRD_DOMAIN}" -r "http://${LOCAL_DOMAIN}"
 echo "【完了】\n"
