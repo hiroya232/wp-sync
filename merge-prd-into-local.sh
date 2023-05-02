@@ -21,10 +21,11 @@ fi
 echo "【完了】\n"
 
 echo "【本番のpublic_htmlをローカルにコピー】"
-rsync --checksum -rv -e "ssh -p ${PRD_SERVER_PORT}" --exclude 'wp-content/uploads/file-backup' --exclude 'wp-content/uploads/database-backup' $PRD_PUBLIC_DIR/\* $LOCAL_PUBLIC_DIR/
-scp -P $PRD_SERVER_PORT -r $PRD_PUBLIC_DIR/.htaccess $LOCAL_PUBLIC_DIR
-scp -P $PRD_SERVER_PORT -r $PRD_PUBLIC_DIR/.user.ini $LOCAL_PUBLIC_DIR
-echo "【完了】"
+rsync --checksum -arv \
+  -e "ssh -p ${PRD_SERVER_PORT}" \
+  --exclude 'stg.hiro8blog.com' \
+  $PRD_PUBLIC_DIR/ $LOCAL_PUBLIC_DIR/
+echo "【完了】\n"
 
 echo "【wp-config.phpの内容をローカル環境のものに書き換え】"
 cp -f  wp-config-local.php $LOCAL_PUBLIC_DIR/wp-config.php

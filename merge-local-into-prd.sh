@@ -20,10 +20,11 @@ fi
 echo "【完了】\n"
 
 echo "【ローカルのpublic_htmlを本番にコピー】"
-rsync --checksum -rv -e "ssh -p ${PRD_SERVER_PORT}" $LOCAL_PUBLIC_DIR/* $PRD_PUBLIC_DIR/
-scp -P $PRD_SERVER_PORT -r $LOCAL_PUBLIC_DIR/.htaccess $PRD_PUBLIC_DIR
-scp -P $PRD_SERVER_PORT -r $LOCAL_PUBLIC_DIR/.user.ini $PRD_PUBLIC_DIR
-echo "【完了】"
+rsync --checksum -arv \
+  -e "ssh -p ${PRD_SERVER_PORT}" \
+  --exclude 'stg.hiro8blog.com' \
+  $LOCAL_PUBLIC_DIR/ $PRD_PUBLIC_DIR/
+echo "【完了】\n"
 
 echo "【wp-config.phpの内容を本番環境のものに書き換え】"
 scp -P $PRD_SERVER_PORT -r \
