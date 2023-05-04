@@ -21,7 +21,7 @@ fi
 echo "【完了】\n"
 
 echo "【ステージングのpublic_htmlをローカルにコピー】"
-rsync --checksum -arv \
+rsync --checksum -arv --delete \
   -e "ssh -p ${STG_SERVER_PORT}" \
   --exclude $BACKWPUP_DIR --exclude "${BACKWPUP_DIR}*" --exclude $CACHE_DIR \
   $STG_PUBLIC_DIR/ $LOCAL_PUBLIC_DIR/

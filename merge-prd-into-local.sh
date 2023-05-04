@@ -21,7 +21,7 @@ fi
 echo "【完了】\n"
 
 echo "【本番のpublic_htmlをローカルにコピー】"
-rsync --checksum -arv \
+rsync --checksum -arv --delete \
   -e "ssh -p ${PRD_SERVER_PORT}" \
   --exclude $STG_DOMAIN --exclude $BACKWPUP_DIR --exclude "${BACKWPUP_DIR}*" --exclude $CACHE_DIR \
   $PRD_PUBLIC_DIR/ $LOCAL_PUBLIC_DIR/
