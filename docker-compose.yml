@@ -30,5 +30,15 @@ services:
       WORDPRESS_DB_PASSWORD: password
     volumes:
       - ./public_html:/var/www/html
+
+  redis:
+    image: redis:latest
+    container_name: redis-server
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
 volumes:
   db_data:
+  redis-data:
