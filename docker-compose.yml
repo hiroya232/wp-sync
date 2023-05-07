@@ -29,7 +29,7 @@ services:
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: password
     volumes:
-      - ./public_html:/var/www/html
+      - ${WORK_DIR}/public_html:/var/www/html
 
   redis:
     image: redis:latest

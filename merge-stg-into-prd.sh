@@ -1,12 +1,12 @@
 #!/bin/sh
 # 本番とステージングが同じサーバーにあることが前提
-source .env
+source $1/.env
 
 echo "【本番のDBをバックアップ】"
 ssh $PRD_SERVER_HOST -p $PRD_SERVER_PORT \
-  mysqldump -u$PRD_DB_USER -p$PRD_DB_PASSWORD -h$PRD_DB_HOST $PRD_DB_NAME --no-tablespaces > $BACKUP_PRD
+  mysqldump -u$PRD_DB_USER -p$PRD_DB_PASSWORD -h$PRD_DB_HOST $PRD_DB_NAME --no-tablespaces > $1/$BACKUP_PRD
 #ファイルがない場合は終了
-if [ ! -s $BACKUP_PRD ]; then
+if [ ! -s $1/$BACKUP_PRD ]; then
   echo "dump failed!"
   exit
 fi
@@ -14,9 +14,9 @@ echo "【完了】\n"
 
 echo "【ステージングのDBをダンプ】"
 ssh $STG_SERVER_HOST -p $STG_SERVER_PORT \
-  mysqldump -u$STG_DB_USER -p$STG_DB_PASSWORD -h$STG_DB_HOST $STG_DB_NAME --no-tablespaces > $BACKUP_STG
+  mysqldump -u$STG_DB_USER -p$STG_DB_PASSWORD -h$STG_DB_HOST $STG_DB_NAME --no-tablespaces > $1/$BACKUP_STG
 #ファイルがない場合は終了
-if [ ! -s $BACKUP_STG ]; then
+if [ ! -s $1/$BACKUP_STG ]; then
   echo "dump failed!"
   exit
 fi
@@ -31,12 +31,12 @@ echo "【完了】\n"
 
 echo "【wp-config.phpの内容を本番環境のものに書き換え】"
 scp -P $PRD_SERVER_PORT -r \
-  wp-config-prd.php $PRD_PUBLIC_DIR/wp-config.php
+  $1/wp-config-prd.php $PRD_PUBLIC_DIR/wp-config.php
 echo "【完了】\n"
 
 echo "【本番のDBをステージングのDBで上書き】"
 ssh $PRD_SERVER_HOST -p $PRD_SERVER_PORT \
-  mysql -u$PRD_DB_USER -p$PRD_DB_PASSWORD -h$PRD_DB_HOST $PRD_DB_NAME < $BACKUP_STG
+  mysql -u$PRD_DB_USER -p$PRD_DB_PASSWORD -h$PRD_DB_HOST $PRD_DB_NAME < $1/$BACKUP_STG
 echo "【完了】\n"
 
 echo "【本番のDB内のドメイン部分を書き換え】"

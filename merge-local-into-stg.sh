@@ -1,20 +1,20 @@
 #!/bin/sh
-source .env
+source $1/.env
 
 echo "【ステージングのDBをバックアップ】"
 ssh $STG_SERVER_HOST -p $STG_SERVER_PORT \
-  mysqldump -u$STG_DB_USER -p$STG_DB_PASSWORD -h$STG_DB_HOST $STG_DB_NAME --no-tablespaces > $BACKUP_STG
+  mysqldump -u$STG_DB_USER -p$STG_DB_PASSWORD -h$STG_DB_HOST $STG_DB_NAME --no-tablespaces > $1/$BACKUP_STG
 #ファイルがない場合は終了
-if [ ! -s $BACKUP_STG ]; then
+if [ ! -s $1/$BACKUP_STG ]; then
   echo "dump failed!"
   exit
 fi
 echo "【完了】\n"
 
 echo "【ローカルのDBをダンプ】"
-mysqldump -u$LOCAL_DB_USER -p$LOCAL_DB_PASSWORD -h$LOCAL_DB_HOST -P$LOCAL_DB_PORT $LOCAL_DB_NAME --column-statistics=0 --no-tablespaces > $BACKUP_LOCAL
+mysqldump -u$LOCAL_DB_USER -p$LOCAL_DB_PASSWORD -h$LOCAL_DB_HOST -P$LOCAL_DB_PORT $LOCAL_DB_NAME --column-statistics=0 --no-tablespaces > $1/$BACKUP_LOCAL
 #ファイルがない場合は終了
-if [ ! -s $BACKUP_LOCAL ]; then
+if [ ! -s $1/$BACKUP_LOCAL ]; then
   echo "dump failed!"
   exit
 fi
@@ -24,17 +24,17 @@ echo "【ローカルのpublic_htmlをステージングにコピー】"
 rsync --checksum -arv --delete \
   -e "ssh -p ${STG_SERVER_PORT}" \
   --exclude $STG_DOMAIN --exclude $BACKWPUP_DIR --exclude "${BACKWPUP_DIR}*" --exclude $CACHE_DIR \
-  $LOCAL_PUBLIC_DIR/ $STG_PUBLIC_DIR/
+  $1/$LOCAL_PUBLIC_DIR/ $STG_PUBLIC_DIR/
 echo "【完了】\n"
 
 echo "【wp-config.phpの内容をステージング環境のものに書き換え】"
 scp -P $STG_SERVER_PORT -r \
-  wp-config-stg.php $STG_PUBLIC_DIR/wp-config.php
+  $1/wp-config-stg.php $STG_PUBLIC_DIR/wp-config.php
 echo "【完了】\n"
 
 echo "【ステージングのDBをローカルのDBで上書き】"
 ssh $STG_SERVER_HOST -p $STG_SERVER_PORT \
-  mysql -u$STG_DB_USER -p$STG_DB_PASSWORD -h$STG_DB_HOST $STG_DB_NAME < $BACKUP_LOCAL
+  mysql -u$STG_DB_USER -p$STG_DB_PASSWORD -h$STG_DB_HOST $STG_DB_NAME < $1/$BACKUP_LOCAL
 echo "【完了】\n"
 
 echo "【ステージングのDB内のドメイン部分を書き換え】"
