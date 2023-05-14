@@ -25,7 +25,7 @@ echo "【完了】\n"
 echo "【ステージングのpublic_htmlを本番にコピー】"
 ssh $PRD_SERVER_HOST -p $PRD_SERVER_PORT \
   rsync --checksum -arv --delete \
-  --exclude $BACKWPUP_DIR --exclude "${BACKWPUP_DIR}*" --exclude $CACHE_DIR \
+   --exclude $STG_DOMAIN --exclude $BACKWPUP_DIR --exclude "${BACKWPUP_DIR}*" --exclude $CACHE_DIR \
   $STG_PUBLIC_DIR_PATH/ $PRD_PUBLIC_DIR_PATH/
 echo "【完了】\n"
 
