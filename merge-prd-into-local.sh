@@ -2,7 +2,7 @@
 source $1/.env
 
 echo "【ローカルのDBをバックアップ】"
-mysqldump -u$LOCAL_DB_USER -p$LOCAL_DB_PASSWORD -h$LOCAL_DB_HOST -P$LOCAL_DB_PORT $LOCAL_DB_NAME --column-statistics=0 --no-tablespaces > $1/$BACKUP_LOCAL
+mysqldump -u$LOCAL_DB_USER -p$LOCAL_DB_PASSWORD -h$LOCAL_DB_HOST -P$LOCAL_DB_PORT $LOCAL_DB_NAME --column-statistics=0 --no-tablespaces >$1/$BACKUP_LOCAL
 #ファイルがない場合は終了
 if [ ! -s $1/$BACKUP_LOCAL ]; then
   echo "dump failed!"
@@ -12,7 +12,7 @@ echo "【完了】\n"
 
 echo "【本番のDBをダンプ】"
 ssh $PRD_SERVER_HOST -p $PRD_SERVER_PORT \
-  mysqldump -u$PRD_DB_USER -p$PRD_DB_PASSWORD -h$PRD_DB_HOST $PRD_DB_NAME --no-tablespaces > $1/$BACKUP_PRD
+  mysqldump -u$PRD_DB_USER -p$PRD_DB_PASSWORD -h$PRD_DB_HOST $PRD_DB_NAME --no-tablespaces >$1/$BACKUP_PRD
 #ファイルがない場合は終了
 if [ ! -s $1/$BACKUP_PRD ]; then
   echo "dump failed!"
@@ -28,11 +28,11 @@ rsync --checksum -arv --delete \
 echo "【完了】\n"
 
 echo "【wp-config.phpの内容をローカル環境のものに書き換え】"
-cp -f  $1/wp-config-local.php $1/$LOCAL_PUBLIC_DIR/wp-config.php
+cp -f $1/wp-config-local.php $1/$LOCAL_PUBLIC_DIR/wp-config.php
 echo "【完了】\n"
 
 echo "【ローカルのDBを本番のDBで上書き】"
-mysql -u$LOCAL_DB_USER -p$LOCAL_DB_PASSWORD -h$LOCAL_DB_HOST -P$LOCAL_DB_PORT $LOCAL_DB_NAME < $1/$BACKUP_PRD
+mysql -u$LOCAL_DB_USER -p$LOCAL_DB_PASSWORD -h$LOCAL_DB_HOST -P$LOCAL_DB_PORT $LOCAL_DB_NAME <$1/$BACKUP_PRD
 echo "【完了】\n"
 
 echo "【ローカルのDB内のドメイン部分を書き換え】"
