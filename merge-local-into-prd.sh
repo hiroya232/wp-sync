@@ -27,7 +27,7 @@ rsync --checksum -arv --delete \
 echo "【完了】\n"
 
 echo "【wp-config.phpの内容を本番環境のものに書き換え】"
-scp -P $PRD_SERVER_PORT -r \
+scp -P $PRD_SERVER_PORT \
   $1/wp-config-prd.php $PRD_PUBLIC_DIR/wp-config.php
 echo "【完了】\n"
 

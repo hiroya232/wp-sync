@@ -28,13 +28,13 @@ rsync --checksum -arv --delete \
 echo "【完了】\n"
 
 echo "【wp-config.phpの内容をステージング環境のものに書き換え】"
-scp -P $STG_SERVER_PORT -r \
+scp -P $STG_SERVER_PORT \
   $1/wp-config-stg.php $STG_PUBLIC_DIR/wp-config.php
 echo "【完了】\n"
 
 echo "【Basic認証の設定追加】"
 cat $1/.htaccess-basic-auth | ssh $STG_SERVER_HOST -p $STG_SERVER_PORT "cat >> ${STG_PUBLIC_DIR_PATH}/.htaccess"
-scp -P $STG_SERVER_PORT -r \
+scp -P $STG_SERVER_PORT \
   $1/.htpasswd ${HTPASSWD_PATH}/.htpasswd
 echo "【完了】\n"
 
