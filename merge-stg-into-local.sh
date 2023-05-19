@@ -31,6 +31,11 @@ echo "【wp-config.phpの内容をローカル環境のものに書き換え】"
 cp -f $1/wp-config-local.php $1/$LOCAL_PUBLIC_DIR/wp-config.php
 echo "【完了】\n"
 
+echo "【Basic認証の設定削除】"
+grep -vFf $1/.htaccess-basic-auth ${LOCAL_PUBLIC_DIR}/.htaccess > ${LOCAL_PUBLIC_DIR}/.htaccess.tmp \
+  && mv ${LOCAL_PUBLIC_DIR}/.htaccess.tmp ${LOCAL_PUBLIC_DIR}/.htaccess
+echo "【完了】\n"
+
 echo "【ローカルのDBを本番のDBで上書き】"
 mysql -u$LOCAL_DB_USER -p$LOCAL_DB_PASSWORD -h$LOCAL_DB_HOST -P$LOCAL_DB_PORT $LOCAL_DB_NAME < $1/$BACKUP_STG
 echo "【完了】\n"

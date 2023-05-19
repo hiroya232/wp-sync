@@ -34,6 +34,16 @@ scp -P $PRD_SERVER_PORT -r \
   $1/wp-config-prd.php $PRD_PUBLIC_DIR/wp-config.php
 echo "【完了】\n"
 
+echo "【Basic認証の設定削除】"
+scp -P $PRD_SERVER_PORT $1/.htaccess-basic-auth $1/.env $PRD_PUBLIC_DIR \
+  && ssh $PRD_SERVER_HOST -p $PRD_SERVER_PORT \
+    " \
+      grep -vFf ${PRD_PUBLIC_DIR_PATH}/.htaccess-basic-auth ${PRD_PUBLIC_DIR_PATH}/.htaccess > ${PRD_PUBLIC_DIR_PATH}/.htaccess.tmp \
+      && mv ${PRD_PUBLIC_DIR_PATH}/.htaccess.tmp ${PRD_PUBLIC_DIR_PATH}/.htaccess \
+      ; rm ${PRD_PUBLIC_DIR_PATH}/.htaccess-basic-auth ${PRD_PUBLIC_DIR_PATH}/.env \
+    "
+echo "【完了】\n"
+
 echo "【本番のDBをステージングのDBで上書き】"
 ssh $PRD_SERVER_HOST -p $PRD_SERVER_PORT \
   mysql -u$PRD_DB_USER -p$PRD_DB_PASSWORD -h$PRD_DB_HOST $PRD_DB_NAME < $1/$BACKUP_STG
