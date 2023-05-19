@@ -32,6 +32,12 @@ scp -P $STG_SERVER_PORT -r \
   $1/wp-config-stg.php $STG_PUBLIC_DIR/wp-config.php
 echo "【完了】\n"
 
+echo "【Basic認証の設定追加】"
+cat $1/.htaccess-basic-auth | ssh $STG_SERVER_HOST -p $STG_SERVER_PORT "cat >> ${STG_PUBLIC_DIR_PATH}/.htaccess"
+scp -P $STG_SERVER_PORT -r \
+  $1/.htpasswd ${HTPASSWD_PATH}/.htpasswd
+echo "【完了】\n"
+
 echo "【ステージングのDBをローカルのDBで上書き】"
 ssh $STG_SERVER_HOST -p $STG_SERVER_PORT \
   mysql -u$STG_DB_USER -p$STG_DB_PASSWORD -h$STG_DB_HOST $STG_DB_NAME < $1/$BACKUP_LOCAL
