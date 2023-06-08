@@ -34,7 +34,7 @@ services:
       - ${WORK_DIR}/public_html:/var/www/html
 
   redis:
-    image: redis:latest
+    image: redis:7.0.5
     container_name: $REDIS_CONTAINER_NAME
     ports:
       - "${REDIS_CONTAINER_PORT}:6379"
