@@ -1,0 +1,4 @@
+AuthUserFile ""
+AuthName "Member Site"
+AuthType BASIC
+require valid-user
