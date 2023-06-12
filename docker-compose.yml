@@ -31,7 +31,7 @@ services:
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: password
     volumes:
-      - ${WORK_DIR_PATH}/public_html:/var/www/html
+      - ./public_html:/var/www/html
 
   redis:
     image: redis:7.0.5
