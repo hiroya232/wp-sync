@@ -32,6 +32,7 @@ services:
       WORDPRESS_DB_PASSWORD: password
     volumes:
       - ./public_html:/var/www/html
+      - ./php.ini:/usr/local/etc/php/php.ini
 
   redis:
     image: redis:7.0.5
