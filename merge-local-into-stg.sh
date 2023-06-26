@@ -4,9 +4,9 @@
 . ./.env
 
 echo "【ローカルのDBをダンプ】"
-mysqldump -u"$LOCAL_DB_USER" -p"$LOCAL_DB_PASSWORD" -h"$LOCAL_DB_HOST" -P"$LOCAL_DB_PORT" "$LOCAL_DB_NAME" --column-statistics=0 --no-tablespaces >"$LOCAL_DB_BACKUP_FILE_PATH"
+mysqldump -u"$LOCAL_DB_USER" -p"$LOCAL_DB_PASSWORD" -h"$LOCAL_DB_HOST" -P"$LOCAL_DB_PORT" "$LOCAL_DB_NAME" --column-statistics=0 --no-tablespaces >"$LOCAL_DB_DUMP_FILE_PATH"
 #ファイルがない場合は終了
-if [ ! -s "$LOCAL_DB_BACKUP_FILE_PATH" ]; then
+if [ ! -s "$LOCAL_DB_DUMP_FILE_PATH" ]; then
   echo "dump failed!"
   exit
 fi
@@ -32,7 +32,7 @@ printf "【完了】\n\n"
 
 echo "【ステージングのDBをローカルのDBで上書き】"
 ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
-  mysql -u"$STG_DB_USER" -p"$STG_DB_PASSWORD" -h"$STG_DB_HOST" "$STG_DB_NAME" <"$LOCAL_DB_BACKUP_FILE_PATH"
+  mysql -u"$STG_DB_USER" -p"$STG_DB_PASSWORD" -h"$STG_DB_HOST" "$STG_DB_NAME" <"$LOCAL_DB_DUMP_FILE_PATH"
 printf "【完了】\n\n"
 
 echo "【ステージングのDB内のドメイン部分を書き換え】"

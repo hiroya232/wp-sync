@@ -6,9 +6,9 @@
 
 echo "【本番のDBをダンプ】"
 ssh "$PRD_SSH_DESTINATION" -p "$PRD_SSH_PORT" \
-  mysqldump -u"$PRD_DB_USER" -p"$PRD_DB_PASSWORD" -h"$PRD_DB_HOST" "$PRD_DB_NAME" --no-tablespaces >"$PRD_DB_BACKUP_FILE_PATH"
+  mysqldump -u"$PRD_DB_USER" -p"$PRD_DB_PASSWORD" -h"$PRD_DB_HOST" "$PRD_DB_NAME" --no-tablespaces >"$PRD_DB_DUMP_FILE_PATH"
 #ファイルがない場合は終了
-if [ ! -s "$PRD_DB_BACKUP_FILE_PATH" ]; then
+if [ ! -s "$PRD_DB_DUMP_FILE_PATH" ]; then
   echo "dump failed!"
   exit
 fi
@@ -34,7 +34,7 @@ printf "【完了】\n\n"
 
 echo "【ステージングのDBを本番のDBで上書き】"
 ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
-  mysql -u"$STG_DB_USER" -p"$STG_DB_PASSWORD" -h"$STG_DB_HOST" "$STG_DB_NAME" <"$PRD_DB_BACKUP_FILE_PATH"
+  mysql -u"$STG_DB_USER" -p"$STG_DB_PASSWORD" -h"$STG_DB_HOST" "$STG_DB_NAME" <"$PRD_DB_DUMP_FILE_PATH"
 printf "【完了】\n\n"
 
 echo "【ステージングのDB内のドメイン部分を書き換え】"
