@@ -34,7 +34,7 @@ printf "【完了】\n\n"
 echo "【本番のpublic_htmlをステージングにコピー】"
 ssh "$PRD_SSH_DESTINATION" -p "$PRD_SSH_PORT" \
   rsync --checksum -arv --delete \
-  --exclude "$STG_DOMAIN" --exclude "$WORDPRESS_CACHE_DIR_PATH" \
+  --exclude "$STG_DOMAIN" --exclude "$WORDPRESS_CACHE_DIR_PATH" --exclude "$BACKWPUP_LOG_DIR_PATH" --exclude "$BACKWPUP_TEMP_DIR_PATH" \
   "$PRD_PUBLIC_DIR_PATH"/ "$STG_PUBLIC_DIR_PATH"
 printf "【完了】\n\n"
 
