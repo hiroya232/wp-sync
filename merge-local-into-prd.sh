@@ -27,6 +27,7 @@ printf "【完了】\n\n"
 echo "【本番のDBをローカルのDBで上書き】"
 ssh "$PRD_SSH_DESTINATION" -p "$PRD_SSH_PORT" \
   mysql -u"$PRD_DB_USER" -p"$PRD_DB_PASSWORD" -h"$PRD_DB_HOST" "$PRD_DB_NAME" <"$LOCAL_DB_DUMP_FILE_PATH"
+rm "$LOCAL_DB_DUMP_FILE_PATH"
 printf "【完了】\n\n"
 
 echo "【本番のDB内のドメイン部分を書き換え】"

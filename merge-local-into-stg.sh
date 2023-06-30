@@ -33,6 +33,7 @@ printf "【完了】\n\n"
 echo "【ステージングのDBをローカルのDBで上書き】"
 ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
   mysql -u"$STG_DB_USER" -p"$STG_DB_PASSWORD" -h"$STG_DB_HOST" "$STG_DB_NAME" <"$LOCAL_DB_DUMP_FILE_PATH"
+rm "$LOCAL_DB_DUMP_FILE_PATH"
 printf "【完了】\n\n"
 
 echo "【ステージングのDB内のドメイン部分を書き換え】"
