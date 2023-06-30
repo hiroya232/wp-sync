@@ -31,7 +31,7 @@ printf "【完了】\n\n"
 echo "【ステージングのpublic_htmlをローカルにコピー】"
 rsync --checksum -arv --delete \
   -e "ssh -p \"$STG_SSH_PORT\"" \
-  --exclude "$WORDPRESS_CACHE_DIR_PATH" \
+  --exclude "$WORDPRESS_CACHE_DIR_PATH" --exclude "$BACKWPUP_LOG_DIR_PATH" --exclude "$BACKWPUP_TEMP_DIR_PATH" \
   "$STG_PUBLIC_DIR_PATH_WITH_DESTINATION"/ "$LOCAL_PUBLIC_DIR_PATH"/
 printf "【完了】\n\n"
 
