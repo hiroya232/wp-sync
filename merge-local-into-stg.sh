@@ -10,6 +10,7 @@ if [ ! -s "$LOCAL_DB_DUMP_FILE_PATH" ]; then
   echo "dump failed!"
   exit
 fi
+cp "$LOCAL_DB_DUMP_FILE_PATH" ./dump.sql
 printf "【完了】\n\n"
 
 echo "【ローカルのpublic_htmlをステージングにコピー】"
