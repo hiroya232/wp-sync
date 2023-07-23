@@ -3,6 +3,15 @@
 
 . ./.env
 
+echo "【本番のDBをバックアップ】"
+ssh "$PRD_SSH_DESTINATION" -p "$PRD_SSH_PORT" mysqldump -u"$PRD_DB_USER" -p"$PRD_DB_PASSWORD" -h"$PRD_DB_HOST" "$PRD_DB_NAME" --no-tablespaces >"$PRD_DB_BACKUP_FILE_PATH"
+#ファイルがない場合は終了
+if [ ! -s "$PRD_DB_BACKUP_FILE_PATH" ]; then
+  echo "dump failed!"
+  exit
+fi
+printf "【完了】\n\n"
+
 echo "【ローカルのDBをダンプ】"
 mysqldump -u"$LOCAL_DB_USER" -p"$LOCAL_DB_PASSWORD" -h"$LOCAL_DB_HOST" -P"$LOCAL_DB_PORT" "$LOCAL_DB_NAME" --column-statistics=0 --no-tablespaces >"$LOCAL_DB_DUMP_FILE_PATH"
 #ファイルがない場合は終了
