@@ -6,9 +6,9 @@
 
 echo "【ステージングのDBをバックアップ】"
 ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
-  mysqldump -u"$STG_DB_USER" -p"$STG_DB_PASSWORD" -h"$STG_DB_HOST" "$STG_DB_NAME" --no-tablespaces >"$STG_DB_BACKUP_FILE_PATH"
+  mysqldump -u"$STG_DB_USER" -p"$STG_DB_PASSWORD" -h"$STG_DB_HOST" "$STG_DB_NAME" --no-tablespaces >"$STG_DB_DUMP_FILE_PATH"
 #ファイルがない場合は終了
-if [ ! -s "$STG_DB_BACKUP_FILE_PATH" ]; then
+if [ ! -s "$STG_DB_DUMP_FILE_PATH" ]; then
   echo "dump failed!"
   exit
 fi
@@ -52,7 +52,6 @@ printf "【完了】\n\n"
 echo "【ステージングのDBを本番のDBで上書き】"
 ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
   mysql -u"$STG_DB_USER" -p"$STG_DB_PASSWORD" -h"$STG_DB_HOST" "$STG_DB_NAME" <"$PRD_DB_DUMP_FILE_PATH"
-rm "$PRD_DB_DUMP_FILE_PATH"
 printf "【完了】\n\n"
 
 echo "【ステージングのDB内のドメイン部分を書き換え】"

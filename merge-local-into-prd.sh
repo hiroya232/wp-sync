@@ -4,9 +4,9 @@
 . ./.env
 
 echo "【本番のDBをバックアップ】"
-ssh "$PRD_SSH_DESTINATION" -p "$PRD_SSH_PORT" mysqldump -u"$PRD_DB_USER" -p"$PRD_DB_PASSWORD" -h"$PRD_DB_HOST" "$PRD_DB_NAME" --no-tablespaces >"$PRD_DB_BACKUP_FILE_PATH"
+ssh "$PRD_SSH_DESTINATION" -p "$PRD_SSH_PORT" mysqldump -u"$PRD_DB_USER" -p"$PRD_DB_PASSWORD" -h"$PRD_DB_HOST" "$PRD_DB_NAME" --no-tablespaces >"$PRD_DB_DUMP_FILE_PATH"
 #ファイルがない場合は終了
-if [ ! -s "$PRD_DB_BACKUP_FILE_PATH" ]; then
+if [ ! -s "$PRD_DB_DUMP_FILE_PATH" ]; then
   echo "dump failed!"
   exit
 fi
@@ -43,7 +43,6 @@ printf "【完了】\n\n"
 echo "【本番のDBをローカルのDBで上書き】"
 ssh "$PRD_SSH_DESTINATION" -p "$PRD_SSH_PORT" \
   mysql -u"$PRD_DB_USER" -p"$PRD_DB_PASSWORD" -h"$PRD_DB_HOST" "$PRD_DB_NAME" <"$LOCAL_DB_DUMP_FILE_PATH"
-rm "$LOCAL_DB_DUMP_FILE_PATH"
 printf "【完了】\n\n"
 
 echo "【本番のDB内のドメイン部分を書き換え】"
