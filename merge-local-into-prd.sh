@@ -12,6 +12,13 @@ if [ ! -s "$LOCAL_DB_DUMP_FILE_PATH" ]; then
 fi
 printf "【完了】\n\n"
 
+echo "【本番のpublic_htmlをバックアップ】"
+rsync --checksum -arv --delete \
+  -e "ssh -p \"$PRD_SSH_PORT\"" \
+  --exclude "$STG_DOMAIN" --exclude "$WORDPRESS_CACHE_DIR_PATH" --exclude "$BACKWPUP_LOG_DIR_PATH" --exclude "$BACKWPUP_TEMP_DIR_PATH" \
+  "$PRD_PUBLIC_DIR_PATH_WITH_DESTINATION"/ "$PRD_FILE_BACKUP_DIR_PATH"/
+printf "【完了】\n\n"
+
 echo "【ローカルのpublic_htmlを本番にコピー】"
 rsync --checksum -arv --delete \
   -e "ssh -p ${PRD_SSH_PORT}" \
