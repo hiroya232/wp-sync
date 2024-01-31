@@ -44,7 +44,7 @@ scp -P "$STG_SSH_PORT" \
 printf "【完了】\n\n"
 
 echo "【Basic認証の設定追加】"
-< ./.htaccess-basic-auth ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" "cat >> \"$STG_PUBLIC_DIR_PATH\"/.htaccess"
+ssh <./.htaccess-basic-auth "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" "cat >> \"$STG_PUBLIC_DIR_PATH\"/.htaccess"
 scp -P "$STG_SSH_PORT" \
   ./.htpasswd "$HTPASSWD_PATH_WITH_DESTINATION"/.htpasswd
 printf "【完了】\n\n"
