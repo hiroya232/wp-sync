@@ -42,6 +42,7 @@ printf "【完了】\n\n"
 echo "【Basic認証の設定削除】"
 grep -vFf ./.htaccess-basic-auth "$LOCAL_PUBLIC_DIR_PATH"/.htaccess >"$LOCAL_PUBLIC_DIR_PATH"/.htaccess.tmp &&
   mv "$LOCAL_PUBLIC_DIR_PATH"/.htaccess.tmp "$LOCAL_PUBLIC_DIR_PATH"/.htaccess
+sed -i '' '/^\n*$/d' "$LOCAL_PUBLIC_DIR_PATH/.htaccess"
 printf "【完了】\n\n"
 
 echo "【ローカルのDBを本番のDBで上書き】"

@@ -51,6 +51,7 @@ scp -P "$PRD_SSH_PORT" ./.htaccess-basic-auth ./.env "$PRD_PUBLIC_DIR_PATH_WITH_
         mv \"$PRD_PUBLIC_DIR_PATH\"/.htaccess.tmp \"$PRD_PUBLIC_DIR_PATH\"/.htaccess ;
         rm \"$PRD_PUBLIC_DIR_PATH\"/.htaccess-basic-auth \"$PRD_PUBLIC_DIR_PATH\"/.env \
     "
+ssh "$PRD_SSH_DESTINATION" -p "$PRD_SSH_PORT" "sed -i '/^\n*$/d' \"$PRD_PUBLIC_DIR_PATH/.htaccess\""
 printf "【完了】\n\n"
 
 echo "【本番のDBをステージングのDBで上書き】"
