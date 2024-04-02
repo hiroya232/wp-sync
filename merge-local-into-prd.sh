@@ -54,11 +54,6 @@ ssh "$PRD_SSH_DESTINATION" -p "$PRD_SSH_PORT" \
   /usr/bin/php7.3 srdb.cli.php -h "$PRD_DB_HOST" -u "$PRD_DB_USER" -p "$PRD_DB_PASSWORD" -n "$PRD_DB_NAME" -s "http://${LOCAL_DOMAIN}" -r "https://${PRD_DOMAIN}"
 printf "【完了】\n\n"
 
-echo "【本番のDB内の相互リンク関連のドメイン部分を書き換え】"
-ssh "$PRD_SSH_DESTINATION" -p "$PRD_SSH_PORT" \
-  /usr/bin/php7.3 srdb.cli.php -h "$PRD_DB_HOST" -u "$PRD_DB_USER" -p "$PRD_DB_PASSWORD" -n "$PRD_DB_NAME" -s "http://${MUTUAL_LINK_BLOG_LOCAL_DOMAIN}" -r "https://${MUTUAL_LINK_BLOG_PRD_DOMAIN}"
-printf "【完了】\n\n"
-
 echo "【本番以外では不要なプラグインの無効化】"
 sh deactivate-plugin-local.sh
 printf "【完了】\n\n"
