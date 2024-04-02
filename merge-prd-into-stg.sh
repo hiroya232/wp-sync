@@ -65,3 +65,7 @@ echo "【ステージングのDB内の相互リンク関連のドメイン部分
 ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
   /usr/bin/php7.3 srdb.cli.php -h "$STG_DB_HOST" -u "$STG_DB_USER" -p "$STG_DB_PASSWORD" -n "$STG_DB_NAME" -s "https://${MUTUAL_LINK_BLOG_PRD_DOMAIN}" -r "https://${MUTUAL_LINK_BLOG_STG_DOMAIN}"
 printf "【完了】\n\n"
+
+echo "【本番以外では不要なプラグインの無効化】"
+sh deactivate-plugin-stg.sh
+printf "【完了】\n\n"
