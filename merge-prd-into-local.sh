@@ -50,3 +50,7 @@ printf "【完了】\n\n"
 echo "【ローカルのDB内の相互リンク関連のドメイン部分を書き換え】"
 php "$WP_SYNC_REPOSITORY_PATH"/srdb.cli.php -h "$LOCAL_DB_HOST" -P "$LOCAL_DB_PORT" -u "$LOCAL_DB_USER" -p "$LOCAL_DB_PASSWORD" -n "$LOCAL_DB_NAME" -s "https://${MUTUAL_LINK_BLOG_PRD_DOMAIN}" -r "http://${MUTUAL_LINK_BLOG_LOCAL_DOMAIN}"
 printf "【完了】\n\n"
+
+echo "【本番以外では不要なプラグインの無効化】"
+sh deactivate-plugin-local.sh
+printf "【完了】\n\n"
