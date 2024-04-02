@@ -1,12 +1,5 @@
 FROM wordpress:6.2.2-php8.0-apache
 
-# WP-CLIをインストール
-RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
-    && php wp-cli.phar --info \
-    && chmod +x wp-cli.phar \
-    && mv wp-cli.phar /usr/local/bin/wp \
-    && wp --info
-
 # Xdebugのインストール
 RUN pecl install xdebug-3.2.1 && docker-php-ext-enable xdebug
 
