@@ -4,6 +4,10 @@
 
 . ./.env
 
+echo "【本番のみで必要なプラグインの有効化】"
+sh activate-plugin-stg.sh
+printf "【完了】\n\n"
+
 echo "【本番のDBをバックアップ】"
 ssh "$PRD_SSH_DESTINATION" -p "$PRD_SSH_PORT" \
   mysqldump -u"$PRD_DB_USER" -p"$PRD_DB_PASSWORD" -h"$PRD_DB_HOST" "$PRD_DB_NAME" --no-tablespaces >"$PRD_DB_DUMP_FILE_PATH"
@@ -67,4 +71,8 @@ printf "【完了】\n\n"
 echo "【本番のDB内の相互リンク関連のドメイン部分を書き換え】"
 ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
   /usr/bin/php7.3 srdb.cli.php -h "$STG_DB_HOST" -u "$STG_DB_USER" -p "$STG_DB_PASSWORD" -n "$STG_DB_NAME" -s "https://${MUTUAL_LINK_BLOG_STG_DOMAIN}" -r "https://${MUTUAL_LINK_BLOG_PRD_DOMAIN}"
+printf "【完了】\n\n"
+
+echo "【本番以外では不要なプラグインの無効化】"
+sh deactivate-plugin-stg.sh
 printf "【完了】\n\n"
