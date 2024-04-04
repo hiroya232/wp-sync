@@ -17,6 +17,7 @@ WordPressサイトのローカル、ステージング、本番環境間で、DB
 ## 環境変数
 
 下記記事を参照。
+
 [【WordPress】環境間をコマンド1つで簡単に同期する](https://hiro8blog.com/sync-wp-between-local-and-production/)
 
 ## ディレクトリ構成
@@ -50,4 +51,5 @@ WordPressサイトのローカル、ステージング、本番環境間で、DB
 ## 開発環境構築&実行方法
 
 下記記事を参照。
+
 [【WordPress】環境間をコマンド1つで簡単に同期する](https://hiro8blog.com/sync-wp-between-local-and-production/)
