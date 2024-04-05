@@ -68,4 +68,8 @@ grep -vFf ./.htaccess-basic-auth "$LOCAL_PUBLIC_DIR_PATH"/.htaccess >"$LOCAL_PUB
   mv "$LOCAL_PUBLIC_DIR_PATH"/.htaccess.tmp "$LOCAL_PUBLIC_DIR_PATH"/.htaccess
 sed -i '' '/^\n*$/d' "$LOCAL_PUBLIC_DIR_PATH/.htaccess"
 printf "【完了】\n\n"
+
+echo "【ローカル環境では不要なプラグインの無効化】"
+sh deactivate-plugin-local.sh
+printf "【完了】\n\n"
 echo "------------------------------後処理　完了------------------------------"
