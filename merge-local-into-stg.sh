@@ -74,4 +74,8 @@ ssh <./.htaccess-basic-auth "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" "cat >> \"
 scp -P "$STG_SSH_PORT" \
   ./.htpasswd "$HTPASSWD_PATH_WITH_DESTINATION"/.htpasswd
 printf "【完了】\n\n"
+
+echo "【ステージング環境では不要なプラグインの無効化】"
+sh deactivate-plugin-stg.sh
+printf "【完了】\n\n"
 echo "------------------------------後処理　完了------------------------------"
