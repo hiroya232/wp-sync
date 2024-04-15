@@ -1,4 +1,4 @@
-FROM wordpress:6.2.2-php8.0-apache
+FROM wordpress:6.4.1-php8.0-apache
 
 # WP-CLIをインストール
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
