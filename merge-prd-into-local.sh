@@ -41,7 +41,7 @@ ssh "$PRD_SSH_DESTINATION" -p "$PRD_SSH_PORT" \
 printf "【完了】\n\n"
 
 echo "【ドメインを置換】"
-php "$WP_SYNC_REPOSITORY_PATH"/srdb.cli.php \
+php "$WP_SYNC_REPOSITORY_PATH"/Search-Replace-DB-4.1.4/srdb.cli.php \
   -h "$LOCAL_DB_HOST" \
   -P "$LOCAL_DB_PORT" \
   -u "$LOCAL_DB_USER" \
