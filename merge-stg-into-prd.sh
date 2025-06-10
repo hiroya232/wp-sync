@@ -50,7 +50,7 @@ printf "【完了】\n\n"
 
 echo "【ドメインを置換】"
 ssh "$PRD_SSH_DESTINATION" -p "$PRD_SSH_PORT" \
-  /usr/bin/php7.3 srdb.cli.php \
+  /usr/bin/php8.2 Search-Replace-DB-4.1.4/srdb.cli.php \
   -h "$PRD_DB_HOST" \
   -u "$PRD_DB_USER" \
   -p "$PRD_DB_PASSWORD" \
