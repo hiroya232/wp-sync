@@ -42,16 +42,6 @@ ssh "$PRD_SSH_DESTINATION" -p "$PRD_SSH_PORT" \
     "$STG_DB_NAME"
 printf "【完了】\n\n"
 
-echo "【ドメインを置換】"
-ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
-  /usr/bin/php8.2 Search-Replace-DB-4.1.4/srdb.cli.php \
-  -h "$STG_DB_HOST" \
-  -u "$STG_DB_USER" \
-  -p "$STG_DB_PASSWORD" \
-  -n "$STG_DB_NAME" \
-  -s "https://${PRD_DOMAIN}" -r "https://${STG_DOMAIN}"
-printf "【完了】\n\n"
-
 echo "【public_htmlを同期】"
 ssh "$PRD_SSH_DESTINATION" -p "$PRD_SSH_PORT" \
   rsync --checksum -arv --delete \
@@ -65,6 +55,11 @@ printf "【完了】\n\n"
 echo "【wp-config.phpを置換】"
 scp -P "$STG_SSH_PORT" \
   ./wp-config-stg.php "$STG_PUBLIC_DIR_PATH_WITH_DESTINATION"/wp-config.php
+printf "【完了】\n\n"
+
+echo "【ドメインを置換】"
+ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
+  "cd \"$STG_PUBLIC_DIR_PATH\" && wp search-replace \"https://${PRD_DOMAIN}\" \"https://${STG_DOMAIN}\" --all-tables"
 printf "【完了】\n\n"
 echo "------------------------------本番→ステージング環境同期　完了------------------------------"
 

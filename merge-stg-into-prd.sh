@@ -48,16 +48,6 @@ ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
     "$PRD_DB_NAME"
 printf "【完了】\n\n"
 
-echo "【ドメインを置換】"
-ssh "$PRD_SSH_DESTINATION" -p "$PRD_SSH_PORT" \
-  /usr/bin/php8.2 Search-Replace-DB-4.1.4/srdb.cli.php \
-  -h "$PRD_DB_HOST" \
-  -u "$PRD_DB_USER" \
-  -p "$PRD_DB_PASSWORD" \
-  -n "$PRD_DB_NAME" \
-  -s "https://${STG_DOMAIN}" -r "https://${PRD_DOMAIN}"
-printf "【完了】\n\n"
-
 echo "【public_htmlを同期】"
 ssh "$PRD_SSH_DESTINATION" -p "$PRD_SSH_PORT" \
   rsync --checksum -arv --delete \
@@ -72,7 +62,12 @@ echo "【wp-config.phpを置換】"
 scp -P "$PRD_SSH_PORT" \
   ./wp-config-prd.php "$PRD_PUBLIC_DIR_PATH_WITH_DESTINATION"/wp-config.php
 printf "【完了】\n\n"
-echo "------------------------------ステージング→本番環境同期　開始------------------------------"
+
+echo "【ドメインを置換】"
+ssh "$PRD_SSH_DESTINATION" -p "$PRD_SSH_PORT" \
+  "cd \"$PRD_PUBLIC_DIR_PATH\" && wp search-replace \"https://${STG_DOMAIN}\" \"https://${PRD_DOMAIN}\" --all-tables"
+printf "【完了】\n\n"
+echo "------------------------------ステージング→本番環境同期　完了------------------------------"
 
 echo "------------------------------後処理　開始------------------------------"
 echo "【Basic認証の設定削除】"
