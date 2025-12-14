@@ -1,6 +1,7 @@
 #!/bin/sh
 # shellcheck source=/dev/null
+# ステージング環境では無効化するプラグイン（本番→ステージング同期後にステージング環境で無効化）
 
 . ./.env
 
-wp plugin deactivate --ssh=ユーザ名@ホスト名:ポート番号/WordPressインストールパス プラグイン1 プラグイン2 ... --allow-root
+wp plugin deactivate $PLUGINS_TO_DEACTIVATE --ssh="$STG_SSH_DESTINATION:$STG_SSH_PORT$STG_PUBLIC_DIR_PATH" --allow-root
