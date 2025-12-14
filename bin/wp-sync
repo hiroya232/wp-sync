@@ -1,0 +1,47 @@
+#!/bin/bash
+# wp-sync - WordPress環境同期ツール
+#
+# 使用方法:
+#   wp-sync prd-to-stg    本番 → ステージング同期
+#   wp-sync stg-to-prd    ステージング → 本番同期
+#
+# 実行前に、カレントディレクトリに .wp-sync/ が存在することを確認してください。
+
+set -e
+
+# wp-sync リポジトリのディレクトリを取得
+WP_SYNC_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+export WP_SYNC_DIR
+
+# .wp-sync ディレクトリの存在確認
+if [ ! -d ".wp-sync" ]; then
+  echo "エラー: .wp-sync ディレクトリが見つかりません。" >&2
+  echo "WordPressプロジェクトのルートディレクトリから実行してください。" >&2
+  exit 1
+fi
+
+case "$1" in
+  prd-to-stg)
+    echo "本番 → ステージング同期を開始します..."
+    sh "$WP_SYNC_DIR/scripts/sync-prd-to-stg.sh"
+    ;;
+  stg-to-prd)
+    echo "ステージング → 本番同期を開始します..."
+    sh "$WP_SYNC_DIR/scripts/sync-stg-to-prd.sh"
+    ;;
+  -h|--help|help)
+    echo "wp-sync - WordPress環境同期ツール"
+    echo ""
+    echo "使用方法:"
+    echo "  wp-sync prd-to-stg    本番 → ステージング同期"
+    echo "  wp-sync stg-to-prd    ステージング → 本番同期"
+    echo "  wp-sync help          このヘルプを表示"
+    echo ""
+    echo "実行前に、カレントディレクトリに .wp-sync/ が存在することを確認してください。"
+    ;;
+  *)
+    echo "使用方法: wp-sync {prd-to-stg|stg-to-prd|help}" >&2
+    exit 1
+    ;;
+esac
+

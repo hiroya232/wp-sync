@@ -74,6 +74,6 @@ scp -P "$STG_SSH_PORT" \
 printf "【完了】\n\n"
 
 echo "【ステージング環境では不要なプラグインの無効化】"
-sh /lib/deactivate-plugin.sh
+sh "$WP_SYNC_DIR/lib/deactivate-plugin.sh"
 printf "【完了】\n\n"
 echo "------------------------------後処理　完了------------------------------"
