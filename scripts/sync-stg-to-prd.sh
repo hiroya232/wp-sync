@@ -7,7 +7,7 @@
 
 echo "------------------------------前処理　開始------------------------------"
 echo "【本番環境で必要なプラグインの有効化】"
-sh plugin-activate.sh
+sh activate-plugin.sh
 printf "【完了】\n\n"
 echo "------------------------------前処理　完了------------------------------"
 
@@ -83,6 +83,6 @@ ssh "$PRD_SSH_DESTINATION" -p "$PRD_SSH_PORT" "sed -i '/^\n*$/d' \"$PRD_PUBLIC_D
 printf "【完了】\n\n"
 
 echo "【ステージング環境では不要なプラグインの無効化】"
-sh plugin-deactivate.sh
+sh deactivate-plugin.sh
 printf "【完了】\n\n"
 echo "------------------------------後処理　完了------------------------------"
