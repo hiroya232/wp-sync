@@ -2,7 +2,8 @@
 # shellcheck source=/dev/null
 # 本番とステージングが同じサーバーにあることが前提
 
-. ./.env
+# 設定ファイルの読み込み
+. ./.wp-sync/.env
 
 echo "------------------------------ステージング環境バックアップ　開始------------------------------"
 echo "【DBをバックアップ】"
@@ -54,7 +55,7 @@ printf "【完了】\n\n"
 
 echo "【wp-config.phpを置換】"
 scp -P "$STG_SSH_PORT" \
-  ./wp-config-stg.php "$STG_PUBLIC_DIR_PATH_WITH_DESTINATION"/wp-config.php
+  ./.wp-sync/wp-config-stg.php "$STG_PUBLIC_DIR_PATH_WITH_DESTINATION"/wp-config.php
 printf "【完了】\n\n"
 
 echo "【ドメインを置換】"
@@ -67,12 +68,12 @@ echo "------------------------------後処理　開始--------------------------
 echo "【Basic認証の設定】"
 ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" "sed -i '/^\n*$/d' \"$STG_PUBLIC_DIR_PATH/.htaccess\""
 ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" "echo -e \"\n\" >> \"$STG_PUBLIC_DIR_PATH/.htaccess\""
-ssh <./.htaccess-basic-auth "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" "cat >> \"$STG_PUBLIC_DIR_PATH\"/.htaccess"
+ssh <./.wp-sync/.htaccess-basic-auth "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" "cat >> \"$STG_PUBLIC_DIR_PATH\"/.htaccess"
 scp -P "$STG_SSH_PORT" \
-  ./.htpasswd "$HTPASSWD_PATH_WITH_DESTINATION"/.htpasswd
+  ./.wp-sync/.htpasswd "$HTPASSWD_PATH_WITH_DESTINATION"/.htpasswd
 printf "【完了】\n\n"
 
 echo "【ステージング環境では不要なプラグインの無効化】"
-sh deactivate-plugin-stg.sh
+sh plugin-deactivate.sh
 printf "【完了】\n\n"
 echo "------------------------------後処理　完了------------------------------"

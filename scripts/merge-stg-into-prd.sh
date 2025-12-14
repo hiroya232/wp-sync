@@ -2,11 +2,12 @@
 # shellcheck source=/dev/null
 # 本番とステージングが同じサーバーにあることが前提
 
-. ./.env
+# 設定ファイルの読み込み
+. ./.wp-sync/.env
 
 echo "------------------------------前処理　開始------------------------------"
 echo "【本番環境で必要なプラグインの有効化】"
-sh activate-plugin-stg.sh
+sh plugin-activate.sh
 printf "【完了】\n\n"
 echo "------------------------------前処理　完了------------------------------"
 
@@ -60,7 +61,7 @@ printf "【完了】\n\n"
 
 echo "【wp-config.phpを置換】"
 scp -P "$PRD_SSH_PORT" \
-  ./wp-config-prd.php "$PRD_PUBLIC_DIR_PATH_WITH_DESTINATION"/wp-config.php
+  ./.wp-sync/wp-config-prd.php "$PRD_PUBLIC_DIR_PATH_WITH_DESTINATION"/wp-config.php
 printf "【完了】\n\n"
 
 echo "【ドメインを置換】"
@@ -71,7 +72,7 @@ echo "------------------------------ステージング→本番環境同期　�
 
 echo "------------------------------後処理　開始------------------------------"
 echo "【Basic認証の設定削除】"
-scp -P "$PRD_SSH_PORT" ./.htaccess-basic-auth ./.env "$PRD_PUBLIC_DIR_PATH_WITH_DESTINATION" &&
+scp -P "$PRD_SSH_PORT" ./.wp-sync/.htaccess-basic-auth ./.wp-sync/.env "$PRD_PUBLIC_DIR_PATH_WITH_DESTINATION" &&
   ssh "$PRD_SSH_DESTINATION" -p "$PRD_SSH_PORT" \
     " \
       grep -vFf \"$PRD_PUBLIC_DIR_PATH\"/.htaccess-basic-auth \"$PRD_PUBLIC_DIR_PATH\"/.htaccess >\"$PRD_PUBLIC_DIR_PATH\"/.htaccess.tmp &&
@@ -82,6 +83,6 @@ ssh "$PRD_SSH_DESTINATION" -p "$PRD_SSH_PORT" "sed -i '/^\n*$/d' \"$PRD_PUBLIC_D
 printf "【完了】\n\n"
 
 echo "【ステージング環境では不要なプラグインの無効化】"
-sh deactivate-plugin-stg.sh
+sh plugin-deactivate.sh
 printf "【完了】\n\n"
 echo "------------------------------後処理　完了------------------------------"
