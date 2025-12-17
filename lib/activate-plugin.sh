@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # shellcheck source=/dev/null
 # 本番環境でのみ有効化するプラグイン（ステージング→本番同期前にステージング環境で有効化）
 
