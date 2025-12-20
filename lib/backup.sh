@@ -11,15 +11,21 @@ backup_db() {
   local db_name="$6"
   local output_path="$7"
 
-  echo "【DBをバックアップ】"
-  ssh "$ssh_dest" -p "$ssh_port" \
+  log_info "【DBをバックアップ】"
+  log_info "  出力先: $output_path"
+
+  if ssh "$ssh_dest" -p "$ssh_port" \
     mysqldump \
     -u"$db_user" \
     -p"$db_pass" \
     -h"$db_host" \
     "$db_name" \
-    --no-tablespaces >"$output_path"
-  printf "【完了】\n\n"
+    --no-tablespaces >"$output_path" 2>&1; then
+    log_success "【完了】"
+  else
+    log_error "【失敗】DBバックアップに失敗しました"
+    return 1
+  fi
 }
 
 # ファイルをバックアップ
@@ -30,19 +36,25 @@ backup_files() {
   local dest_path="$3"
   local excludes="$4"
 
-  echo "【public_htmlをバックアップ】"
+  log_info "【public_htmlをバックアップ】"
+  log_info "  コピー元: $source_path"
+  log_info "  コピー先: $dest_path"
 
   # 除外オプションを構築
-  exclude_opts=""
+  local exclude_opts=""
   IFS=','
   for exclude in $excludes; do
     exclude_opts="$exclude_opts --exclude $exclude"
   done
   unset IFS
 
-  rsync --checksum -arv --delete \
+  if rsync --checksum -arv --delete \
     -e "ssh -p \"$ssh_port\"" \
     $exclude_opts \
-    "$source_path"/ "$dest_path"/
-  printf "【完了】\n\n"
+    "$source_path"/ "$dest_path"/ >> "$(get_log_file)" 2>&1; then
+    log_success "【完了】"
+  else
+    log_error "【失敗】ファイルバックアップに失敗しました"
+    return 1
+  fi
 }

@@ -10,23 +10,23 @@
 . "$WP_SYNC_DIR/lib/sync.sh"
 . "$WP_SYNC_DIR/lib/basic-auth.sh"
 
-echo "------------------------------ステージング環境バックアップ　開始------------------------------"
+log_header "ステージング環境バックアップ　開始"
 backup_db "$STG_SSH_DESTINATION" "$STG_SSH_PORT" "$STG_DB_USER" "$STG_DB_PASSWORD" "$STG_DB_HOST" "$STG_DB_NAME" "$STG_DB_DUMP_FILE_PATH"
 backup_files "$STG_SSH_PORT" "$STG_PUBLIC_DIR_PATH_WITH_DESTINATION" "$STG_FILE_BACKUP_DIR_PATH" "$EXCLUDES"
-echo "------------------------------ステージング環境バックアップ　完了------------------------------"
+log_header "ステージング環境バックアップ　完了"
 
-echo "------------------------------本番→ステージング環境同期　開始------------------------------"
+log_header "本番→ステージング環境同期　開始"
 sync_db "$PRD_SSH_DESTINATION" "$PRD_SSH_PORT" "$PRD_DB_USER" "$PRD_DB_PASSWORD" "$PRD_DB_HOST" "$PRD_DB_NAME" \
         "$STG_SSH_DESTINATION" "$STG_SSH_PORT" "$STG_DB_USER" "$STG_DB_PASSWORD" "$STG_DB_HOST" "$STG_DB_NAME"
 sync_files "$PRD_SSH_DESTINATION" "$PRD_SSH_PORT" "$PRD_PUBLIC_DIR_PATH" "$STG_PUBLIC_DIR_PATH" "$STG_DOMAIN,$EXCLUDES"
 replace_wp_config "$STG_SSH_PORT" "./.wp-sync/wp-config-stg.php" "$STG_PUBLIC_DIR_PATH_WITH_DESTINATION"
 replace_domain "$STG_SSH_DESTINATION" "$STG_SSH_PORT" "$STG_PUBLIC_DIR_PATH" "$PRD_DOMAIN" "$STG_DOMAIN"
-echo "------------------------------本番→ステージング環境同期　完了------------------------------"
+log_header "本番→ステージング環境同期　完了"
 
-echo "------------------------------後処理　開始------------------------------"
+log_header "後処理　開始"
 setup_basic_auth "$STG_SSH_DESTINATION" "$STG_SSH_PORT" "$STG_PUBLIC_DIR_PATH" "./.wp-sync/.htaccess-basic-auth" "./.wp-sync/.htpasswd" "$HTPASSWD_PATH_WITH_DESTINATION"
 
-echo "【ステージング環境では不要なプラグインの無効化】"
+log_info "【ステージング環境では不要なプラグインの無効化】"
 sh "$WP_SYNC_DIR/lib/deactivate-plugin.sh"
-printf "【完了】\n\n"
-echo "------------------------------後処理　完了------------------------------"
+log_success "【完了】"
+log_header "後処理　完了"

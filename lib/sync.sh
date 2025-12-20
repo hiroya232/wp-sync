@@ -17,21 +17,28 @@ sync_db() {
   local to_db_host="${11}"
   local to_db_name="${12}"
 
-  echo "【DBを同期】"
-  ssh "$from_ssh_dest" -p "$from_ssh_port" \
+  log_info "【DBを同期】"
+  log_info "  コピー元: $from_db_name@$from_db_host"
+  log_info "  コピー先: $to_db_name@$to_db_host"
+
+  if ssh "$from_ssh_dest" -p "$from_ssh_port" \
     mysqldump \
     -u"$from_db_user" \
     -p"$from_db_pass" \
     -h"$from_db_host" \
     "$from_db_name" \
-    --no-tablespaces |
+    --no-tablespaces 2>/dev/null |
     ssh "$to_ssh_dest" -p "$to_ssh_port" \
       mysql \
       -u"$to_db_user" \
       -p"$to_db_pass" \
       -h"$to_db_host" \
-      "$to_db_name"
-  printf "【完了】\n\n"
+      "$to_db_name" 2>/dev/null; then
+    log_success "【完了】"
+  else
+    log_error "【失敗】DB同期に失敗しました"
+    return 1
+  fi
 }
 
 # ファイルを同期
@@ -43,21 +50,27 @@ sync_files() {
   local dest_path="$4"
   local excludes="$5"
 
-  echo "【public_htmlを同期】"
+  log_info "【public_htmlを同期】"
+  log_info "  コピー元: $source_path"
+  log_info "  コピー先: $dest_path"
 
   # 除外オプションを構築
-  exclude_opts=""
+  local exclude_opts=""
   IFS=','
   for exclude in $excludes; do
     exclude_opts="$exclude_opts --exclude $exclude"
   done
   unset IFS
 
-  ssh "$ssh_dest" -p "$ssh_port" \
+  if ssh "$ssh_dest" -p "$ssh_port" \
     rsync --checksum -arv --delete \
     $exclude_opts \
-    "$source_path"/ "$dest_path"
-  printf "【完了】\n\n"
+    "$source_path"/ "$dest_path" >> "$(get_log_file)" 2>&1; then
+    log_success "【完了】"
+  else
+    log_error "【失敗】ファイル同期に失敗しました"
+    return 1
+  fi
 }
 
 # wp-config.phpを置換
@@ -67,10 +80,17 @@ replace_wp_config() {
   local local_path="$2"
   local remote_path="$3"
 
-  echo "【wp-config.phpを置換】"
-  scp -P "$ssh_port" \
-    "$local_path" "$remote_path"/wp-config.php
-  printf "【完了】\n\n"
+  log_info "【wp-config.phpを置換】"
+  log_info "  ローカル: $local_path"
+  log_info "  リモート: $remote_path/wp-config.php"
+
+  if scp -P "$ssh_port" \
+    "$local_path" "$remote_path"/wp-config.php >> "$(get_log_file)" 2>&1; then
+    log_success "【完了】"
+  else
+    log_error "【失敗】wp-config.php置換に失敗しました"
+    return 1
+  fi
 }
 
 # ドメインを置換
@@ -82,8 +102,15 @@ replace_domain() {
   local from_domain="$4"
   local to_domain="$5"
 
-  echo "【ドメインを置換】"
-  ssh "$ssh_dest" -p "$ssh_port" \
-    "cd \"$public_dir\" && wp search-replace \"https://${from_domain}\" \"https://${to_domain}\" --all-tables"
-  printf "【完了】\n\n"
+  log_info "【ドメインを置換】"
+  log_info "  置換前: https://$from_domain"
+  log_info "  置換後: https://$to_domain"
+
+  if ssh "$ssh_dest" -p "$ssh_port" \
+    "cd \"$public_dir\" && wp search-replace \"https://${from_domain}\" \"https://${to_domain}\" --all-tables" >> "$(get_log_file)" 2>&1; then
+    log_success "【完了】"
+  else
+    log_error "【失敗】ドメイン置換に失敗しました"
+    return 1
+  fi
 }

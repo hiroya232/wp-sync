@@ -10,13 +10,23 @@ setup_basic_auth() {
   local htpasswd_path="$5"
   local htpasswd_dest="$6"
 
-  echo "【Basic認証の設定】"
+  log_info "【Basic認証の設定】"
+  log_info "  対象: $public_dir"
+
+  {
   ssh "$ssh_dest" -p "$ssh_port" "sed -i '/^\n*$/d' \"$public_dir/.htaccess\""
   ssh "$ssh_dest" -p "$ssh_port" "echo -e \"\n\" >> \"$public_dir/.htaccess\""
   ssh <"$htaccess_auth_path" "$ssh_dest" -p "$ssh_port" "cat >> \"$public_dir\"/.htaccess"
   scp -P "$ssh_port" \
     "$htpasswd_path" "$htpasswd_dest"/.htpasswd
-  printf "【完了】\n\n"
+  } >> "$(get_log_file)" 2>&1
+
+  if [ $? -eq 0 ]; then
+    log_success "【完了】"
+  else
+    log_error "【失敗】Basic認証設定に失敗しました"
+    return 1
+  fi
 }
 
 # Basic認証を削除
@@ -29,7 +39,10 @@ remove_basic_auth() {
   local env_path="$5"
   local remote_dest="$6"
 
-  echo "【Basic認証の設定削除】"
+  log_info "【Basic認証の設定削除】"
+  log_info "  対象: $public_dir"
+
+  {
   scp -P "$ssh_port" "$htaccess_auth_path" "$env_path" "$remote_dest" &&
     ssh "$ssh_dest" -p "$ssh_port" \
       " \
@@ -38,6 +51,13 @@ remove_basic_auth() {
           rm \"$public_dir\"/.htaccess-basic-auth \"$public_dir\"/.env \
       "
   ssh "$ssh_dest" -p "$ssh_port" "sed -i '/^\n*$/d' \"$public_dir/.htaccess\""
-  printf "【完了】\n\n"
+  } >> "$(get_log_file)" 2>&1
+
+  if [ $? -eq 0 ]; then
+    log_success "【完了】"
+  else
+    log_error "【失敗】Basic認証削除に失敗しました"
+    return 1
+  fi
 }
 
