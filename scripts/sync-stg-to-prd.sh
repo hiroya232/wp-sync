@@ -13,7 +13,7 @@
 
 log_header "前処理　開始"
 log_info "【本番環境で必要なプラグインの有効化】"
-sh "$WP_SYNC_DIR/lib/activate-plugin.sh"
+bash "$WP_SYNC_DIR/lib/activate-plugin.sh"
 log_success "【完了】"
 log_header "前処理　完了"
 
@@ -76,6 +76,6 @@ remove_basic_auth \
 	"$PRD_PUBLIC_DIR_PATH_WITH_DESTINATION"
 
 log_info "【ステージング環境では不要なプラグインの無効化】"
-sh "$WP_SYNC_DIR/lib/deactivate-plugin.sh"
+bash "$WP_SYNC_DIR/lib/deactivate-plugin.sh"
 log_success "【完了】"
 log_header "後処理　完了"
