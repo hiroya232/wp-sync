@@ -14,11 +14,15 @@ setup_basic_auth() {
   log_info "  対象: $public_dir"
 
   {
-  ssh "$ssh_dest" -p "$ssh_port" "sed -i '/^\n*$/d' \"$public_dir/.htaccess\""
-  ssh "$ssh_dest" -p "$ssh_port" "echo -e \"\n\" >> \"$public_dir/.htaccess\""
-  ssh <"$htaccess_auth_path" "$ssh_dest" -p "$ssh_port" "cat >> \"$public_dir\"/.htaccess"
-  scp -P "$ssh_port" \
-    "$htpasswd_path" "$htpasswd_dest"/.htpasswd
+    ssh "$ssh_dest" -p "$ssh_port" \
+        "sed -i '/^\n*$/d' \"$public_dir/.htaccess\""
+    ssh "$ssh_dest" -p "$ssh_port" \
+        "echo -e \"\n\" >> \"$public_dir/.htaccess\""
+    ssh <"$htaccess_auth_path" "$ssh_dest" -p "$ssh_port" \
+        "cat >> \"$public_dir\"/.htaccess"
+    scp -P "$ssh_port" \
+        "$htpasswd_path" \
+        "$htpasswd_dest"/.htpasswd
   } >> "$(get_log_file)" 2>&1
 
   if [ $? -eq 0 ]; then
@@ -43,14 +47,18 @@ remove_basic_auth() {
   log_info "  対象: $public_dir"
 
   {
-  scp -P "$ssh_port" "$htaccess_auth_path" "$env_path" "$remote_dest" &&
-    ssh "$ssh_dest" -p "$ssh_port" \
-      " \
-        grep -vFf \"$public_dir\"/.htaccess-basic-auth \"$public_dir\"/.htaccess >\"$public_dir\"/.htaccess.tmp &&
-          mv \"$public_dir\"/.htaccess.tmp \"$public_dir\"/.htaccess ;
+    scp -P "$ssh_port" \
+        "$htaccess_auth_path" \
+        "$env_path" \
+        "$remote_dest" &&
+      ssh "$ssh_dest" -p "$ssh_port" \
+        " \
+          grep -vFf \"$public_dir\"/.htaccess-basic-auth \"$public_dir\"/.htaccess >\"$public_dir\"/.htaccess.tmp && \
+          mv \"$public_dir\"/.htaccess.tmp \"$public_dir\"/.htaccess ; \
           rm \"$public_dir\"/.htaccess-basic-auth \"$public_dir\"/.env \
-      "
-  ssh "$ssh_dest" -p "$ssh_port" "sed -i '/^\n*$/d' \"$public_dir/.htaccess\""
+        "
+    ssh "$ssh_dest" -p "$ssh_port" \
+        "sed -i '/^\n*$/d' \"$public_dir/.htaccess\""
   } >> "$(get_log_file)" 2>&1
 
   if [ $? -eq 0 ]; then
@@ -60,4 +68,3 @@ remove_basic_auth() {
     return 1
   fi
 }
-

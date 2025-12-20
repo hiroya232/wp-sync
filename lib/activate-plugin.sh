@@ -4,4 +4,6 @@
 
 . ./.wp-sync/.env
 
-wp plugin activate $PLUGINS_TO_ACTIVATE --ssh="$STG_SSH_DESTINATION:$STG_SSH_PORT$STG_PUBLIC_DIR_PATH" --allow-root
+wp plugin activate $PLUGINS_TO_ACTIVATE \
+    --ssh="$STG_SSH_DESTINATION:$STG_SSH_PORT$STG_PUBLIC_DIR_PATH" \
+    --allow-root

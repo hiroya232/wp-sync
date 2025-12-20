@@ -48,10 +48,14 @@ backup_files() {
   done
   unset IFS
 
-  if rsync --checksum -arv --delete \
+  if rsync \
+    --checksum \
+    -arv \
+    --delete \
     -e "ssh -p \"$ssh_port\"" \
     $exclude_opts \
-    "$source_path"/ "$dest_path"/ >> "$(get_log_file)" 2>&1; then
+    "$source_path"/ \
+    "$dest_path"/ >> "$(get_log_file)" 2>&1; then
     log_success "【完了】"
   else
     log_error "【失敗】ファイルバックアップに失敗しました"

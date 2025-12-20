@@ -63,9 +63,13 @@ sync_files() {
   unset IFS
 
   if ssh "$ssh_dest" -p "$ssh_port" \
-    rsync --checksum -arv --delete \
-    $exclude_opts \
-    "$source_path"/ "$dest_path" >> "$(get_log_file)" 2>&1; then
+    rsync \
+        --checksum \
+        -arv \
+        --delete \
+        $exclude_opts \
+        "$source_path"/ \
+        "$dest_path" >> "$(get_log_file)" 2>&1; then
     log_success "【完了】"
   else
     log_error "【失敗】ファイル同期に失敗しました"
@@ -107,7 +111,9 @@ replace_domain() {
   log_info "  置換後: https://$to_domain"
 
   if ssh "$ssh_dest" -p "$ssh_port" \
-    "cd \"$public_dir\" && wp search-replace \"https://${from_domain}\" \"https://${to_domain}\" --all-tables" >> "$(get_log_file)" 2>&1; then
+    "cd \"$public_dir\" && \
+     wp search-replace \"https://${from_domain}\" \"https://${to_domain}\" --all-tables" \
+    >> "$(get_log_file)" 2>&1; then
     log_success "【完了】"
   else
     log_error "【失敗】ドメイン置換に失敗しました"

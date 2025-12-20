@@ -4,4 +4,6 @@
 
 . ./.wp-sync/.env
 
-wp plugin deactivate $PLUGINS_TO_DEACTIVATE --ssh="$STG_SSH_DESTINATION:$STG_SSH_PORT$STG_PUBLIC_DIR_PATH" --allow-root
+wp plugin deactivate $PLUGINS_TO_DEACTIVATE \
+    --ssh="$STG_SSH_DESTINATION:$STG_SSH_PORT$STG_PUBLIC_DIR_PATH" \
+    --allow-root
