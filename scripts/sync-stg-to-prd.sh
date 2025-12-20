@@ -9,7 +9,7 @@
 . "$WP_SYNC_DIR/lib/backup.sh"
 . "$WP_SYNC_DIR/lib/sync.sh"
 . "$WP_SYNC_DIR/lib/basic-auth.sh"
-. "$WP_SYNC_DIR/lib/restore.sh"
+# restore.sh は bin/wp-sync で読み込み済み
 
 log_header "前処理　開始"
 log_info "【本番環境で必要なプラグインの有効化】"

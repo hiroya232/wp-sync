@@ -9,7 +9,7 @@
 . "$WP_SYNC_DIR/lib/backup.sh"
 . "$WP_SYNC_DIR/lib/sync.sh"
 . "$WP_SYNC_DIR/lib/basic-auth.sh"
-. "$WP_SYNC_DIR/lib/restore.sh"
+# restore.sh は bin/wp-sync で読み込み済み
 
 log_header "ステージング環境バックアップ　開始"
 backup_db \
