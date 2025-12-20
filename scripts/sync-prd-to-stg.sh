@@ -9,6 +9,7 @@
 . "$WP_SYNC_DIR/lib/backup.sh"
 . "$WP_SYNC_DIR/lib/sync.sh"
 . "$WP_SYNC_DIR/lib/basic-auth.sh"
+. "$WP_SYNC_DIR/lib/restore.sh"
 
 log_header "ステージング環境バックアップ　開始"
 backup_db \
@@ -24,6 +25,7 @@ backup_files \
     "$STG_PUBLIC_DIR_PATH_WITH_DESTINATION" \
     "$STG_FILE_BACKUP_DIR_PATH" \
     "$EXCLUDES"
+mark_backup_completed
 log_header "ステージング環境バックアップ　完了"
 
 log_header "本番→ステージング環境同期　開始"

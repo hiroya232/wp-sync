@@ -13,9 +13,11 @@ set -e
 WP_SYNC_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 export WP_SYNC_DIR
 
-# ログライブラリの読み込み
+# ライブラリの読み込み
 # shellcheck source=/dev/null
 . "$WP_SYNC_DIR/lib/log.sh"
+# shellcheck source=/dev/null
+. "$WP_SYNC_DIR/lib/restore.sh"
 
 # .wp-sync ディレクトリの存在確認
 if [ ! -d ".wp-sync" ]; then
@@ -24,9 +26,15 @@ if [ ! -d ".wp-sync" ]; then
   exit 1
 fi
 
-# 終了時にログを終了処理
+# 終了時の処理（エラー時はロールバック）
 cleanup() {
   local exit_code=$?
+
+  if [ $exit_code -ne 0 ]; then
+    # エラー時はロールバックを試行
+    perform_rollback
+  fi
+
   finalize_log
   exit $exit_code
 }
@@ -35,6 +43,7 @@ trap cleanup EXIT
 case "$1" in
   prd-to-stg)
     init_log "prd-to-stg"
+    set_restore_target "stg"
     log_info "本番 → ステージング同期を開始します..."
     log_info "ログファイル: $(get_log_file)"
     echo ""
@@ -44,6 +53,7 @@ case "$1" in
     ;;
   stg-to-prd)
     init_log "stg-to-prd"
+    set_restore_target "prd"
     log_info "ステージング → 本番同期を開始します..."
     log_info "ログファイル: $(get_log_file)"
     echo ""

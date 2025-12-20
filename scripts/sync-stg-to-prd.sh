@@ -9,6 +9,7 @@
 . "$WP_SYNC_DIR/lib/backup.sh"
 . "$WP_SYNC_DIR/lib/sync.sh"
 . "$WP_SYNC_DIR/lib/basic-auth.sh"
+. "$WP_SYNC_DIR/lib/restore.sh"
 
 log_header "前処理　開始"
 log_info "【本番環境で必要なプラグインの有効化】"
@@ -30,6 +31,7 @@ backup_files \
 	"$PRD_PUBLIC_DIR_PATH_WITH_DESTINATION" \
 	"$PRD_FILE_BACKUP_DIR_PATH" \
 	"$STG_DOMAIN,$EXCLUDES"
+mark_backup_completed
 log_header "本番環境バックアップ　完了"
 
 log_header "ステージング→本番環境同期　開始"
