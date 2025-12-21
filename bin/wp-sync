@@ -48,7 +48,7 @@ case "$1" in
     log_info "ログファイル: $(get_log_file)"
     echo ""
     # shellcheck source=/dev/null
-    . "$WP_SYNC_DIR/scripts/sync-prd-to-stg.sh"
+    . "$WP_SYNC_DIR/scripts/sync.sh" "prd-to-stg"
     log_success "本番 → ステージング同期が完了しました"
     ;;
   stg-to-prd)
@@ -58,7 +58,7 @@ case "$1" in
     log_info "ログファイル: $(get_log_file)"
     echo ""
     # shellcheck source=/dev/null
-    . "$WP_SYNC_DIR/scripts/sync-stg-to-prd.sh"
+    . "$WP_SYNC_DIR/scripts/sync.sh" "stg-to-prd"
     log_success "ステージング → 本番同期が完了しました"
     ;;
   -h|--help|help)
