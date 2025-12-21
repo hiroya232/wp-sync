@@ -5,6 +5,9 @@
 . ./.wp-sync/.env
 . "$WP_SYNC_DIR/lib/log.sh"
 
+# カンマ区切りをスペース区切りに変換
+plugins=$(echo "$PLUGINS_TO_DEACTIVATE" | tr ',' ' ')
+
 # WordPress キャッシュをクリア（Redis含む全オブジェクトキャッシュ）
 log_info "【WordPress キャッシュを削除】"
 ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
@@ -32,4 +35,4 @@ if echo "$PLUGINS_TO_DEACTIVATE" | grep -q "wp-optimize"; then
 fi
 
 ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
-    "cd $STG_PUBLIC_DIR_PATH && wp plugin deactivate $PLUGINS_TO_DEACTIVATE --allow-root"
+    "cd $STG_PUBLIC_DIR_PATH && wp plugin deactivate $plugins --allow-root"
