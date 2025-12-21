@@ -55,8 +55,7 @@ wp-sync/
 ├── bin/
 │   └── wp-sync                 # ラッパースクリプト（エントリーポイント）
 ├── scripts/
-│   ├── sync-prd-to-stg.sh      # 本番→ステージング同期
-│   └── sync-stg-to-prd.sh      # ステージング→本番同期
+│   └── sync.sh                 # 同期処理（方向を引数で受け取る）
 ├── lib/
 │   ├── activate-plugin.sh      # プラグイン有効化
 │   ├── backup.sh               # バックアップ処理
