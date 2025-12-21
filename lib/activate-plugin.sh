@@ -8,12 +8,21 @@
 # カンマ区切りをスペース区切りに変換
 plugins=$(echo "$PLUGINS" | tr ',' ' ')
 
-ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
-    "cd $STG_PUBLIC_DIR_PATH && wp plugin activate $plugins --allow-root"
+log_info "【プラグインを有効化】"
+if ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
+    "cd $STG_PUBLIC_DIR_PATH && wp plugin activate $plugins --allow-root" >/dev/null 2>&1; then
+  log_success "【完了】"
+else
+  log_error "【失敗】プラグインの有効化に失敗しました"
+fi
 
 # Redis Object Cache を有効化（redis-cache がリストに含まれている場合）
 if echo "$PLUGINS" | grep -q "redis-cache"; then
     log_info "【Redis Object Cache を有効化】"
-    ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
-        "cd $STG_PUBLIC_DIR_PATH && wp redis enable --allow-root" 2>/dev/null || true
+    if ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
+        "cd $STG_PUBLIC_DIR_PATH && wp redis enable --allow-root" >/dev/null 2>&1; then
+      log_success "【完了】"
+    else
+      log_error "【失敗】Redis Object Cache の有効化に失敗しました"
+    fi
 fi
