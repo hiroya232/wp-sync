@@ -22,12 +22,10 @@ fi
 if [ "$DIRECTION" = "stg-to-prd" ]; then
   SRC_PREFIX="STG"
   DST_PREFIX="PRD"
-  DST_WP_CONFIG="./.wp-sync/wp-config-prd.php"
   BACKUP_EXCLUDES="$STG_DOMAIN,$EXCLUDES"
 else
   SRC_PREFIX="PRD"
   DST_PREFIX="STG"
-  DST_WP_CONFIG="./.wp-sync/wp-config-stg.php"
   BACKUP_EXCLUDES="$EXCLUDES"
 fi
 
@@ -108,22 +106,46 @@ sync_db \
   "${!DST_DB_PASSWORD}" \
   "${!DST_DB_HOST}" \
   "${!DST_DB_NAME}"
+WP_CONFIG_TMP_FILE="wp-config-tmp.php"
+backup_wp_config \
+  "${!DST_SSH_DESTINATION}" \
+  "${!DST_SSH_PORT}" \
+  "${!DST_PUBLIC_DIR_PATH}/wp-config.php" \
+  "${!DST_PUBLIC_DIR_PATH}/$WP_CONFIG_TMP_FILE" || exit 1
 sync_files \
   "${!SRC_SSH_DESTINATION}" \
   "${!SRC_SSH_PORT}" \
   "${!SRC_PUBLIC_DIR_PATH}" \
   "${!DST_PUBLIC_DIR_PATH}" \
-  "$STG_DOMAIN,$EXCLUDES"
-replace_wp_config \
+  "$WP_CONFIG_TMP_FILE,$STG_DOMAIN,$EXCLUDES"
+log_info "【wp-config.phpの環境固有定数を自動検出】"
+PRESERVE_CONSTANTS=$(detect_preserve_constants \
+  "${!DST_SSH_DESTINATION}" \
   "${!DST_SSH_PORT}" \
-  "$DST_WP_CONFIG" \
-  "${!DST_PUBLIC_DIR_PATH_WITH_DESTINATION}"
+  "${!SRC_PUBLIC_DIR_PATH}/wp-config.php" \
+  "${!DST_PUBLIC_DIR_PATH}/$WP_CONFIG_TMP_FILE") || exit 1
+log_info "  保持する定数: ${PRESERVE_CONSTANTS:-（なし）}"
+log_success "【完了】"
+if [ -n "$PRESERVE_CONSTANTS" ]; then
+  restore_wp_config_constants \
+    "${!DST_SSH_DESTINATION}" \
+    "${!DST_SSH_PORT}" \
+    "${!DST_PUBLIC_DIR_PATH}" \
+    "$PRESERVE_CONSTANTS" \
+    "${!DST_PUBLIC_DIR_PATH}/$WP_CONFIG_TMP_FILE" || exit 1
+else
+  remove_wp_config_backup \
+    "${!DST_SSH_DESTINATION}" \
+    "${!DST_SSH_PORT}" \
+    "${!DST_PUBLIC_DIR_PATH}/$WP_CONFIG_TMP_FILE"
+fi
 replace_domain \
   "${!DST_SSH_DESTINATION}" \
   "${!DST_SSH_PORT}" \
   "${!DST_PUBLIC_DIR_PATH}" \
   "${!SRC_DOMAIN}" \
-  "${!DST_DOMAIN}"
+  "${!DST_DOMAIN}" \
+  "${!DST_DB_NAME}"
 if [ "$DIRECTION" = "stg-to-prd" ]; then
   log_header "ステージング→本番環境同期　完了"
 else

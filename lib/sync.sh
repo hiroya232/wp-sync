@@ -77,38 +77,130 @@ sync_files() {
   fi
 }
 
-# wp-config.phpを置換
-# 引数: $1=SSHポート, $2=ローカルのwp-configパス, $3=リモートのパス(SSH接続先込み)
-replace_wp_config() {
-  local ssh_port="$1"
-  local local_path="$2"
-  local remote_path="$3"
+# PHPスクリプトをリモートに転送して実行する共通ヘルパー
+# 引数: $1=SSH接続先, $2=SSHポート, $3=ローカルPHPスクリプト, [追加引数...]
+# 標準出力は呼び出し元に返す。標準エラーはログに追記。
+_run_remote_php() {
+  local ssh_dest="$1"
+  local ssh_port="$2"
+  local local_script="$3"
+  shift 3
+  local remote_script="/tmp/wp_php_$$.php"
 
-  log_info "【wp-config.phpを置換】"
-  log_info "  ローカル: $local_path"
-  log_info "  リモート: $remote_path/wp-config.php"
+  if ! scp -P "$ssh_port" "$local_script" "$ssh_dest:$remote_script" >> "$(get_log_file)" 2>&1; then
+    return 1
+  fi
 
-  if scp -P "$ssh_port" \
-    "$local_path" "$remote_path"/wp-config.php >> "$(get_log_file)" 2>&1; then
+  local quoted_args=""
+  for arg in "$@"; do
+    quoted_args="$quoted_args '$arg'"
+  done
+
+  ssh "$ssh_dest" -p "$ssh_port" \
+    "php '$remote_script'$quoted_args; ec=\$?; rm -f '$remote_script'; exit \$ec" \
+    2>>"$(get_log_file)"
+}
+
+# wp-config.phpの環境固有定数を復元
+# 引数: $1=SSH接続先, $2=SSHポート, $3=wp-config.phpのあるディレクトリ, $4=保持する定数(カンマ区切り), $5=退避ファイルパス
+restore_wp_config_constants() {
+  local ssh_dest="$1"
+  local ssh_port="$2"
+  local wp_config_dir="$3"
+  local preserve_constants="$4"
+  local tmp_file="$5"
+  local script_dir
+  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+  log_info "【wp-config.phpの環境固有定数を復元】"
+  log_info "  対象: $wp_config_dir/wp-config.php"
+
+  if _run_remote_php "$ssh_dest" "$ssh_port" "$script_dir/restore-constants.php" \
+    "$preserve_constants" "$tmp_file" "$wp_config_dir/wp-config.php" \
+    >> "$(get_log_file)"; then
     log_success "【完了】"
   else
-    log_error "【失敗】wp-config.php置換に失敗しました"
+    log_error "【失敗】wp-config.php定数復元に失敗しました"
     return 1
   fi
 }
 
+# wp-config.phpの環境固有定数を動的検出
+# 引数: $1=SSH接続先, $2=SSHポート, $3=同期元wp-config.phpパス, $4=同期先wp-config.phpパス(退避済み)
+detect_preserve_constants() {
+  local ssh_dest="$1"
+  local ssh_port="$2"
+  local src_wp_config="$3"
+  local dst_wp_config="$4"
+  local script_dir
+  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+  local result
+  result=$(_run_remote_php "$ssh_dest" "$ssh_port" "$script_dir/diff-constants.php" \
+    "$src_wp_config" "$dst_wp_config")
+  local exit_code=$?
+
+  if [ $exit_code -ne 0 ]; then
+    log_error "【失敗】定数差分検出に失敗しました"
+    return 1
+  fi
+
+  echo "$result"
+}
+
+# コピー先のwp-config.phpを退避
+# 引数: $1=SSH接続先, $2=SSHポート, $3=wp-config.phpのフルパス, $4=退避先フルパス
+backup_wp_config() {
+  local ssh_dest="$1"
+  local ssh_port="$2"
+  local wp_config_file="$3"
+  local tmp_file="$4"
+
+  log_info "【コピー先のwp-config.phpを退避】"
+  if ssh "$ssh_dest" -p "$ssh_port" \
+    "cp '$wp_config_file' '$tmp_file'" \
+    >> "$(get_log_file)" 2>&1; then
+    log_success "【完了】"
+  else
+    log_error "【失敗】wp-config.php退避に失敗しました"
+    return 1
+  fi
+}
+
+# 退避したwp-config.phpを削除
+# 引数: $1=SSH接続先, $2=SSHポート, $3=退避ファイルのフルパス
+remove_wp_config_backup() {
+  local ssh_dest="$1"
+  local ssh_port="$2"
+  local tmp_file="$3"
+
+  ssh "$ssh_dest" -p "$ssh_port" \
+    "rm -f '$tmp_file'" >> "$(get_log_file)" 2>&1
+}
+
 # ドメインを置換
-# 引数: $1=SSH接続先, $2=SSHポート, $3=public_htmlパス, $4=置換前ドメイン, $5=置換後ドメイン
+# 引数: $1=SSH接続先, $2=SSHポート, $3=public_htmlパス, $4=置換前ドメイン, $5=置換後ドメイン, $6=期待するDB名
 replace_domain() {
   local ssh_dest="$1"
   local ssh_port="$2"
   local public_dir="$3"
   local from_domain="$4"
   local to_domain="$5"
+  local expected_db_name="$6"
 
   log_info "【ドメインを置換】"
   log_info "  置換前: https://$from_domain"
   log_info "  置換後: https://$to_domain"
+
+  # wp-config.php の DB接続先を検証（親ディレクトリへのフォールバック防止）
+  local actual_db_name
+  actual_db_name=$(ssh "$ssh_dest" -p "$ssh_port" \
+    "cd \"$public_dir\" && wp config get DB_NAME" 2>/dev/null)
+  if [ "$actual_db_name" != "$expected_db_name" ]; then
+    log_error "【失敗】wp-config.php のDB接続先が不正です（期待: $expected_db_name, 実際: $actual_db_name）"
+    log_error "  wp-config.php の内容を確認してください"
+    return 1
+  fi
 
   if ssh "$ssh_dest" -p "$ssh_port" \
     "cd \"$public_dir\" && \

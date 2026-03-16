@@ -7,7 +7,7 @@ WordPressサイトのステージング環境と本番環境間で、DB・ファ
 - **DB同期**: `mysqldump/mysql`経由でデータベースを同期
 - **ファイル同期**: `rsync`経由でファイルを同期
 - **ドメイン置換**: WP-CLIの`search-replace`でURLを自動置換
-- **wp-config.php置換**: 環境に応じた設定ファイルを自動適用
+- **wp-config.php同期**: ソースの変更をコピー先に反映しつつ、環境固有の定数（DB接続情報・Auth keysなど）を両環境の `wp-config.php` を比較して自動検出し、コピー先の値に復元
 - **Basic認証**: ステージング環境へのBasic認証を自動設定/解除
 - **プラグイン管理**: 環境に応じたプラグインの自動有効化/無効化
 - **キャッシュ削除**: Redis, Autoptimize, WP-Optimizeのキャッシュを自動削除
@@ -63,6 +63,8 @@ wp-sync/
 │   ├── basic-auth.sh           # Basic認証設定
 │   ├── deactivate-plugin.sh    # プラグイン無効化
 │   ├── log.sh                  # ログ出力
+│   ├── diff-constants.php      # wp-config.php差分定数検出
+│   ├── restore-constants.php   # wp-config.php環境固有定数復元
 │   ├── restore.sh              # ロールバック処理
 │   └── sync.sh                 # 同期処理
 ├── template/                   # 作業ディレクトリにコピーする設定
@@ -70,8 +72,6 @@ wp-sync/
 │   ├── .gitignore
 │   ├── .htaccess-basic-auth    # Basic認証用.htaccess
 │   ├── .htpasswd               # Basic認証用パスワード
-│   ├── wp-config-prd.php       # 本番用wp-config.php
-│   ├── wp-config-stg.php       # ステージング用wp-config.php
 │   ├── logs/.gitkeep
 │   └── tmp/.gitkeep
 └── README.md
@@ -127,8 +127,6 @@ workdir/                     ← 作成した作業ディレクトリ
     ├── .gitignore
     ├── .htaccess-basic-auth
     ├── .htpasswd
-    ├── wp-config-prd.php
-    ├── wp-config-stg.php
     ├── logs/
     └── tmp/
 ```
@@ -188,13 +186,6 @@ require valid-user
 ```text
 {ユーザ名}:{暗号化されたパスワード}
 ```
-
-### wp-config.php設定
-
-各環境のwp-config.phpの内容をそれぞれ以下のファイルにコピーします。
-
-- `wp-config-prd.php` - 本番環境のwp-config.php
-- `wp-config-stg.php` - ステージング環境のwp-config.php
 
 ## 使用方法
 
