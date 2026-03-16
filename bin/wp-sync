@@ -17,6 +17,8 @@ export WP_SYNC_DIR
 # shellcheck source=/dev/null
 . "$WP_SYNC_DIR/lib/log.sh"
 # shellcheck source=/dev/null
+. "$WP_SYNC_DIR/lib/env.sh"
+# shellcheck source=/dev/null
 . "$WP_SYNC_DIR/lib/restore.sh"
 
 # .wp-sync ディレクトリの存在確認
@@ -43,22 +45,22 @@ trap cleanup EXIT
 case "$1" in
   prd-to-stg)
     init_log "prd-to-stg"
-    set_restore_target "stg"
+    set_restore_direction "prd-to-stg"
     log_info "本番 → ステージング同期を開始します..."
     log_info "ログファイル: $(get_log_file)"
     echo ""
     # shellcheck source=/dev/null
-    . "$WP_SYNC_DIR/scripts/sync.sh" "prd-to-stg"
+    . "$WP_SYNC_DIR/scripts/run-sync.sh" "prd-to-stg"
     log_success "本番 → ステージング同期が完了しました"
     ;;
   stg-to-prd)
     init_log "stg-to-prd"
-    set_restore_target "prd"
+    set_restore_direction "stg-to-prd"
     log_info "ステージング → 本番同期を開始します..."
     log_info "ログファイル: $(get_log_file)"
     echo ""
     # shellcheck source=/dev/null
-    . "$WP_SYNC_DIR/scripts/sync.sh" "stg-to-prd"
+    . "$WP_SYNC_DIR/scripts/run-sync.sh" "stg-to-prd"
     log_success "ステージング → 本番同期が完了しました"
     ;;
   -h|--help|help)
