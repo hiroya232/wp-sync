@@ -1,26 +1,17 @@
 #!/bin/bash
 
-# DBをバックアップ
-# 引数: $1=SSH接続先, $2=SSHポート, $3=DBユーザー, $4=DBパスワード, $5=DBホスト, $6=DB名, $7=出力ファイルパス
+# DBをバックアップ（DST_* グローバル変数を参照）
 backup_db() {
-  local ssh_dest="$1"
-  local ssh_port="$2"
-  local db_user="$3"
-  local db_pass="$4"
-  local db_host="$5"
-  local db_name="$6"
-  local output_path="$7"
-
   log_info "【DBをバックアップ】"
-  log_info "  出力先: $output_path"
+  log_info "  出力先: $DST_DB_DUMP_FILE_PATH"
 
-  if ssh "$ssh_dest" -p "$ssh_port" \
+  if ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
     mysqldump \
-    -u"$db_user" \
-    -p"$db_pass" \
-    -h"$db_host" \
-    "$db_name" \
-    --no-tablespaces >"$output_path" 2>&1; then
+    -u"$DST_DB_USER" \
+    -p"$DST_DB_PASSWORD" \
+    -h"$DST_DB_HOST" \
+    "$DST_DB_NAME" \
+    --no-tablespaces >"$DST_DB_DUMP_FILE_PATH" 2>&1; then
     log_success "【完了】"
   else
     log_error "【失敗】DBバックアップに失敗しました"
@@ -28,34 +19,29 @@ backup_db() {
   fi
 }
 
-# ファイルをバックアップ
-# 引数: $1=SSHポート, $2=コピー元パス, $3=コピー先パス, $4=除外パス(カンマ区切り)
+# ファイルをバックアップ（DST_* / BACKUP_EXCLUDES グローバル変数を参照）
 backup_files() {
-  local ssh_port="$1"
-  local source_path="$2"
-  local dest_path="$3"
-  local excludes="$4"
-
   log_info "【public_htmlをバックアップ】"
-  log_info "  コピー元: $source_path"
-  log_info "  コピー先: $dest_path"
+  log_info "  コピー元: $DST_PUBLIC_DIR_SCP_PATH"
+  log_info "  コピー先: $DST_FILE_BACKUP_DIR_PATH"
 
   # 除外オプションを構築
   local exclude_opts=""
   IFS=','
-  for exclude in $excludes; do
+  for exclude in $BACKUP_EXCLUDES; do
     exclude_opts="$exclude_opts --exclude $exclude"
   done
   unset IFS
 
+  # shellcheck disable=SC2086
   if rsync \
     --checksum \
     -arv \
     --delete \
-    -e "ssh -p \"$ssh_port\"" \
+    -e "ssh -p \"$DST_SSH_PORT\"" \
     $exclude_opts \
-    "$source_path"/ \
-    "$dest_path"/ >> "$(get_log_file)" 2>&1; then
+    "$DST_PUBLIC_DIR_SCP_PATH"/ \
+    "$DST_FILE_BACKUP_DIR_PATH"/ >> "$(get_log_file)" 2>&1; then
     log_success "【完了】"
   else
     log_error "【失敗】ファイルバックアップに失敗しました"

@@ -1,31 +1,21 @@
 #!/bin/bash
 
-# Basic認証を設定
-# 引数: $1=SSH接続先, $2=SSHポート, $3=public_htmlパス, $4=htaccess-basic-authファイルパス, $5=htpasswdファイルパス, $6=htpasswd配置先パス(SSH接続先込み)
+# Basic認証を設定（DST_* / HTPASSWD_SCP_PATH グローバル変数を参照）
 setup_basic_auth() {
-  local ssh_dest="$1"
-  local ssh_port="$2"
-  local public_dir="$3"
-  local htaccess_auth_path="$4"
-  local htpasswd_path="$5"
-  local htpasswd_dest="$6"
-
   log_info "【Basic認証の設定】"
-  log_info "  対象: $public_dir"
+  log_info "  対象: $DST_PUBLIC_DIR_PATH"
 
-  {
-    ssh "$ssh_dest" -p "$ssh_port" \
-        "sed -i '/^\n*$/d' \"$public_dir/.htaccess\""
-    ssh "$ssh_dest" -p "$ssh_port" \
-        "echo -e \"\n\" >> \"$public_dir/.htaccess\""
-    ssh <"$htaccess_auth_path" "$ssh_dest" -p "$ssh_port" \
-        "cat >> \"$public_dir\"/.htaccess"
-    scp -P "$ssh_port" \
-        "$htpasswd_path" \
-        "$htpasswd_dest"/.htpasswd
-  } >> "$(get_log_file)" 2>&1
-
-  if [ $? -eq 0 ]; then
+  if {
+    ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
+        "sed -i '/^\n*$/d' \"$DST_PUBLIC_DIR_PATH/.htaccess\""
+    ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
+        "echo -e \"\n\" >> \"$DST_PUBLIC_DIR_PATH/.htaccess\""
+    ssh <"./.wp-sync/.htaccess-basic-auth" "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
+        "cat >> \"$DST_PUBLIC_DIR_PATH\"/.htaccess"
+    scp -P "$DST_SSH_PORT" \
+        "./.wp-sync/.htpasswd" \
+        "$HTPASSWD_SCP_PATH"/.htpasswd
+  } >> "$(get_log_file)" 2>&1; then
     log_success "【完了】"
   else
     log_error "【失敗】Basic認証設定に失敗しました"
@@ -33,35 +23,25 @@ setup_basic_auth() {
   fi
 }
 
-# Basic認証を削除
-# 引数: $1=SSH接続先, $2=SSHポート, $3=public_htmlパス, $4=htaccess-basic-authファイルパス, $5=envファイルパス, $6=リモートのパス(SSH接続先込み)
+# Basic認証を削除（DST_* グローバル変数を参照）
 remove_basic_auth() {
-  local ssh_dest="$1"
-  local ssh_port="$2"
-  local public_dir="$3"
-  local htaccess_auth_path="$4"
-  local env_path="$5"
-  local remote_dest="$6"
-
   log_info "【Basic認証の設定削除】"
-  log_info "  対象: $public_dir"
+  log_info "  対象: $DST_PUBLIC_DIR_PATH"
 
-  {
-    scp -P "$ssh_port" \
-        "$htaccess_auth_path" \
-        "$env_path" \
-        "$remote_dest" &&
-      ssh "$ssh_dest" -p "$ssh_port" \
+  if {
+    scp -P "$DST_SSH_PORT" \
+        "./.wp-sync/.htaccess-basic-auth" \
+        "./.wp-sync/.env" \
+        "$DST_PUBLIC_DIR_SCP_PATH" &&
+      ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
         " \
-          grep -vFf \"$public_dir\"/.htaccess-basic-auth \"$public_dir\"/.htaccess >\"$public_dir\"/.htaccess.tmp && \
-          mv \"$public_dir\"/.htaccess.tmp \"$public_dir\"/.htaccess ; \
-          rm \"$public_dir\"/.htaccess-basic-auth \"$public_dir\"/.env \
+          grep -vFf \"$DST_PUBLIC_DIR_PATH\"/.htaccess-basic-auth \"$DST_PUBLIC_DIR_PATH\"/.htaccess >\"$DST_PUBLIC_DIR_PATH\"/.htaccess.tmp && \
+          mv \"$DST_PUBLIC_DIR_PATH\"/.htaccess.tmp \"$DST_PUBLIC_DIR_PATH\"/.htaccess ; \
+          rm \"$DST_PUBLIC_DIR_PATH\"/.htaccess-basic-auth \"$DST_PUBLIC_DIR_PATH\"/.env \
         "
-    ssh "$ssh_dest" -p "$ssh_port" \
-        "sed -i '/^\n*$/d' \"$public_dir/.htaccess\""
-  } >> "$(get_log_file)" 2>&1
-
-  if [ $? -eq 0 ]; then
+    ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
+        "sed -i '/^\n*$/d' \"$DST_PUBLIC_DIR_PATH/.htaccess\""
+  } >> "$(get_log_file)" 2>&1; then
     log_success "【完了】"
   else
     log_error "【失敗】Basic認証削除に失敗しました"

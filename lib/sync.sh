@@ -1,39 +1,24 @@
 #!/bin/bash
 
-# DBを同期
-# 引数: $1=コピー元SSH接続先, $2=コピー元SSHポート, $3=コピー元DBユーザー, $4=コピー元DBパスワード, $5=コピー元DBホスト, $6=コピー元DB名
-#       $7=コピー先SSH接続先, $8=コピー先SSHポート, $9=コピー先DBユーザー, $10=コピー先DBパスワード, $11=コピー先DBホスト, $12=コピー先DB名
+# DBを同期（SRC_* / DST_* グローバル変数を参照）
 sync_db() {
-  local from_ssh_dest="$1"
-  local from_ssh_port="$2"
-  local from_db_user="$3"
-  local from_db_pass="$4"
-  local from_db_host="$5"
-  local from_db_name="$6"
-  local to_ssh_dest="$7"
-  local to_ssh_port="$8"
-  local to_db_user="$9"
-  local to_db_pass="${10}"
-  local to_db_host="${11}"
-  local to_db_name="${12}"
-
   log_info "【DBを同期】"
-  log_info "  コピー元: $from_db_name@$from_db_host"
-  log_info "  コピー先: $to_db_name@$to_db_host"
+  log_info "  コピー元: $SRC_DB_NAME@$SRC_DB_HOST"
+  log_info "  コピー先: $DST_DB_NAME@$DST_DB_HOST"
 
-  if ssh "$from_ssh_dest" -p "$from_ssh_port" \
+  if ssh "$SRC_SSH_DESTINATION" -p "$SRC_SSH_PORT" \
     mysqldump \
-    -u"$from_db_user" \
-    -p"$from_db_pass" \
-    -h"$from_db_host" \
-    "$from_db_name" \
+    -u"$SRC_DB_USER" \
+    -p"$SRC_DB_PASSWORD" \
+    -h"$SRC_DB_HOST" \
+    "$SRC_DB_NAME" \
     --no-tablespaces 2>/dev/null |
-    ssh "$to_ssh_dest" -p "$to_ssh_port" \
+    ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
       mysql \
-      -u"$to_db_user" \
-      -p"$to_db_pass" \
-      -h"$to_db_host" \
-      "$to_db_name" 2>/dev/null; then
+      -u"$DST_DB_USER" \
+      -p"$DST_DB_PASSWORD" \
+      -h"$DST_DB_HOST" \
+      "$DST_DB_NAME" 2>/dev/null; then
     log_success "【完了】"
   else
     log_error "【失敗】DB同期に失敗しました"
@@ -42,17 +27,14 @@ sync_db() {
 }
 
 # ファイルを同期
-# 引数: $1=SSH接続先, $2=SSHポート, $3=コピー元パス, $4=コピー先パス, $5=除外パス(カンマ区切り)
+# 引数: $1=除外パス(カンマ区切り)
+# SRC_SSH_DESTINATION / SRC_SSH_PORT / SRC_PUBLIC_DIR_PATH / DST_PUBLIC_DIR_PATH を参照
 sync_files() {
-  local ssh_dest="$1"
-  local ssh_port="$2"
-  local source_path="$3"
-  local dest_path="$4"
-  local excludes="$5"
+  local excludes="$1"
 
   log_info "【public_htmlを同期】"
-  log_info "  コピー元: $source_path"
-  log_info "  コピー先: $dest_path"
+  log_info "  コピー元: $SRC_PUBLIC_DIR_PATH"
+  log_info "  コピー先: $DST_PUBLIC_DIR_PATH"
 
   # 除外オプションを構築
   local exclude_opts=""
@@ -62,14 +44,15 @@ sync_files() {
   done
   unset IFS
 
-  if ssh "$ssh_dest" -p "$ssh_port" \
+  # shellcheck disable=SC2086
+  if ssh "$SRC_SSH_DESTINATION" -p "$SRC_SSH_PORT" \
     rsync \
         --checksum \
         -arv \
         --delete \
         $exclude_opts \
-        "$source_path"/ \
-        "$dest_path" >> "$(get_log_file)" 2>&1; then
+        "$SRC_PUBLIC_DIR_PATH"/ \
+        "$DST_PUBLIC_DIR_PATH" >> "$(get_log_file)" 2>&1; then
     log_success "【完了】"
   else
     log_error "【失敗】ファイル同期に失敗しました"
@@ -102,21 +85,17 @@ _run_remote_php() {
 }
 
 # wp-config.phpの環境固有定数を復元
-# 引数: $1=SSH接続先, $2=SSHポート, $3=wp-config.phpのあるディレクトリ, $4=保持する定数(カンマ区切り), $5=退避ファイルパス
+# DST_SSH_DESTINATION / DST_SSH_PORT / DST_PUBLIC_DIR_PATH / WP_CONFIG_TMP_FILE を参照
 restore_wp_config_constants() {
-  local ssh_dest="$1"
-  local ssh_port="$2"
-  local wp_config_dir="$3"
-  local preserve_constants="$4"
-  local tmp_file="$5"
+  local preserve_constants="$1"
   local script_dir
   script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
   log_info "【wp-config.phpの環境固有定数を復元】"
-  log_info "  対象: $wp_config_dir/wp-config.php"
+  log_info "  対象: $DST_PUBLIC_DIR_PATH/wp-config.php"
 
-  if _run_remote_php "$ssh_dest" "$ssh_port" "$script_dir/restore-constants.php" \
-    "$preserve_constants" "$tmp_file" "$wp_config_dir/wp-config.php" \
+  if _run_remote_php "$DST_SSH_DESTINATION" "$DST_SSH_PORT" "$script_dir/restore-constants.php" \
+    "$preserve_constants" "$DST_PUBLIC_DIR_PATH/$WP_CONFIG_TMP_FILE" "$DST_PUBLIC_DIR_PATH/wp-config.php" \
     >> "$(get_log_file)"; then
     log_success "【完了】"
   else
@@ -126,18 +105,15 @@ restore_wp_config_constants() {
 }
 
 # wp-config.phpの環境固有定数を動的検出
-# 引数: $1=SSH接続先, $2=SSHポート, $3=同期元wp-config.phpパス, $4=同期先wp-config.phpパス(退避済み)
+# DST_SSH_DESTINATION / DST_SSH_PORT / SRC_PUBLIC_DIR_PATH / DST_PUBLIC_DIR_PATH / WP_CONFIG_TMP_FILE を参照
 detect_preserve_constants() {
-  local ssh_dest="$1"
-  local ssh_port="$2"
-  local src_wp_config="$3"
-  local dst_wp_config="$4"
   local script_dir
   script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
   local result
-  result=$(_run_remote_php "$ssh_dest" "$ssh_port" "$script_dir/diff-constants.php" \
-    "$src_wp_config" "$dst_wp_config")
+  result=$(_run_remote_php "$DST_SSH_DESTINATION" "$DST_SSH_PORT" "$script_dir/diff-constants.php" \
+    "$SRC_PUBLIC_DIR_PATH/wp-config.php" \
+    "$DST_PUBLIC_DIR_PATH/$WP_CONFIG_TMP_FILE")
   local exit_code=$?
 
   if [ $exit_code -ne 0 ]; then
@@ -149,16 +125,11 @@ detect_preserve_constants() {
 }
 
 # コピー先のwp-config.phpを退避
-# 引数: $1=SSH接続先, $2=SSHポート, $3=wp-config.phpのフルパス, $4=退避先フルパス
+# DST_SSH_DESTINATION / DST_SSH_PORT / DST_PUBLIC_DIR_PATH / WP_CONFIG_TMP_FILE を参照
 backup_wp_config() {
-  local ssh_dest="$1"
-  local ssh_port="$2"
-  local wp_config_file="$3"
-  local tmp_file="$4"
-
   log_info "【コピー先のwp-config.phpを退避】"
-  if ssh "$ssh_dest" -p "$ssh_port" \
-    "cp '$wp_config_file' '$tmp_file'" \
+  if ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
+    "cp '$DST_PUBLIC_DIR_PATH/wp-config.php' '$DST_PUBLIC_DIR_PATH/$WP_CONFIG_TMP_FILE'" \
     >> "$(get_log_file)" 2>&1; then
     log_success "【完了】"
   else
@@ -168,43 +139,32 @@ backup_wp_config() {
 }
 
 # 退避したwp-config.phpを削除
-# 引数: $1=SSH接続先, $2=SSHポート, $3=退避ファイルのフルパス
+# DST_SSH_DESTINATION / DST_SSH_PORT / DST_PUBLIC_DIR_PATH / WP_CONFIG_TMP_FILE を参照
 remove_wp_config_backup() {
-  local ssh_dest="$1"
-  local ssh_port="$2"
-  local tmp_file="$3"
-
-  ssh "$ssh_dest" -p "$ssh_port" \
-    "rm -f '$tmp_file'" >> "$(get_log_file)" 2>&1
+  ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
+    "rm -f '$DST_PUBLIC_DIR_PATH/$WP_CONFIG_TMP_FILE'" >> "$(get_log_file)" 2>&1
 }
 
 # ドメインを置換
-# 引数: $1=SSH接続先, $2=SSHポート, $3=public_htmlパス, $4=置換前ドメイン, $5=置換後ドメイン, $6=期待するDB名
+# DST_SSH_DESTINATION / DST_SSH_PORT / DST_PUBLIC_DIR_PATH / SRC_DOMAIN / DST_DOMAIN / DST_DB_NAME を参照
 replace_domain() {
-  local ssh_dest="$1"
-  local ssh_port="$2"
-  local public_dir="$3"
-  local from_domain="$4"
-  local to_domain="$5"
-  local expected_db_name="$6"
-
   log_info "【ドメインを置換】"
-  log_info "  置換前: https://$from_domain"
-  log_info "  置換後: https://$to_domain"
+  log_info "  置換前: https://$SRC_DOMAIN"
+  log_info "  置換後: https://$DST_DOMAIN"
 
   # wp-config.php の DB接続先を検証（親ディレクトリへのフォールバック防止）
   local actual_db_name
-  actual_db_name=$(ssh "$ssh_dest" -p "$ssh_port" \
-    "cd \"$public_dir\" && wp config get DB_NAME" 2>/dev/null)
-  if [ "$actual_db_name" != "$expected_db_name" ]; then
-    log_error "【失敗】wp-config.php のDB接続先が不正です（期待: $expected_db_name, 実際: $actual_db_name）"
+  actual_db_name=$(ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
+    "cd \"$DST_PUBLIC_DIR_PATH\" && wp config get DB_NAME" 2>/dev/null)
+  if [ "$actual_db_name" != "$DST_DB_NAME" ]; then
+    log_error "【失敗】wp-config.php のDB接続先が不正です（期待: $DST_DB_NAME, 実際: $actual_db_name）"
     log_error "  wp-config.php の内容を確認してください"
     return 1
   fi
 
-  if ssh "$ssh_dest" -p "$ssh_port" \
-    "cd \"$public_dir\" && \
-     wp search-replace \"https://${from_domain}\" \"https://${to_domain}\" --all-tables" \
+  if ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
+    "cd \"$DST_PUBLIC_DIR_PATH\" && \
+     wp search-replace \"https://${SRC_DOMAIN}\" \"https://${DST_DOMAIN}\" --all-tables" \
     >> "$(get_log_file)" 2>&1; then
     log_success "【完了】"
   else

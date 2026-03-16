@@ -1,16 +1,10 @@
 #!/bin/bash
 
-# リストア対象の環境（prd または stg）
-RESTORE_TARGET=""
-
 # バックアップ完了フラグ
 BACKUP_COMPLETED=false
 
-# リストア対象を設定
-# 引数: $1=対象環境（prd または stg）
-set_restore_target() {
-  RESTORE_TARGET="$1"
-}
+# リストア時の同期方向（stg-to-prd または prd-to-stg）
+RESTORE_DIRECTION=""
 
 # バックアップ完了をマーク
 mark_backup_completed() {
@@ -18,32 +12,29 @@ mark_backup_completed() {
   log_info "バックアップ完了をマークしました"
 }
 
-# DBをリストア
-# 引数: $1=SSH接続先, $2=SSHポート, $3=DBユーザー, $4=DBパスワード, $5=DBホスト, $6=DB名, $7=ダンプファイルパス
+# リストア時の同期方向を設定
+# 引数: $1=方向（stg-to-prd または prd-to-stg）
+set_restore_direction() {
+  RESTORE_DIRECTION="$1"
+}
+
+# DBをリストア（DST_* グローバル変数を参照）
 restore_db() {
-  local ssh_dest="$1"
-  local ssh_port="$2"
-  local db_user="$3"
-  local db_pass="$4"
-  local db_host="$5"
-  local db_name="$6"
-  local dump_path="$7"
-
   log_info "【DBをリストア】"
-  log_info "  ダンプファイル: $dump_path"
-  log_info "  リストア先: $db_name@$db_host"
+  log_info "  ダンプファイル: $DST_DB_DUMP_FILE_PATH"
+  log_info "  リストア先: $DST_DB_NAME@$DST_DB_HOST"
 
-  if [ ! -f "$dump_path" ]; then
-    log_error "ダンプファイルが見つかりません: $dump_path"
+  if [ ! -f "$DST_DB_DUMP_FILE_PATH" ]; then
+    log_error "ダンプファイルが見つかりません: $DST_DB_DUMP_FILE_PATH"
     return 1
   fi
 
-  if ssh "$ssh_dest" -p "$ssh_port" \
+  if ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
     mysql \
-    -u"$db_user" \
-    -p"$db_pass" \
-    -h"$db_host" \
-    "$db_name" < "$dump_path" 2>/dev/null; then
+    -u"$DST_DB_USER" \
+    -p"$DST_DB_PASSWORD" \
+    -h"$DST_DB_HOST" \
+    "$DST_DB_NAME" < "$DST_DB_DUMP_FILE_PATH" 2>/dev/null; then
     log_success "【完了】DBリストア成功"
   else
     log_error "【失敗】DBリストアに失敗しました"
@@ -51,35 +42,30 @@ restore_db() {
   fi
 }
 
-# ファイルをリストア
-# 引数: $1=SSHポート, $2=バックアップ元パス, $3=リストア先パス(SSH接続先込み), $4=除外パス(カンマ区切り)
+# ファイルをリストア（DST_* / BACKUP_EXCLUDES グローバル変数を参照）
 restore_files() {
-  local ssh_port="$1"
-  local backup_path="$2"
-  local dest_path="$3"
-  local excludes="$4"
-
   log_info "【ファイルをリストア】"
-  log_info "  バックアップ: $backup_path"
-  log_info "  リストア先: $dest_path"
+  log_info "  バックアップ: $DST_FILE_BACKUP_DIR_PATH"
+  log_info "  リストア先: $DST_PUBLIC_DIR_SCP_PATH"
 
-  if [ ! -d "$backup_path" ]; then
-    log_error "バックアップディレクトリが見つかりません: $backup_path"
+  if [ ! -d "$DST_FILE_BACKUP_DIR_PATH" ]; then
+    log_error "バックアップディレクトリが見つかりません: $DST_FILE_BACKUP_DIR_PATH"
     return 1
   fi
 
   # 除外オプションを構築
   local exclude_opts=""
   IFS=','
-  for exclude in $excludes; do
+  for exclude in $BACKUP_EXCLUDES; do
     exclude_opts="$exclude_opts --exclude $exclude"
   done
   unset IFS
 
+  # shellcheck disable=SC2086
   if rsync --checksum -arv --delete \
-    -e "ssh -p \"$ssh_port\"" \
+    -e "ssh -p \"$DST_SSH_PORT\"" \
     $exclude_opts \
-    "$backup_path"/ "$dest_path"/ >> "$(get_log_file)" 2>&1; then
+    "$DST_FILE_BACKUP_DIR_PATH"/ "$DST_PUBLIC_DIR_SCP_PATH"/ >> "$(get_log_file)" 2>&1; then
     log_success "【完了】ファイルリストア成功"
   else
     log_error "【失敗】ファイルリストアに失敗しました"
@@ -87,9 +73,18 @@ restore_files() {
   fi
 }
 
-# 本番環境をリストア
-rollback_prd() {
-  log_header "本番環境ロールバック　開始"
+# 環境をロールバック
+# 引数: $1=方向（stg-to-prd または prd-to-stg）
+rollback() {
+  local direction="$1"
+  local env_name
+  if [ "$direction" = "stg-to-prd" ]; then
+    env_name="本番"
+  else
+    env_name="ステージング"
+  fi
+
+  log_header "${env_name}環境ロールバック　開始"
 
   # .envの読み込み（まだ読み込まれていない場合）
   if [ -z "$PRD_SSH_DESTINATION" ]; then
@@ -97,84 +92,28 @@ rollback_prd() {
     . ./.wp-sync/.env
   fi
 
+  setup_sync_env "$direction"
+
   local rollback_failed=false
 
-  # DBリストア
-  if ! restore_db \
-    "$PRD_SSH_DESTINATION" \
-    "$PRD_SSH_PORT" \
-    "$PRD_DB_USER" \
-    "$PRD_DB_PASSWORD" \
-    "$PRD_DB_HOST" \
-    "$PRD_DB_NAME" \
-    "$PRD_DB_DUMP_FILE_PATH"; then
+  if ! restore_db; then
     rollback_failed=true
   fi
 
-  # ファイルリストア
-  if ! restore_files \
-    "$PRD_SSH_PORT" \
-    "$PRD_FILE_BACKUP_DIR_PATH" \
-    "$PRD_PUBLIC_DIR_PATH_WITH_DESTINATION" \
-    "$STG_DOMAIN,$EXCLUDES"; then
+  if ! restore_files; then
     rollback_failed=true
   fi
 
   if [ "$rollback_failed" = true ]; then
-    log_header "本番環境ロールバック　失敗"
+    log_header "${env_name}環境ロールバック　失敗"
     log_error "手動でリストアが必要です"
     log_error "バックアップファイル:"
-    log_error "  DB: $PRD_DB_DUMP_FILE_PATH"
-    log_error "  ファイル: $PRD_FILE_BACKUP_DIR_PATH"
+    log_error "  DB: $DST_DB_DUMP_FILE_PATH"
+    log_error "  ファイル: $DST_FILE_BACKUP_DIR_PATH"
     return 1
   fi
 
-  log_header "本番環境ロールバック　完了"
-}
-
-# ステージング環境をリストア
-rollback_stg() {
-  log_header "ステージング環境ロールバック　開始"
-
-  # .envの読み込み（まだ読み込まれていない場合）
-  if [ -z "$STG_SSH_DESTINATION" ]; then
-    # shellcheck source=/dev/null
-    . ./.wp-sync/.env
-  fi
-
-  local rollback_failed=false
-
-  # DBリストア
-  if ! restore_db \
-    "$STG_SSH_DESTINATION" \
-    "$STG_SSH_PORT" \
-    "$STG_DB_USER" \
-    "$STG_DB_PASSWORD" \
-    "$STG_DB_HOST" \
-    "$STG_DB_NAME" \
-    "$STG_DB_DUMP_FILE_PATH"; then
-    rollback_failed=true
-  fi
-
-  # ファイルリストア
-  if ! restore_files \
-    "$STG_SSH_PORT" \
-    "$STG_FILE_BACKUP_DIR_PATH" \
-    "$STG_PUBLIC_DIR_PATH_WITH_DESTINATION" \
-    "$EXCLUDES"; then
-    rollback_failed=true
-  fi
-
-  if [ "$rollback_failed" = true ]; then
-    log_header "ステージング環境ロールバック　失敗"
-    log_error "手動でリストアが必要です"
-    log_error "バックアップファイル:"
-    log_error "  DB: $STG_DB_DUMP_FILE_PATH"
-    log_error "  ファイル: $STG_FILE_BACKUP_DIR_PATH"
-    return 1
-  fi
-
-  log_header "ステージング環境ロールバック　完了"
+  log_header "${env_name}環境ロールバック　完了"
 }
 
 # エラー時のロールバック処理
@@ -184,24 +123,11 @@ perform_rollback() {
     return 0
   fi
 
-  if [ -z "$RESTORE_TARGET" ]; then
-    log_warn "リストア対象が設定されていないため、ロールバックをスキップします"
+  if [ -z "$RESTORE_DIRECTION" ]; then
+    log_warn "リストア方向が設定されていないため、ロールバックをスキップします"
     return 0
   fi
 
   log_error "エラーが発生しました。ロールバックを開始します..."
-
-  case "$RESTORE_TARGET" in
-    prd)
-      rollback_prd
-      ;;
-    stg)
-      rollback_stg
-      ;;
-    *)
-      log_error "不明なリストア対象: $RESTORE_TARGET"
-      return 1
-      ;;
-  esac
+  rollback "$RESTORE_DIRECTION"
 }
-
