@@ -6,6 +6,7 @@
 . "$WP_SYNC_DIR/lib/log.sh"
 
 # カンマ区切りをスペース区切りに変換
+# shellcheck disable=SC2153
 plugins=$(echo "$PLUGINS" | tr ',' ' ')
 
 # WordPress キャッシュをクリア（Redis含む全オブジェクトキャッシュ）

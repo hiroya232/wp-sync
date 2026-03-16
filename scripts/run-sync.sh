@@ -1,0 +1,90 @@
+#!/bin/bash
+# shellcheck source=/dev/null
+# 本番とステージングが同じサーバーにあることが前提
+
+# 方向の取得（prd-to-stg または stg-to-prd）
+DIRECTION="$1"
+
+if [ "$DIRECTION" != "prd-to-stg" ] && [ "$DIRECTION" != "stg-to-prd" ]; then
+  echo "エラー: 無効な方向です。prd-to-stg または stg-to-prd を指定してください。" >&2
+  exit 1
+fi
+
+# 設定ファイルの読み込み
+. ./.wp-sync/.env
+
+# ライブラリの読み込み
+. "$WP_SYNC_DIR/lib/backup.sh"
+. "$WP_SYNC_DIR/lib/sync.sh"
+. "$WP_SYNC_DIR/lib/basic-auth.sh"
+
+# 中間変数のセットアップ
+setup_sync_env "$DIRECTION"
+
+# 前処理（stg-to-prd の場合のみ）
+if [ "$DIRECTION" = "stg-to-prd" ]; then
+  log_header "前処理　開始"
+  log_info "【本番環境で必要なプラグインの有効化】"
+  bash "$WP_SYNC_DIR/scripts/activate-plugin.sh"
+  log_success "【完了】"
+  log_header "前処理　完了"
+fi
+
+# バックアップ（同期先環境をバックアップ）
+if [ "$DIRECTION" = "stg-to-prd" ]; then
+  log_header "本番環境バックアップ　開始"
+else
+  log_header "ステージング環境バックアップ　開始"
+fi
+backup_db
+backup_files
+mark_backup_completed
+if [ "$DIRECTION" = "stg-to-prd" ]; then
+  log_header "本番環境バックアップ　完了"
+else
+  log_header "ステージング環境バックアップ　完了"
+fi
+
+# 同期処理
+if [ "$DIRECTION" = "stg-to-prd" ]; then
+  log_header "ステージング→本番環境同期　開始"
+else
+  log_header "本番→ステージング環境同期　開始"
+fi
+sync_db
+WP_CONFIG_TMP_FILE="wp-config-tmp.php"
+backup_wp_config || exit 1
+sync_files "$WP_CONFIG_TMP_FILE,$STG_DOMAIN,$EXCLUDES"
+log_info "【wp-config.phpの環境固有定数を自動検出】"
+PRESERVE_CONSTANTS=$(detect_preserve_constants) || exit 1
+log_info "  保持する定数: ${PRESERVE_CONSTANTS:-（なし）}"
+log_success "【完了】"
+if [ -n "$PRESERVE_CONSTANTS" ]; then
+  restore_wp_config_constants "$PRESERVE_CONSTANTS" || exit 1
+else
+  remove_wp_config_backup
+fi
+replace_domain
+if [ "$DIRECTION" = "stg-to-prd" ]; then
+  log_header "ステージング→本番環境同期　完了"
+else
+  log_header "本番→ステージング環境同期　完了"
+fi
+
+# 後処理
+log_header "後処理　開始"
+
+# Basic認証の処理（方向によって異なる）
+if [ "$DIRECTION" = "stg-to-prd" ]; then
+  # 本番環境からBasic認証を削除
+  remove_basic_auth
+else
+  # ステージング環境にBasic認証を設定
+  setup_basic_auth
+fi
+
+# プラグイン無効化（両方向で共通）
+log_info "【ステージング環境では不要なプラグインの無効化】"
+bash "$WP_SYNC_DIR/scripts/deactivate-plugin.sh"
+log_success "【完了】"
+log_header "後処理　完了"
