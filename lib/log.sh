@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ログ設定
-LOG_DIR=".wp-sync/logs"
+LOG_DIR=""
 LOG_FILE=""
 LOG_RETENTION_DAYS=30
 
@@ -20,6 +20,7 @@ init_log() {
   local timestamp
   timestamp=$(date '+%Y%m%d_%H%M%S')
 
+  LOG_DIR="${SITE_DIR}/logs"
   mkdir -p "$LOG_DIR"
   LOG_FILE="$LOG_DIR/${timestamp}_${process_name}.log"
 

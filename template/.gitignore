@@ -1,7 +1,0 @@
-.env
-
-tmp/*
-!tmp/.gitkeep
-
-logs/*
-!logs/.gitkeep

@@ -1,0 +1,7 @@
+# 認証情報
+.env
+.htaccess-basic-auth
+.htpasswd
+
+# サイト別設定
+/sites

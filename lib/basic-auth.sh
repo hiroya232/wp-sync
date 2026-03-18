@@ -10,11 +10,11 @@ setup_basic_auth() {
         "sed -i '/^[[:space:]]*$/d' \"$DST_PUBLIC_DIR_PATH/.htaccess\""
     ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
         "echo -e \"\n\" >> \"$DST_PUBLIC_DIR_PATH/.htaccess\""
-    ssh <"./.wp-sync/.htaccess-basic-auth" "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
+    ssh <"$SITE_DIR/.htaccess-basic-auth" "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
         "cat >> \"$DST_PUBLIC_DIR_PATH\"/.htaccess"
     scp -P "$DST_SSH_PORT" \
-        "./.wp-sync/.htpasswd" \
-        "$HTPASSWD_SCP_PATH"/.htpasswd
+        "$SITE_DIR/.htpasswd" \
+        "${DST_SSH_DESTINATION}:.htpasswd"
   } >> "$(get_log_file)" 2>&1; then
     log_success "【完了】"
   else
@@ -30,8 +30,8 @@ remove_basic_auth() {
 
   if {
     scp -P "$DST_SSH_PORT" \
-        "./.wp-sync/.htaccess-basic-auth" \
-        "./.wp-sync/.env" \
+        "$SITE_DIR/.htaccess-basic-auth" \
+        "$SITE_DIR/.env" \
         "$DST_PUBLIC_DIR_SCP_PATH" &&
       ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
         " \

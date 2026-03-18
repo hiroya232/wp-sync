@@ -3,7 +3,7 @@ set -euo pipefail
 # shellcheck source=/dev/null
 # 本番環境でのみ有効化するプラグイン（ステージング→本番同期前にステージング環境で有効化）
 
-. ./.wp-sync/.env
+. "$SITE_DIR/.env"
 . "$WP_SYNC_DIR/lib/log.sh"
 
 # カンマ区切りをスペース区切りに変換

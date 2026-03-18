@@ -11,7 +11,7 @@ if [ "$DIRECTION" != "prd-to-stg" ] && [ "$DIRECTION" != "stg-to-prd" ]; then
 fi
 
 # 設定ファイルの読み込み
-. ./.wp-sync/.env
+. "$SITE_DIR/.env"
 
 # ライブラリの読み込み
 . "$WP_SYNC_DIR/lib/backup.sh"

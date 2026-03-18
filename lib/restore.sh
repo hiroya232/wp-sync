@@ -134,7 +134,7 @@ rollback() {
   # .envの読み込み（まだ読み込まれていない場合）
   if [ -z "$PRD_SSH_DESTINATION" ]; then
     # shellcheck source=/dev/null
-    . ./.wp-sync/.env
+    . "$SITE_DIR/.env"
   fi
 
   setup_sync_env "$direction"

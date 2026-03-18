@@ -2,10 +2,9 @@
 # wp-sync - WordPress環境同期ツール
 #
 # 使用方法:
-#   wp-sync prd-to-stg    本番 → ステージング同期
-#   wp-sync stg-to-prd    ステージング → 本番同期
-#
-# 実行前に、カレントディレクトリに .wp-sync/ が存在することを確認してください。
+#   wp-sync init <domain>         サイト設定を初期化
+#   wp-sync prd-to-stg <domain>   本番 → ステージング同期
+#   wp-sync stg-to-prd <domain>   ステージング → 本番同期
 
 set -euo pipefail
 
@@ -21,12 +20,22 @@ export WP_SYNC_DIR
 # shellcheck source=/dev/null
 . "$WP_SYNC_DIR/lib/restore.sh"
 
-# .wp-sync ディレクトリの存在確認
-if [ ! -d ".wp-sync" ]; then
-  echo "エラー: .wp-sync ディレクトリが見つかりません。" >&2
-  echo "WordPressプロジェクトのルートディレクトリから実行してください。" >&2
-  exit 1
-fi
+action="${1:-}"
+domain="${2:-}"
+
+# ドメイン引数の必須チェック（help以外）
+case "$action" in
+  -h|--help|help) ;;
+  *)
+    if [ -z "$domain" ]; then
+      echo "エラー: ドメインを指定してください。" >&2
+      echo "使用方法: wp-sync {init|prd-to-stg|stg-to-prd} <domain>" >&2
+      exit 1
+    fi
+    SITE_DIR="$WP_SYNC_DIR/sites/$domain"
+    export SITE_DIR
+    ;;
+esac
 
 # 終了時の処理（エラー時はロールバック）
 cleanup() {
@@ -42,8 +51,24 @@ cleanup() {
 }
 trap cleanup EXIT
 
-case "$1" in
+case "$action" in
+  init)
+    if [ -d "$SITE_DIR" ]; then
+      echo "エラー: $SITE_DIR は既に存在します。" >&2
+      exit 1
+    fi
+    mkdir -p "$WP_SYNC_DIR/sites"
+    cp -r "$WP_SYNC_DIR/template" "$SITE_DIR"
+    mv "$SITE_DIR/.env.example" "$SITE_DIR/.env"
+    echo "サイト設定を作成しました: $SITE_DIR"
+    echo "$SITE_DIR/.env を編集して接続情報を設定してください。"
+    ;;
   prd-to-stg)
+    if [ ! -d "$SITE_DIR" ]; then
+      echo "エラー: $SITE_DIR が見つかりません。" >&2
+      echo "先に wp-sync init $domain を実行してください。" >&2
+      exit 1
+    fi
     init_log "prd-to-stg"
     set_restore_direction "prd-to-stg"
     log_info "本番 → ステージング同期を開始します..."
@@ -54,6 +79,11 @@ case "$1" in
     log_success "本番 → ステージング同期が完了しました"
     ;;
   stg-to-prd)
+    if [ ! -d "$SITE_DIR" ]; then
+      echo "エラー: $SITE_DIR が見つかりません。" >&2
+      echo "先に wp-sync init $domain を実行してください。" >&2
+      exit 1
+    fi
     init_log "stg-to-prd"
     set_restore_direction "stg-to-prd"
     log_info "ステージング → 本番同期を開始します..."
@@ -67,17 +97,20 @@ case "$1" in
     echo "wp-sync - WordPress環境同期ツール"
     echo ""
     echo "使用方法:"
-    echo "  wp-sync prd-to-stg    本番 → ステージング同期"
-    echo "  wp-sync stg-to-prd    ステージング → 本番同期"
-    echo "  wp-sync help          このヘルプを表示"
+    echo "  wp-sync init <domain>         サイト設定を初期化"
+    echo "  wp-sync prd-to-stg <domain>   本番 → ステージング同期"
+    echo "  wp-sync stg-to-prd <domain>   ステージング → 本番同期"
+    echo "  wp-sync help                  このヘルプを表示"
     echo ""
-    echo "実行前に、カレントディレクトリに .wp-sync/ が存在することを確認してください。"
+    echo "例:"
+    echo "  wp-sync init example.com"
+    echo "  wp-sync prd-to-stg example.com"
     echo ""
     echo "ログファイル:"
-    echo "  .wp-sync/logs/ に保存されます（${LOG_RETENTION_DAYS}日間保持）"
+    echo "  sites/<domain>/logs/ に保存されます（${LOG_RETENTION_DAYS}日間保持）"
     ;;
   *)
-    echo "使用方法: wp-sync {prd-to-stg|stg-to-prd|help}" >&2
+    echo "使用方法: wp-sync {init|prd-to-stg|stg-to-prd|help} <domain>" >&2
     exit 1
     ;;
 esac
