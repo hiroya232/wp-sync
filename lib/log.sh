@@ -18,7 +18,7 @@ COLOR_HEADER="\033[1;35m"  # マゼンタ（太字）
 init_log() {
   local process_name="$1"
   local timestamp
-  timestamp=$(date '+%Y-%m-%d_%H%M%S')
+  timestamp=$(date '+%Y%m%d_%H%M%S')
 
   mkdir -p "$LOG_DIR"
   LOG_FILE="$LOG_DIR/${timestamp}_${process_name}.log"
@@ -40,7 +40,7 @@ init_log() {
 # ログをローテーション（古いログを削除）
 rotate_logs() {
   if [ -d "$LOG_DIR" ]; then
-    find "$LOG_DIR" -name "*.log" -type f -mtime +$LOG_RETENTION_DAYS -delete 2>/dev/null
+    find "$LOG_DIR" -name "*.log" -type f -mtime +"$LOG_RETENTION_DAYS" -delete 2>/dev/null
   fi
 }
 
@@ -121,13 +121,13 @@ log_exec() {
     # 画面には出力しない（冗長になるため）
   fi
 
-  if [ $exit_code -eq 0 ]; then
+  if [ "$exit_code" -eq 0 ]; then
     log_success "【完了】"
   else
     log_error "【失敗】 終了コード: $exit_code"
   fi
 
-  return $exit_code
+  return "$exit_code"
 }
 
 # ログファイルのパスを取得
@@ -146,6 +146,3 @@ finalize_log() {
     } >> "$LOG_FILE"
   fi
 }
-
-
-

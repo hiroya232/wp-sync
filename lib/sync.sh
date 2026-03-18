@@ -76,7 +76,7 @@ _run_remote_php() {
 
   local quoted_args=""
   for arg in "$@"; do
-    quoted_args="$quoted_args '$arg'"
+    quoted_args="$quoted_args $(printf '%q' "$arg")"
   done
 
   ssh "$ssh_dest" -p "$ssh_port" \
@@ -116,7 +116,7 @@ detect_preserve_constants() {
     "$DST_PUBLIC_DIR_PATH/$WP_CONFIG_TMP_FILE")
   local exit_code=$?
 
-  if [ $exit_code -ne 0 ]; then
+  if [ "$exit_code" -ne 0 ]; then
     log_error "【失敗】定数差分検出に失敗しました"
     return 1
   fi

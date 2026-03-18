@@ -7,7 +7,7 @@
 #
 # 実行前に、カレントディレクトリに .wp-sync/ が存在することを確認してください。
 
-set -e
+set -euo pipefail
 
 # wp-sync リポジトリのディレクトリを取得
 WP_SYNC_DIR="$(cd "$(dirname "$0")/.." && pwd)"
@@ -32,13 +32,13 @@ fi
 cleanup() {
   local exit_code=$?
 
-  if [ $exit_code -ne 0 ]; then
+  if [ "$exit_code" -ne 0 ]; then
     # エラー時はロールバックを試行
     perform_rollback
   fi
 
   finalize_log
-  exit $exit_code
+  exit "$exit_code"
 }
 trap cleanup EXIT
 

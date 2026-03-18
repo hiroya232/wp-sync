@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# Basic認証を設定（DST_* / HTPASSWD_SCP_PATH グローバル変数を参照）
+# Basic認証を設定（DST_* グローバル変数を参照）
 setup_basic_auth() {
   log_info "【Basic認証の設定】"
   log_info "  対象: $DST_PUBLIC_DIR_PATH"
 
   if {
     ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
-        "sed -i '/^\n*$/d' \"$DST_PUBLIC_DIR_PATH/.htaccess\""
+        "sed -i '/^[[:space:]]*$/d' \"$DST_PUBLIC_DIR_PATH/.htaccess\""
     ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
         "echo -e \"\n\" >> \"$DST_PUBLIC_DIR_PATH/.htaccess\""
     ssh <"./.wp-sync/.htaccess-basic-auth" "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
@@ -40,7 +40,7 @@ remove_basic_auth() {
           rm \"$DST_PUBLIC_DIR_PATH\"/.htaccess-basic-auth \"$DST_PUBLIC_DIR_PATH\"/.env \
         "
     ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
-        "sed -i '/^\n*$/d' \"$DST_PUBLIC_DIR_PATH/.htaccess\""
+        "sed -i '/^[[:space:]]*$/d' \"$DST_PUBLIC_DIR_PATH/.htaccess\""
   } >> "$(get_log_file)" 2>&1; then
     log_success "【完了】"
   else
