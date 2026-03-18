@@ -71,6 +71,9 @@ else
   log_header "本番→ステージング環境同期　完了"
 fi
 
+# バックアップのアーカイブ
+archive_backup
+
 # 後処理
 log_header "後処理　開始"
 

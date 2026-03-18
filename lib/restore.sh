@@ -1,5 +1,18 @@
 #!/bin/bash
 
+# タイムスタンプ付きバックアップZIPの中で最新のものを返す（DST_BACKUP_ZIP_PATH を参照）
+_find_backup_zip() {
+  local zip_prefix="${DST_BACKUP_ZIP_PATH%.zip}"
+  local latest=""
+  for f in "${zip_prefix}_"*.zip; do
+    [ -f "$f" ] || continue
+    if [ -z "$latest" ] || [ "$f" -nt "$latest" ]; then
+      latest="$f"
+    fi
+  done
+  echo "$latest"
+}
+
 # バックアップ完了フラグ
 BACKUP_COMPLETED=false
 
@@ -25,8 +38,24 @@ restore_db() {
   log_info "  リストア先: $DST_DB_NAME@$DST_DB_HOST"
 
   if [ ! -f "$DST_DB_DUMP_FILE_PATH" ]; then
-    log_error "ダンプファイルが見つかりません: $DST_DB_DUMP_FILE_PATH"
-    return 1
+    local latest_zip
+    latest_zip="$(_find_backup_zip)"
+    if [ -n "$latest_zip" ]; then
+      log_info "ZIPからダンプファイルを解凍中: $latest_zip"
+      local tmp_dir="${DST_DB_DUMP_FILE_PATH%/*}"
+      local dump_base="${DST_DB_DUMP_FILE_PATH##*/}"
+      local log_file unzip_output
+      log_file="$(get_log_file)"
+      if ! unzip_output=$(cd "$tmp_dir" && unzip -o "${latest_zip##*/}" "$dump_base" 2>&1); then
+        [ -n "$log_file" ] && echo "$unzip_output" >> "$log_file"
+        log_error "ZIP解凍に失敗しました: $latest_zip"
+        return 1
+      fi
+      [ -n "$log_file" ] && echo "$unzip_output" >> "$log_file"
+    else
+      log_error "ダンプファイルが見つかりません: $DST_DB_DUMP_FILE_PATH"
+      return 1
+    fi
   fi
 
   if ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
@@ -49,8 +78,24 @@ restore_files() {
   log_info "  リストア先: $DST_PUBLIC_DIR_SCP_PATH"
 
   if [ ! -d "$DST_FILE_BACKUP_DIR_PATH" ]; then
-    log_error "バックアップディレクトリが見つかりません: $DST_FILE_BACKUP_DIR_PATH"
-    return 1
+    local latest_zip
+    latest_zip="$(_find_backup_zip)"
+    if [ -n "$latest_zip" ]; then
+      log_info "ZIPからファイルバックアップを解凍中: $latest_zip"
+      local tmp_dir="${DST_FILE_BACKUP_DIR_PATH%/*}"
+      local log_file unzip_output
+      log_file="$(get_log_file)"
+      if ! unzip_output=$(cd "$tmp_dir" && unzip -o "${latest_zip##*/}" "public_html/*" 2>&1); then
+        [ -n "$log_file" ] && echo "$unzip_output" >> "$log_file"
+        log_error "ZIP解凍に失敗しました: $latest_zip"
+        return 1
+      fi
+      [ -n "$log_file" ] && echo "$unzip_output" >> "$log_file"
+      mv "${tmp_dir}/public_html" "$DST_FILE_BACKUP_DIR_PATH"
+    else
+      log_error "バックアップディレクトリが見つかりません: $DST_FILE_BACKUP_DIR_PATH"
+      return 1
+    fi
   fi
 
   # 除外オプションを構築

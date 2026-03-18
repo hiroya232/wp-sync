@@ -1,5 +1,34 @@
 #!/bin/bash
 
+# バックアップをZIPにまとめ、元ファイルを削除（DST_* グローバル変数を参照）
+archive_backup() {
+  local tmp_dir="${DST_DB_DUMP_FILE_PATH%/*}"
+  local dump_base="${DST_DB_DUMP_FILE_PATH##*/}"
+  local timestamp zip_base log_file zip_output
+  timestamp=$(date '+%Y%m%d_%H%M%S')
+  zip_base="${DST_BACKUP_ZIP_PATH##*/}"           # prd_backup.zip
+  zip_base="${zip_base%.zip}_${timestamp}.zip"    # prd_backup_20260318_140627.zip
+
+  log_info "【バックアップをZIP化】"
+  log_info "  保存先: ${tmp_dir}/${zip_base}"
+
+  # ZIP内のディレクトリ名を public_html に統一
+  mv "$DST_FILE_BACKUP_DIR_PATH" "${tmp_dir}/public_html"
+
+  log_file="$(get_log_file)"
+  if zip_output=$(cd "$tmp_dir" && zip -r "$zip_base" "$dump_base" "public_html" 2>&1); then
+    [ -n "$log_file" ] && echo "$zip_output" >> "$log_file"
+    log_success "【完了】ZIP化成功"
+    rm -f "$DST_DB_DUMP_FILE_PATH"
+    rm -rf "${tmp_dir}/public_html"
+  else
+    [ -n "$log_file" ] && echo "$zip_output" >> "$log_file"
+    mv "${tmp_dir}/public_html" "$DST_FILE_BACKUP_DIR_PATH"
+    log_error "【失敗】ZIP化に失敗しました"
+    return 1
+  fi
+}
+
 # DBをバックアップ（DST_* グローバル変数を参照）
 backup_db() {
   log_info "【DBをバックアップ】"
