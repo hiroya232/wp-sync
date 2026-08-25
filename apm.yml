@@ -1,0 +1,17 @@
+name: wp-sync
+version: 1.0.0
+description: APM project for wp-sync
+author: hiroya-akeoka
+# Which agent platforms to deploy to.
+# Resolution order: --target flag > this field > auto-detect from filesystem.
+# Accepted values: agent-skills, antigravity, claude, codex, copilot, cursor, gemini, grok-build, kiro, opencode, windsurf
+targets:
+  - claude
+dependencies:
+  apm:
+    - hiroya232/agent-kit/plugins/core
+    - hiroya232/agent-kit/plugins/dev
+    - hiroya232/agent-kit/plugins/apm
+  mcp: []
+includes: auto
+scripts: {}

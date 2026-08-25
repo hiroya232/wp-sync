@@ -5,3 +5,17 @@
 
 # サイト別設定
 /sites
+
+
+# APM dependencies
+apm_modules/
+
+# APM-generated project artifacts
+/.agents/
+/.claude/
+/.codex/
+/.github/agents/
+/.github/instructions/
+/.github/prompts/
+/.github/hooks/
+/.github/skills/
