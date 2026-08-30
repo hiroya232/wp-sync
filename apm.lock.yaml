@@ -1,11 +1,11 @@
 lockfile_version: '1'
-generated_at: '2026-08-30T04:44:20.583364+00:00'
+generated_at: '2026-08-30T10:14:47.069426+00:00'
 apm_version: 0.28.0
 dependencies:
 - repo_url: hiroya232/agent-kit
   name: apm
   host: github.com
-  resolved_commit: 9e674887e978dea83b11b721eeb95773b3b857f5
+  resolved_commit: 7d6035616988eb5be2f97b0f18b66b0d03979473
   version: 1.0.0
   virtual_path: plugins/apm
   is_virtual: true
@@ -23,7 +23,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: core
   host: github.com
-  resolved_commit: 9e674887e978dea83b11b721eeb95773b3b857f5
+  resolved_commit: 7d6035616988eb5be2f97b0f18b66b0d03979473
   version: 1.1.0
   virtual_path: plugins/core
   is_virtual: true
@@ -73,7 +73,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: dev
   host: github.com
-  resolved_commit: 9e674887e978dea83b11b721eeb95773b3b857f5
+  resolved_commit: 7d6035616988eb5be2f97b0f18b66b0d03979473
   version: 6.0.0
   virtual_path: plugins/dev
   is_virtual: true
@@ -131,8 +131,8 @@ dependencies:
     .claude/skills/review-loop/scripts/run-primary.sh: sha256:d6126a32edbfa32728c0e2342034ad8a3aa615c1106e48831d07f477dafdfe2d
     .claude/skills/review-loop/scripts/write-receipt.sh: sha256:97843be4f14f86041b61b5967f3f5bfb3325941420a58d76f0f1a4569d8a1a6f
     .claude/skills/review-loop/scripts/write-scope.sh: sha256:29ebfbd6a7695374a79f283d823d9c6ea6750568184590043499ec38b5b012ec
-    .claude/skills/sync-projects/SKILL.md: sha256:1e271c625527025fc7b9e58f5d3cb368b95bf6894bb558121bc0775ce751b560
-  content_hash: sha256:a44d36c4953876d99eaf6c6f8f8c6e1bedc5e73412b7ee04b927e388004fa0b6
+    .claude/skills/sync-projects/SKILL.md: sha256:f09282ae32caeda5046f14137cca3359e16bb648193cbfc52fab22abcc50610c
+  content_hash: sha256:558d14e35ee4dc06cf3b361d18efcf199524afa90270b6065fa0da8d534456f9
   declared_license: UNLICENSED
 deployments:
 - kind: project-relative
@@ -503,7 +503,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:1e271c625527025fc7b9e58f5d3cb368b95bf6894bb558121bc0775ce751b560
+  content_hash: sha256:f09282ae32caeda5046f14137cca3359e16bb648193cbfc52fab22abcc50610c
 - kind: project-relative
   target: claude
   value: .claude/skills/upstream-apm-plugin
