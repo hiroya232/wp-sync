@@ -16,3 +16,8 @@ dependencies:
   mcp: []
 includes: auto
 scripts: {}
+# AGENTS.md の apm:start/apm:end マーカー間だけを apm compile が書き換える。
+# 値は managed_section で固定（ハイフン区切り等の誤記は無警告で full モードにフォールバックする）。
+compilation:
+  agents_md:
+    mode: managed_section
