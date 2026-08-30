@@ -1,31 +1,43 @@
 lockfile_version: '1'
-generated_at: '2026-08-29T12:07:49.307302+00:00'
+generated_at: '2026-08-30T04:44:20.583364+00:00'
 apm_version: 0.28.0
 dependencies:
 - repo_url: hiroya232/agent-kit
   name: apm
   host: github.com
-  resolved_commit: 42007d5acfb1eb8e9ab4d7a12ea9d421b543c90d
+  resolved_commit: 9e674887e978dea83b11b721eeb95773b3b857f5
   version: 1.0.0
   virtual_path: plugins/apm
   is_virtual: true
   package_type: apm_package
   deployed_files:
+  - .agents/skills/upstream-apm-plugin
+  - .agents/skills/upstream-apm-plugin/SKILL.md
   - .claude/skills/upstream-apm-plugin
   - .claude/skills/upstream-apm-plugin/SKILL.md
   deployed_file_hashes:
+    .agents/skills/upstream-apm-plugin/SKILL.md: sha256:8791bbded55ff750a9cd7b2b5e5b839306de4125c826247ca1bb98721c1d9b26
     .claude/skills/upstream-apm-plugin/SKILL.md: sha256:8791bbded55ff750a9cd7b2b5e5b839306de4125c826247ca1bb98721c1d9b26
   content_hash: sha256:0aa85e7743d420410bb1274b6f77aeba91296dac6481bb65f6f97acc73e2cc4f
   declared_license: UNLICENSED
 - repo_url: hiroya232/agent-kit
   name: core
   host: github.com
-  resolved_commit: 42007d5acfb1eb8e9ab4d7a12ea9d421b543c90d
+  resolved_commit: 9e674887e978dea83b11b721eeb95773b3b857f5
   version: 1.1.0
   virtual_path: plugins/core
   is_virtual: true
   package_type: apm_package
   deployed_files:
+  - .agents/skills/collect-doc-links
+  - .agents/skills/collect-doc-links/SKILL.md
+  - .agents/skills/collect-doc-links/collect-doc-links.py
+  - .agents/skills/deep-research
+  - .agents/skills/deep-research/SKILL.md
+  - .agents/skills/proofread
+  - .agents/skills/proofread/SKILL.md
+  - .agents/skills/reply-message
+  - .agents/skills/reply-message/SKILL.md
   - .claude/agents/deep-researcher.md
   - .claude/agents/fact-checker.md
   - .claude/rules/base.md
@@ -38,7 +50,14 @@ dependencies:
   - .claude/skills/proofread/SKILL.md
   - .claude/skills/reply-message
   - .claude/skills/reply-message/SKILL.md
+  - .codex/agents/deep-researcher.toml
+  - .codex/agents/fact-checker.toml
   deployed_file_hashes:
+    .agents/skills/collect-doc-links/SKILL.md: sha256:4d13475ed1f02baddd1b80ab1f1599648544dd6a975167f1824ac052808d4011
+    .agents/skills/collect-doc-links/collect-doc-links.py: sha256:cf2ce5ddaf32601c831ca48eac0904dec3a300e1f648dff5644f7297dc080d1a
+    .agents/skills/deep-research/SKILL.md: sha256:82a5b85b1f9cd86e717b3539be7048d7068620b5847fc9de82c61805f8683b33
+    .agents/skills/proofread/SKILL.md: sha256:b5ed7d443ce507edd2d3dbf38863a97a63f3fe8aa3f63cbb746d7c24e1976b8b
+    .agents/skills/reply-message/SKILL.md: sha256:783ba35e095d3b1a4df2d13582e3ffa2d073d752e4c607e472e8eee355c44b0f
     .claude/agents/deep-researcher.md: sha256:edc610258cfb9c547d7641f17cb7c4727cea03817fef8a5e6b7ea550177712b9
     .claude/agents/fact-checker.md: sha256:43e0583f0eb02cd0f52bf2a6de4bf5b061bf824d0871e067e3994cbeec145589
     .claude/rules/base.md: sha256:d0b7024b9f132a6d4b9c165f1a05f447d351d1a0c0b948507f226489eb650139
@@ -47,12 +66,14 @@ dependencies:
     .claude/skills/deep-research/SKILL.md: sha256:82a5b85b1f9cd86e717b3539be7048d7068620b5847fc9de82c61805f8683b33
     .claude/skills/proofread/SKILL.md: sha256:b5ed7d443ce507edd2d3dbf38863a97a63f3fe8aa3f63cbb746d7c24e1976b8b
     .claude/skills/reply-message/SKILL.md: sha256:783ba35e095d3b1a4df2d13582e3ffa2d073d752e4c607e472e8eee355c44b0f
+    .codex/agents/deep-researcher.toml: sha256:7101cf381efa95ce95bdbdaba2ef42b3b1ed0f17c52e1ce07d778cd7f7317b99
+    .codex/agents/fact-checker.toml: sha256:fb9087ed5e8a061c5974684ea17c4cfbad0848e5dc4d7b5211bba450d0afa5e6
   content_hash: sha256:6294e69bbb10f23064d03e5d7818567f7f07a39eb1ba4d8da672e95cf0ebe4ce
   declared_license: UNLICENSED
 - repo_url: hiroya232/agent-kit
   name: dev
   host: github.com
-  resolved_commit: 42007d5acfb1eb8e9ab4d7a12ea9d421b543c90d
+  resolved_commit: 9e674887e978dea83b11b721eeb95773b3b857f5
   version: 6.0.0
   virtual_path: plugins/dev
   is_virtual: true
@@ -501,3 +522,120 @@ deployments:
   - hiroya232/agent-kit/plugins/apm
   active_owner: hiroya232/agent-kit/plugins/apm
   content_hash: sha256:8791bbded55ff750a9cd7b2b5e5b839306de4125c826247ca1bb98721c1d9b26
+- kind: project-relative
+  target: codex
+  value: .agents/skills/collect-doc-links
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/core
+  active_owner: hiroya232/agent-kit/plugins/core
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/collect-doc-links/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/core
+  active_owner: hiroya232/agent-kit/plugins/core
+  content_hash: sha256:4d13475ed1f02baddd1b80ab1f1599648544dd6a975167f1824ac052808d4011
+- kind: project-relative
+  target: codex
+  value: .agents/skills/collect-doc-links/collect-doc-links.py
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/core
+  active_owner: hiroya232/agent-kit/plugins/core
+  content_hash: sha256:cf2ce5ddaf32601c831ca48eac0904dec3a300e1f648dff5644f7297dc080d1a
+- kind: project-relative
+  target: codex
+  value: .agents/skills/deep-research
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/core
+  active_owner: hiroya232/agent-kit/plugins/core
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/deep-research/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/core
+  active_owner: hiroya232/agent-kit/plugins/core
+  content_hash: sha256:82a5b85b1f9cd86e717b3539be7048d7068620b5847fc9de82c61805f8683b33
+- kind: project-relative
+  target: codex
+  value: .agents/skills/proofread
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/core
+  active_owner: hiroya232/agent-kit/plugins/core
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/proofread/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/core
+  active_owner: hiroya232/agent-kit/plugins/core
+  content_hash: sha256:b5ed7d443ce507edd2d3dbf38863a97a63f3fe8aa3f63cbb746d7c24e1976b8b
+- kind: project-relative
+  target: codex
+  value: .agents/skills/reply-message
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/core
+  active_owner: hiroya232/agent-kit/plugins/core
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/reply-message/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/core
+  active_owner: hiroya232/agent-kit/plugins/core
+  content_hash: sha256:783ba35e095d3b1a4df2d13582e3ffa2d073d752e4c607e472e8eee355c44b0f
+- kind: project-relative
+  target: codex
+  value: .agents/skills/upstream-apm-plugin
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/apm
+  active_owner: hiroya232/agent-kit/plugins/apm
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/upstream-apm-plugin/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/apm
+  active_owner: hiroya232/agent-kit/plugins/apm
+  content_hash: sha256:8791bbded55ff750a9cd7b2b5e5b839306de4125c826247ca1bb98721c1d9b26
+- kind: project-relative
+  target: codex
+  value: .codex/agents/deep-researcher.toml
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/core
+  active_owner: hiroya232/agent-kit/plugins/core
+  content_hash: sha256:7101cf381efa95ce95bdbdaba2ef42b3b1ed0f17c52e1ce07d778cd7f7317b99
+- kind: project-relative
+  target: codex
+  value: .codex/agents/fact-checker.toml
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/core
+  active_owner: hiroya232/agent-kit/plugins/core
+  content_hash: sha256:fb9087ed5e8a061c5974684ea17c4cfbad0848e5dc4d7b5211bba450d0afa5e6
