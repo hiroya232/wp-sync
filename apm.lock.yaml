@@ -1,29 +1,11 @@
 lockfile_version: '1'
-generated_at: '2026-08-30T10:14:47.069426+00:00'
+generated_at: '2026-09-10T04:36:44.090030+00:00'
 apm_version: 0.28.0
 dependencies:
 - repo_url: hiroya232/agent-kit
-  name: apm
-  host: github.com
-  resolved_commit: 7d6035616988eb5be2f97b0f18b66b0d03979473
-  version: 1.0.0
-  virtual_path: plugins/apm
-  is_virtual: true
-  package_type: apm_package
-  deployed_files:
-  - .agents/skills/upstream-apm-plugin
-  - .agents/skills/upstream-apm-plugin/SKILL.md
-  - .claude/skills/upstream-apm-plugin
-  - .claude/skills/upstream-apm-plugin/SKILL.md
-  deployed_file_hashes:
-    .agents/skills/upstream-apm-plugin/SKILL.md: sha256:8791bbded55ff750a9cd7b2b5e5b839306de4125c826247ca1bb98721c1d9b26
-    .claude/skills/upstream-apm-plugin/SKILL.md: sha256:8791bbded55ff750a9cd7b2b5e5b839306de4125c826247ca1bb98721c1d9b26
-  content_hash: sha256:0aa85e7743d420410bb1274b6f77aeba91296dac6481bb65f6f97acc73e2cc4f
-  declared_license: UNLICENSED
-- repo_url: hiroya232/agent-kit
   name: core
   host: github.com
-  resolved_commit: 7d6035616988eb5be2f97b0f18b66b0d03979473
+  resolved_commit: bf3d2a40103f82f42875f04f204e39f20941d8b8
   version: 1.1.0
   virtual_path: plugins/core
   is_virtual: true
@@ -60,7 +42,7 @@ dependencies:
     .agents/skills/reply-message/SKILL.md: sha256:783ba35e095d3b1a4df2d13582e3ffa2d073d752e4c607e472e8eee355c44b0f
     .claude/agents/deep-researcher.md: sha256:edc610258cfb9c547d7641f17cb7c4727cea03817fef8a5e6b7ea550177712b9
     .claude/agents/fact-checker.md: sha256:43e0583f0eb02cd0f52bf2a6de4bf5b061bf824d0871e067e3994cbeec145589
-    .claude/rules/base.md: sha256:d0b7024b9f132a6d4b9c165f1a05f447d351d1a0c0b948507f226489eb650139
+    .claude/rules/base.md: sha256:3f8b3e06fa3af8a897b5a4c4bb938cb655c161328ebe9d9704dcd0c11b60521c
     .claude/skills/collect-doc-links/SKILL.md: sha256:4d13475ed1f02baddd1b80ab1f1599648544dd6a975167f1824ac052808d4011
     .claude/skills/collect-doc-links/collect-doc-links.py: sha256:cf2ce5ddaf32601c831ca48eac0904dec3a300e1f648dff5644f7297dc080d1a
     .claude/skills/deep-research/SKILL.md: sha256:82a5b85b1f9cd86e717b3539be7048d7068620b5847fc9de82c61805f8683b33
@@ -68,25 +50,36 @@ dependencies:
     .claude/skills/reply-message/SKILL.md: sha256:783ba35e095d3b1a4df2d13582e3ffa2d073d752e4c607e472e8eee355c44b0f
     .codex/agents/deep-researcher.toml: sha256:7101cf381efa95ce95bdbdaba2ef42b3b1ed0f17c52e1ce07d778cd7f7317b99
     .codex/agents/fact-checker.toml: sha256:fb9087ed5e8a061c5974684ea17c4cfbad0848e5dc4d7b5211bba450d0afa5e6
-  content_hash: sha256:6294e69bbb10f23064d03e5d7818567f7f07a39eb1ba4d8da672e95cf0ebe4ce
+  content_hash: sha256:836db2c5608a1b075752cb30a68dd86051eae1978cd83af29234f70570665981
   declared_license: UNLICENSED
 - repo_url: hiroya232/agent-kit
   name: dev
   host: github.com
-  resolved_commit: 7d6035616988eb5be2f97b0f18b66b0d03979473
+  resolved_commit: bf3d2a40103f82f42875f04f204e39f20941d8b8
   version: 6.0.0
   virtual_path: plugins/dev
   is_virtual: true
   package_type: apm_package
   deployed_files:
+  - .agents/skills/commit
+  - .agents/skills/commit/SKILL.md
+  - .agents/skills/docker
+  - .agents/skills/docker/SKILL.md
+  - .agents/skills/docker/references/templates.md
+  - .agents/skills/dotenvx
+  - .agents/skills/dotenvx/SKILL.md
+  - .agents/skills/git-worktree
+  - .agents/skills/git-worktree/SKILL.md
+  - .agents/skills/sync-projects
+  - .agents/skills/sync-projects/SKILL.md
   - .claude/agents/code-reviewer.md
   - .claude/agents/debugger.md
+  - .claude/agents/implementer.md
+  - .claude/agents/refactorer.md
+  - .claude/agents/security-reviewer.md
   - .claude/agents/tester.md
-  - .claude/hooks/dev/.apm/hooks/scripts/auto-review-gate.sh
   - .claude/hooks/dev/.apm/hooks/scripts/block-dangerous-commands.sh
   - .claude/hooks/dev/.apm/hooks/scripts/lib/hook-target.sh
-  - .claude/hooks/dev/.apm/hooks/scripts/lib/review-loop-receipt.sh
-  - .claude/hooks/dev/.apm/hooks/scripts/review-check.sh
   - .claude/hooks/dev/.apm/hooks/scripts/scan-injection.sh
   - .claude/skills/commit
   - .claude/skills/commit/SKILL.md
@@ -97,42 +90,49 @@ dependencies:
   - .claude/skills/dotenvx/SKILL.md
   - .claude/skills/git-worktree
   - .claude/skills/git-worktree/SKILL.md
-  - .claude/skills/review-loop
-  - .claude/skills/review-loop/SKILL.md
-  - .claude/skills/review-loop/scripts/lib/review-loop-codex.sh
-  - .claude/skills/review-loop/scripts/lib/review-loop-receipt.sh
-  - .claude/skills/review-loop/scripts/receipt-is-current.sh
-  - .claude/skills/review-loop/scripts/run-confirmation.sh
-  - .claude/skills/review-loop/scripts/run-primary.sh
-  - .claude/skills/review-loop/scripts/write-receipt.sh
-  - .claude/skills/review-loop/scripts/write-scope.sh
   - .claude/skills/sync-projects
   - .claude/skills/sync-projects/SKILL.md
+  - .codex/agents/code-reviewer.toml
+  - .codex/agents/debugger.toml
+  - .codex/agents/implementer.toml
+  - .codex/agents/refactorer.toml
+  - .codex/agents/security-reviewer.toml
+  - .codex/agents/tester.toml
+  - .codex/hooks/dev/.apm/hooks/scripts/block-dangerous-commands.sh
+  - .codex/hooks/dev/.apm/hooks/scripts/lib/hook-target.sh
+  - .codex/hooks/dev/.apm/hooks/scripts/scan-injection.sh
   deployed_file_hashes:
-    .claude/agents/code-reviewer.md: sha256:2abb9009396fe8b9eeb0bd9c355529321534c99298906e85787850610ddb8f7f
-    .claude/agents/debugger.md: sha256:2f9d23f965be8d5cdbc5adb7b72cdd112281fe57e2eda9b58be6d66a8e8fa703
-    .claude/agents/tester.md: sha256:b020da3d6e50949a74d09fc92b520913e7bad478fa25e0c49564436044fa10e2
-    .claude/hooks/dev/.apm/hooks/scripts/auto-review-gate.sh: sha256:3a084eb40ac574c8760e2070d1bd0dc968abbb95993dd39c3a4f74c77c7abe9a
-    .claude/hooks/dev/.apm/hooks/scripts/block-dangerous-commands.sh: sha256:47353bfb6c081cd2ed3fd4defd650981f432f93e66d30ff0c9e0594bf18763dc
-    .claude/hooks/dev/.apm/hooks/scripts/lib/hook-target.sh: sha256:39667b96edcebaa836e3775e86acc4708da67029ccbdc1eda5f6648bc40a8661
-    .claude/hooks/dev/.apm/hooks/scripts/lib/review-loop-receipt.sh: sha256:b73faf4c505c20f0b25a6bf143993fd224fa90c2bd0fa4d95d0ee5157a3aef6f
-    .claude/hooks/dev/.apm/hooks/scripts/review-check.sh: sha256:38c2369a0d151bb117664b8ed106faf4b0ee6745462502140f68c674972540a0
+    .agents/skills/commit/SKILL.md: sha256:02874bea4ea3127e885a9d3ef3fcecbcd97ca7c49bc285b107af80f6b6785e48
+    .agents/skills/docker/SKILL.md: sha256:5814c1980a8b71517966ded8502d5ad23d01cb9562b886c03d52027e6e2e8c7b
+    .agents/skills/docker/references/templates.md: sha256:0605d6489e05eb454b7d4b244ad1c2d9cd5cc80ef922d46f6cd46fe6831a226a
+    .agents/skills/dotenvx/SKILL.md: sha256:10837fd19654b968c279203cd7caef6dcf175f78e038bac73b62f101d1631766
+    .agents/skills/git-worktree/SKILL.md: sha256:92cd7cca184d54f8985253670f3a8058157ba35c1a3f0b81380674e3626554ef
+    .agents/skills/sync-projects/SKILL.md: sha256:f09282ae32caeda5046f14137cca3359e16bb648193cbfc52fab22abcc50610c
+    .claude/agents/code-reviewer.md: sha256:135e4cbd16b6aaeed77b867860418bd9bc1f0e82ff281cb15848a0f4412fbee7
+    .claude/agents/debugger.md: sha256:a6bab23aebed8d3dddb581dd7024ddaf849d138604597569a0f61f2c2ca40530
+    .claude/agents/implementer.md: sha256:45c285460af2254753d0e084fd196144dcf13b682c43ec42326ec4e44ca6b858
+    .claude/agents/refactorer.md: sha256:5860e53b98dcdb78d9622cab9b7e57e50a4974b7ac3dfa7ae08b97dbda752965
+    .claude/agents/security-reviewer.md: sha256:88fced88722b786ce56da6b5001c6d99fc67587bc403b5c64ed6f24147c2505e
+    .claude/agents/tester.md: sha256:fb2cb8f981301c905f9571f378f8afba5c082fb57fbc85754504b736b17db8f6
+    .claude/hooks/dev/.apm/hooks/scripts/block-dangerous-commands.sh: sha256:e7d4af93d9c74b0dfcb0e50ad9223082d5d48b540ab7e26afe4775b67938fb41
+    .claude/hooks/dev/.apm/hooks/scripts/lib/hook-target.sh: sha256:d59ef9fe8dac0265cd901b79026f977c6cdf3d50d149889cefb50cf71f5f164a
     .claude/hooks/dev/.apm/hooks/scripts/scan-injection.sh: sha256:bd3da995d257f1a3fd1a2be3e1d248dd5551769123e57c5302ce8808976dd6bd
-    .claude/skills/commit/SKILL.md: sha256:f2c730f172e5bad31e81e1c5f209e5de39395e2d57fa3cf0008f073c9b8447ff
+    .claude/skills/commit/SKILL.md: sha256:02874bea4ea3127e885a9d3ef3fcecbcd97ca7c49bc285b107af80f6b6785e48
     .claude/skills/docker/SKILL.md: sha256:5814c1980a8b71517966ded8502d5ad23d01cb9562b886c03d52027e6e2e8c7b
     .claude/skills/docker/references/templates.md: sha256:0605d6489e05eb454b7d4b244ad1c2d9cd5cc80ef922d46f6cd46fe6831a226a
     .claude/skills/dotenvx/SKILL.md: sha256:10837fd19654b968c279203cd7caef6dcf175f78e038bac73b62f101d1631766
-    .claude/skills/git-worktree/SKILL.md: sha256:1e9aef1aa96153509e72bf815abecf7557aa88827e75e7b86510df33754466b2
-    .claude/skills/review-loop/SKILL.md: sha256:bc8a41db33070284db714a96f7f472bfe054f91d3fde0772a8dddbb50b144bca
-    .claude/skills/review-loop/scripts/lib/review-loop-codex.sh: sha256:73245fa09747236b363ca9b8c9934e5cfc9933563bbbf6a851d602e579292afb
-    .claude/skills/review-loop/scripts/lib/review-loop-receipt.sh: sha256:6dafecb9fb5bce3f40aa49d48f6d0c20deed65b4c056681451eac1f09273d5ee
-    .claude/skills/review-loop/scripts/receipt-is-current.sh: sha256:b4ce4dfa9361d4b30ba0bae9ac50a625be4b26e243dfe4cef555d33544dc90bd
-    .claude/skills/review-loop/scripts/run-confirmation.sh: sha256:61ab1d43d911afce561aada61ffbac659691c97342f8443a65bdfa745e1a5301
-    .claude/skills/review-loop/scripts/run-primary.sh: sha256:d6126a32edbfa32728c0e2342034ad8a3aa615c1106e48831d07f477dafdfe2d
-    .claude/skills/review-loop/scripts/write-receipt.sh: sha256:97843be4f14f86041b61b5967f3f5bfb3325941420a58d76f0f1a4569d8a1a6f
-    .claude/skills/review-loop/scripts/write-scope.sh: sha256:29ebfbd6a7695374a79f283d823d9c6ea6750568184590043499ec38b5b012ec
+    .claude/skills/git-worktree/SKILL.md: sha256:92cd7cca184d54f8985253670f3a8058157ba35c1a3f0b81380674e3626554ef
     .claude/skills/sync-projects/SKILL.md: sha256:f09282ae32caeda5046f14137cca3359e16bb648193cbfc52fab22abcc50610c
-  content_hash: sha256:558d14e35ee4dc06cf3b361d18efcf199524afa90270b6065fa0da8d534456f9
+    .codex/agents/code-reviewer.toml: sha256:bcc88bb17cd8d93beade278ef78d6a77546dff96650e5a7fa1b276a8099a8946
+    .codex/agents/debugger.toml: sha256:b2e38d365b03123fff698a925174e547aa7b9350decf4b0315cc6968fa2fdbd2
+    .codex/agents/implementer.toml: sha256:d047eaf959dd22ad97106a32241d32c4fc54ba4bdb0311fbbb5051d05f110180
+    .codex/agents/refactorer.toml: sha256:45795603c269f3c5c105675e4b49514516780665a0ce6fb33cdc8e726bf0ca5e
+    .codex/agents/security-reviewer.toml: sha256:1fb611b5b8307c0961845afd9a2e4423589ad4f91a132722fb1f9de2e4e15b8c
+    .codex/agents/tester.toml: sha256:a41d94b851a7b71a25f3661f668c766af7a072c2e62045e0355badeb8cdc7732
+    .codex/hooks/dev/.apm/hooks/scripts/block-dangerous-commands.sh: sha256:e7d4af93d9c74b0dfcb0e50ad9223082d5d48b540ab7e26afe4775b67938fb41
+    .codex/hooks/dev/.apm/hooks/scripts/lib/hook-target.sh: sha256:d59ef9fe8dac0265cd901b79026f977c6cdf3d50d149889cefb50cf71f5f164a
+    .codex/hooks/dev/.apm/hooks/scripts/scan-injection.sh: sha256:bd3da995d257f1a3fd1a2be3e1d248dd5551769123e57c5302ce8808976dd6bd
+  content_hash: sha256:09c33b369c0d683bab7023f9e5cc228a2892a236adb638460329cb52947289cd
   declared_license: UNLICENSED
 deployments:
 - kind: project-relative
@@ -143,7 +143,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:2abb9009396fe8b9eeb0bd9c355529321534c99298906e85787850610ddb8f7f
+  content_hash: sha256:135e4cbd16b6aaeed77b867860418bd9bc1f0e82ff281cb15848a0f4412fbee7
 - kind: project-relative
   target: claude
   value: .claude/agents/debugger.md
@@ -152,7 +152,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:2f9d23f965be8d5cdbc5adb7b72cdd112281fe57e2eda9b58be6d66a8e8fa703
+  content_hash: sha256:a6bab23aebed8d3dddb581dd7024ddaf849d138604597569a0f61f2c2ca40530
 - kind: project-relative
   target: claude
   value: .claude/agents/deep-researcher.md
@@ -173,22 +173,40 @@ deployments:
   content_hash: sha256:43e0583f0eb02cd0f52bf2a6de4bf5b061bf824d0871e067e3994cbeec145589
 - kind: project-relative
   target: claude
+  value: .claude/agents/implementer.md
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: sha256:45c285460af2254753d0e084fd196144dcf13b682c43ec42326ec4e44ca6b858
+- kind: project-relative
+  target: claude
+  value: .claude/agents/refactorer.md
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: sha256:5860e53b98dcdb78d9622cab9b7e57e50a4974b7ac3dfa7ae08b97dbda752965
+- kind: project-relative
+  target: claude
+  value: .claude/agents/security-reviewer.md
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: sha256:88fced88722b786ce56da6b5001c6d99fc67587bc403b5c64ed6f24147c2505e
+- kind: project-relative
+  target: claude
   value: .claude/agents/tester.md
   runtime: null
   scope: project
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:b020da3d6e50949a74d09fc92b520913e7bad478fa25e0c49564436044fa10e2
-- kind: project-relative
-  target: claude
-  value: .claude/hooks/dev/.apm/hooks/scripts/auto-review-gate.sh
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/agent-kit/plugins/dev
-  active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:3a084eb40ac574c8760e2070d1bd0dc968abbb95993dd39c3a4f74c77c7abe9a
+  content_hash: sha256:fb2cb8f981301c905f9571f378f8afba5c082fb57fbc85754504b736b17db8f6
 - kind: project-relative
   target: claude
   value: .claude/hooks/dev/.apm/hooks/scripts/block-dangerous-commands.sh
@@ -197,7 +215,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:47353bfb6c081cd2ed3fd4defd650981f432f93e66d30ff0c9e0594bf18763dc
+  content_hash: sha256:e7d4af93d9c74b0dfcb0e50ad9223082d5d48b540ab7e26afe4775b67938fb41
 - kind: project-relative
   target: claude
   value: .claude/hooks/dev/.apm/hooks/scripts/lib/hook-target.sh
@@ -206,25 +224,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:39667b96edcebaa836e3775e86acc4708da67029ccbdc1eda5f6648bc40a8661
-- kind: project-relative
-  target: claude
-  value: .claude/hooks/dev/.apm/hooks/scripts/lib/review-loop-receipt.sh
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/agent-kit/plugins/dev
-  active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:b73faf4c505c20f0b25a6bf143993fd224fa90c2bd0fa4d95d0ee5157a3aef6f
-- kind: project-relative
-  target: claude
-  value: .claude/hooks/dev/.apm/hooks/scripts/review-check.sh
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/agent-kit/plugins/dev
-  active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:38c2369a0d151bb117664b8ed106faf4b0ee6745462502140f68c674972540a0
+  content_hash: sha256:d59ef9fe8dac0265cd901b79026f977c6cdf3d50d149889cefb50cf71f5f164a
 - kind: project-relative
   target: claude
   value: .claude/hooks/dev/.apm/hooks/scripts/scan-injection.sh
@@ -242,7 +242,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/core
   active_owner: hiroya232/agent-kit/plugins/core
-  content_hash: sha256:d0b7024b9f132a6d4b9c165f1a05f447d351d1a0c0b948507f226489eb650139
+  content_hash: sha256:3f8b3e06fa3af8a897b5a4c4bb938cb655c161328ebe9d9704dcd0c11b60521c
 - kind: project-relative
   target: claude
   value: .claude/skills/collect-doc-links
@@ -287,7 +287,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:f2c730f172e5bad31e81e1c5f209e5de39395e2d57fa3cf0008f073c9b8447ff
+  content_hash: sha256:02874bea4ea3127e885a9d3ef3fcecbcd97ca7c49bc285b107af80f6b6785e48
 - kind: project-relative
   target: claude
   value: .claude/skills/deep-research
@@ -368,7 +368,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:1e9aef1aa96153509e72bf815abecf7557aa88827e75e7b86510df33754466b2
+  content_hash: sha256:92cd7cca184d54f8985253670f3a8058157ba35c1a3f0b81380674e3626554ef
 - kind: project-relative
   target: claude
   value: .claude/skills/proofread
@@ -407,87 +407,6 @@ deployments:
   content_hash: sha256:783ba35e095d3b1a4df2d13582e3ffa2d073d752e4c607e472e8eee355c44b0f
 - kind: project-relative
   target: claude
-  value: .claude/skills/review-loop
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/agent-kit/plugins/dev
-  active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: null
-- kind: project-relative
-  target: claude
-  value: .claude/skills/review-loop/SKILL.md
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/agent-kit/plugins/dev
-  active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:bc8a41db33070284db714a96f7f472bfe054f91d3fde0772a8dddbb50b144bca
-- kind: project-relative
-  target: claude
-  value: .claude/skills/review-loop/scripts/lib/review-loop-codex.sh
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/agent-kit/plugins/dev
-  active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:73245fa09747236b363ca9b8c9934e5cfc9933563bbbf6a851d602e579292afb
-- kind: project-relative
-  target: claude
-  value: .claude/skills/review-loop/scripts/lib/review-loop-receipt.sh
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/agent-kit/plugins/dev
-  active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:6dafecb9fb5bce3f40aa49d48f6d0c20deed65b4c056681451eac1f09273d5ee
-- kind: project-relative
-  target: claude
-  value: .claude/skills/review-loop/scripts/receipt-is-current.sh
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/agent-kit/plugins/dev
-  active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:b4ce4dfa9361d4b30ba0bae9ac50a625be4b26e243dfe4cef555d33544dc90bd
-- kind: project-relative
-  target: claude
-  value: .claude/skills/review-loop/scripts/run-confirmation.sh
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/agent-kit/plugins/dev
-  active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:61ab1d43d911afce561aada61ffbac659691c97342f8443a65bdfa745e1a5301
-- kind: project-relative
-  target: claude
-  value: .claude/skills/review-loop/scripts/run-primary.sh
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/agent-kit/plugins/dev
-  active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:d6126a32edbfa32728c0e2342034ad8a3aa615c1106e48831d07f477dafdfe2d
-- kind: project-relative
-  target: claude
-  value: .claude/skills/review-loop/scripts/write-receipt.sh
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/agent-kit/plugins/dev
-  active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:97843be4f14f86041b61b5967f3f5bfb3325941420a58d76f0f1a4569d8a1a6f
-- kind: project-relative
-  target: claude
-  value: .claude/skills/review-loop/scripts/write-scope.sh
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/agent-kit/plugins/dev
-  active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:29ebfbd6a7695374a79f283d823d9c6ea6750568184590043499ec38b5b012ec
-- kind: project-relative
-  target: claude
   value: .claude/skills/sync-projects
   runtime: null
   scope: project
@@ -504,24 +423,6 @@ deployments:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
   content_hash: sha256:f09282ae32caeda5046f14137cca3359e16bb648193cbfc52fab22abcc50610c
-- kind: project-relative
-  target: claude
-  value: .claude/skills/upstream-apm-plugin
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/agent-kit/plugins/apm
-  active_owner: hiroya232/agent-kit/plugins/apm
-  content_hash: null
-- kind: project-relative
-  target: claude
-  value: .claude/skills/upstream-apm-plugin/SKILL.md
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/agent-kit/plugins/apm
-  active_owner: hiroya232/agent-kit/plugins/apm
-  content_hash: sha256:8791bbded55ff750a9cd7b2b5e5b839306de4125c826247ca1bb98721c1d9b26
 - kind: project-relative
   target: codex
   value: .agents/skills/collect-doc-links
@@ -551,6 +452,24 @@ deployments:
   content_hash: sha256:cf2ce5ddaf32601c831ca48eac0904dec3a300e1f648dff5644f7297dc080d1a
 - kind: project-relative
   target: codex
+  value: .agents/skills/commit
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/commit/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: sha256:02874bea4ea3127e885a9d3ef3fcecbcd97ca7c49bc285b107af80f6b6785e48
+- kind: project-relative
+  target: codex
   value: .agents/skills/deep-research
   runtime: null
   scope: project
@@ -567,6 +486,69 @@ deployments:
   - hiroya232/agent-kit/plugins/core
   active_owner: hiroya232/agent-kit/plugins/core
   content_hash: sha256:82a5b85b1f9cd86e717b3539be7048d7068620b5847fc9de82c61805f8683b33
+- kind: project-relative
+  target: codex
+  value: .agents/skills/docker
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/docker/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: sha256:5814c1980a8b71517966ded8502d5ad23d01cb9562b886c03d52027e6e2e8c7b
+- kind: project-relative
+  target: codex
+  value: .agents/skills/docker/references/templates.md
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: sha256:0605d6489e05eb454b7d4b244ad1c2d9cd5cc80ef922d46f6cd46fe6831a226a
+- kind: project-relative
+  target: codex
+  value: .agents/skills/dotenvx
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/dotenvx/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: sha256:10837fd19654b968c279203cd7caef6dcf175f78e038bac73b62f101d1631766
+- kind: project-relative
+  target: codex
+  value: .agents/skills/git-worktree
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/git-worktree/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: sha256:92cd7cca184d54f8985253670f3a8058157ba35c1a3f0b81380674e3626554ef
 - kind: project-relative
   target: codex
   value: .agents/skills/proofread
@@ -605,22 +587,40 @@ deployments:
   content_hash: sha256:783ba35e095d3b1a4df2d13582e3ffa2d073d752e4c607e472e8eee355c44b0f
 - kind: project-relative
   target: codex
-  value: .agents/skills/upstream-apm-plugin
+  value: .agents/skills/sync-projects
   runtime: null
   scope: project
   owners:
-  - hiroya232/agent-kit/plugins/apm
-  active_owner: hiroya232/agent-kit/plugins/apm
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
   content_hash: null
 - kind: project-relative
   target: codex
-  value: .agents/skills/upstream-apm-plugin/SKILL.md
+  value: .agents/skills/sync-projects/SKILL.md
   runtime: null
   scope: project
   owners:
-  - hiroya232/agent-kit/plugins/apm
-  active_owner: hiroya232/agent-kit/plugins/apm
-  content_hash: sha256:8791bbded55ff750a9cd7b2b5e5b839306de4125c826247ca1bb98721c1d9b26
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: sha256:f09282ae32caeda5046f14137cca3359e16bb648193cbfc52fab22abcc50610c
+- kind: project-relative
+  target: codex
+  value: .codex/agents/code-reviewer.toml
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: sha256:bcc88bb17cd8d93beade278ef78d6a77546dff96650e5a7fa1b276a8099a8946
+- kind: project-relative
+  target: codex
+  value: .codex/agents/debugger.toml
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: sha256:b2e38d365b03123fff698a925174e547aa7b9350decf4b0315cc6968fa2fdbd2
 - kind: project-relative
   target: codex
   value: .codex/agents/deep-researcher.toml
@@ -639,3 +639,66 @@ deployments:
   - hiroya232/agent-kit/plugins/core
   active_owner: hiroya232/agent-kit/plugins/core
   content_hash: sha256:fb9087ed5e8a061c5974684ea17c4cfbad0848e5dc4d7b5211bba450d0afa5e6
+- kind: project-relative
+  target: codex
+  value: .codex/agents/implementer.toml
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: sha256:d047eaf959dd22ad97106a32241d32c4fc54ba4bdb0311fbbb5051d05f110180
+- kind: project-relative
+  target: codex
+  value: .codex/agents/refactorer.toml
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: sha256:45795603c269f3c5c105675e4b49514516780665a0ce6fb33cdc8e726bf0ca5e
+- kind: project-relative
+  target: codex
+  value: .codex/agents/security-reviewer.toml
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: sha256:1fb611b5b8307c0961845afd9a2e4423589ad4f91a132722fb1f9de2e4e15b8c
+- kind: project-relative
+  target: codex
+  value: .codex/agents/tester.toml
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: sha256:a41d94b851a7b71a25f3661f668c766af7a072c2e62045e0355badeb8cdc7732
+- kind: project-relative
+  target: codex
+  value: .codex/hooks/dev/.apm/hooks/scripts/block-dangerous-commands.sh
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: sha256:e7d4af93d9c74b0dfcb0e50ad9223082d5d48b540ab7e26afe4775b67938fb41
+- kind: project-relative
+  target: codex
+  value: .codex/hooks/dev/.apm/hooks/scripts/lib/hook-target.sh
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: sha256:d59ef9fe8dac0265cd901b79026f977c6cdf3d50d149889cefb50cf71f5f164a
+- kind: project-relative
+  target: codex
+  value: .codex/hooks/dev/.apm/hooks/scripts/scan-injection.sh
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: sha256:bd3da995d257f1a3fd1a2be3e1d248dd5551769123e57c5302ce8808976dd6bd
