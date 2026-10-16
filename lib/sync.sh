@@ -29,14 +29,10 @@ sync_files() {
   log_info "  コピー元: $SRC_PUBLIC_DIR_PATH"
   log_info "  コピー先: $DST_PUBLIC_DIR_PATH"
 
-  # リモートで実行するコマンドを、値をクォートして構築
-  local remote_cmd="rsync --checksum -arv --delete"
-  IFS=','
-  for exclude in $excludes; do
-    remote_cmd="$remote_cmd --exclude $(shq "$exclude")"
-  done
-  unset IFS
-  remote_cmd="$remote_cmd $(shq "$SRC_PUBLIC_DIR_PATH")/ $(shq "$DST_PUBLIC_DIR_PATH")"
+  local exclude_opts
+  exclude_opts="$(build_exclude_opts "$excludes" remote)"
+  local remote_cmd
+  remote_cmd="rsync --checksum -arv --delete$exclude_opts $(shq "$SRC_PUBLIC_DIR_PATH")/ $(shq "$DST_PUBLIC_DIR_PATH")"
 
   if ssh "$SRC_SSH_DESTINATION" -p "$SRC_SSH_PORT" \
     "$remote_cmd" >> "$(get_log_file)" 2>&1; then
@@ -137,10 +133,11 @@ replace_domain() {
 
   # wp-config.php の DB接続先を検証（親ディレクトリへのフォールバック防止）
   local actual_db_name
+  # ssh/wp 失敗時も set -e で無言終了せず、下の不一致エラーでログに残す
   actual_db_name=$(ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
-    "cd $(shq "$DST_PUBLIC_DIR_PATH") && wp config get DB_NAME" 2>/dev/null)
+    "cd $(shq "$DST_PUBLIC_DIR_PATH") && wp config get DB_NAME" 2>>"$(get_log_file)") || actual_db_name=""
   if [ "$actual_db_name" != "$DST_DB_NAME" ]; then
-    log_error "【失敗】wp-config.php のDB接続先が不正です（期待: $DST_DB_NAME, 実際: $actual_db_name）"
+    log_error "【失敗】wp-config.php のDB接続先が不正です（期待: ${DST_DB_NAME}, 実際: ${actual_db_name}）"
     log_error "  wp-config.php の内容を確認してください"
     return 1
   fi

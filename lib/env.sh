@@ -8,6 +8,22 @@ shq() {
   printf "'%s'" "${value//\'/\'\\\'\'}"
 }
 
+# カンマ区切りの除外パスを rsync の --exclude オプション列に変換して出力
+# 引数: $1=除外パス(カンマ区切り), $2=remote を渡すと各パスをリモートシェル向けにクォートする
+# 呼び出し側は未クォートで展開する（bash 3.2 の set -u 下で空配列が使えないため文字列で返す）
+build_exclude_opts() {
+  local IFS=','
+  local opts="" exclude
+  # shellcheck disable=SC2086
+  for exclude in $1; do
+    if [ "${2:-}" = "remote" ]; then
+      exclude="$(shq "$exclude")"
+    fi
+    opts="$opts --exclude $exclude"
+  done
+  echo "$opts"
+}
+
 # リモートで実行する mysql / mysqldump のコマンド文字列を出力する
 # DBパスワードは引数に含めず、リモートが標準入力の1行目から MYSQL_PWD に読み込む
 # 呼び出し側は、先頭にパスワード1行を付けた標準入力を渡す

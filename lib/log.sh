@@ -100,37 +100,6 @@ log_header() {
   echo -e "${COLOR_HEADER}${full_message}${COLOR_RESET}"
 }
 
-# コマンド実行結果をログ出力
-# 引数: $1=コマンド説明, $2...=実行するコマンド
-log_exec() {
-  local description="$1"
-  shift
-
-  log_info "【${description}】"
-
-  # コマンドを実行し、出力をキャプチャ
-  local output
-  local exit_code
-  output=$("$@" 2>&1)
-  exit_code=$?
-
-  # 出力があればログに記録
-  if [ -n "$output" ]; then
-    if [ -n "$LOG_FILE" ] && [ -f "$LOG_FILE" ]; then
-      echo "$output" >> "$LOG_FILE"
-    fi
-    # 画面には出力しない（冗長になるため）
-  fi
-
-  if [ "$exit_code" -eq 0 ]; then
-    log_success "【完了】"
-  else
-    log_error "【失敗】 終了コード: $exit_code"
-  fi
-
-  return "$exit_code"
-}
-
 # ログファイルのパスを取得
 get_log_file() {
   echo "$LOG_FILE"

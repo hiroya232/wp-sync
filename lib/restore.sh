@@ -95,13 +95,8 @@ restore_files() {
     fi
   fi
 
-  # 除外オプションを構築
-  local exclude_opts=""
-  IFS=','
-  for exclude in $BACKUP_EXCLUDES; do
-    exclude_opts="$exclude_opts --exclude $exclude"
-  done
-  unset IFS
+  local exclude_opts
+  exclude_opts="$(build_exclude_opts "$BACKUP_EXCLUDES")"
 
   # shellcheck disable=SC2086
   if rsync --checksum -arv --delete \
@@ -128,11 +123,7 @@ rollback() {
 
   log_header "${env_name}環境ロールバック　開始"
 
-  # .envの読み込み（まだ読み込まれていない場合）
-  if [ -z "$PRD_SSH_DESTINATION" ]; then
-    # shellcheck source=/dev/null
-    . "$SITE_DIR/.env"
-  fi
+  # ロールバックは BACKUP_COMPLETED 後（run-sync.sh が .env 読込済み）にのみ到達する
 
   setup_sync_env "$direction"
 
