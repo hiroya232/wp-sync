@@ -7,18 +7,11 @@ sync_db() {
   log_info "  コピー先: $DST_DB_NAME@$DST_DB_HOST"
 
   if ssh "$SRC_SSH_DESTINATION" -p "$SRC_SSH_PORT" \
-    mysqldump \
-    -u"$SRC_DB_USER" \
-    -p"$SRC_DB_PASSWORD" \
-    -h"$SRC_DB_HOST" \
-    "$SRC_DB_NAME" \
-    --no-tablespaces 2>/dev/null |
+    "$(remote_mysql_cmd mysqldump "$SRC_DB_USER" "$SRC_DB_HOST" "$SRC_DB_NAME" --no-tablespaces)" \
+    < <(printf '%s\n' "$SRC_DB_PASSWORD") 2>/dev/null |
+    { printf '%s\n' "$DST_DB_PASSWORD" && cat; } |
     ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
-      mysql \
-      -u"$DST_DB_USER" \
-      -p"$DST_DB_PASSWORD" \
-      -h"$DST_DB_HOST" \
-      "$DST_DB_NAME" 2>/dev/null; then
+      "$(remote_mysql_cmd mysql "$DST_DB_USER" "$DST_DB_HOST" "$DST_DB_NAME")" 2>/dev/null; then
     log_success "【完了】"
   else
     log_error "【失敗】DB同期に失敗しました"
@@ -36,23 +29,17 @@ sync_files() {
   log_info "  コピー元: $SRC_PUBLIC_DIR_PATH"
   log_info "  コピー先: $DST_PUBLIC_DIR_PATH"
 
-  # 除外オプションを構築
-  local exclude_opts=""
+  # リモートで実行するコマンドを、値をクォートして構築
+  local remote_cmd="rsync --checksum -arv --delete"
   IFS=','
   for exclude in $excludes; do
-    exclude_opts="$exclude_opts --exclude $exclude"
+    remote_cmd="$remote_cmd --exclude $(shq "$exclude")"
   done
   unset IFS
+  remote_cmd="$remote_cmd $(shq "$SRC_PUBLIC_DIR_PATH")/ $(shq "$DST_PUBLIC_DIR_PATH")"
 
-  # shellcheck disable=SC2086
   if ssh "$SRC_SSH_DESTINATION" -p "$SRC_SSH_PORT" \
-    rsync \
-        --checksum \
-        -arv \
-        --delete \
-        $exclude_opts \
-        "$SRC_PUBLIC_DIR_PATH"/ \
-        "$DST_PUBLIC_DIR_PATH" >> "$(get_log_file)" 2>&1; then
+    "$remote_cmd" >> "$(get_log_file)" 2>&1; then
     log_success "【完了】"
   else
     log_error "【失敗】ファイル同期に失敗しました"
@@ -129,7 +116,7 @@ detect_preserve_constants() {
 backup_wp_config() {
   log_info "【コピー先のwp-config.phpを退避】"
   if ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
-    "cp '$DST_PUBLIC_DIR_PATH/wp-config.php' '$DST_PUBLIC_DIR_PATH/$WP_CONFIG_TMP_FILE'" \
+    "cp $(shq "$DST_PUBLIC_DIR_PATH/wp-config.php") $(shq "$DST_PUBLIC_DIR_PATH/$WP_CONFIG_TMP_FILE")" \
     >> "$(get_log_file)" 2>&1; then
     log_success "【完了】"
   else
@@ -142,7 +129,7 @@ backup_wp_config() {
 # DST_SSH_DESTINATION / DST_SSH_PORT / DST_PUBLIC_DIR_PATH / WP_CONFIG_TMP_FILE を参照
 remove_wp_config_backup() {
   ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
-    "rm -f '$DST_PUBLIC_DIR_PATH/$WP_CONFIG_TMP_FILE'" >> "$(get_log_file)" 2>&1
+    "rm -f $(shq "$DST_PUBLIC_DIR_PATH/$WP_CONFIG_TMP_FILE")" >> "$(get_log_file)" 2>&1
 }
 
 # ドメインを置換
@@ -155,7 +142,7 @@ replace_domain() {
   # wp-config.php の DB接続先を検証（親ディレクトリへのフォールバック防止）
   local actual_db_name
   actual_db_name=$(ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
-    "cd \"$DST_PUBLIC_DIR_PATH\" && wp config get DB_NAME" 2>/dev/null)
+    "cd $(shq "$DST_PUBLIC_DIR_PATH") && wp config get DB_NAME" 2>/dev/null)
   if [ "$actual_db_name" != "$DST_DB_NAME" ]; then
     log_error "【失敗】wp-config.php のDB接続先が不正です（期待: $DST_DB_NAME, 実際: $actual_db_name）"
     log_error "  wp-config.php の内容を確認してください"
@@ -163,8 +150,8 @@ replace_domain() {
   fi
 
   if ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
-    "cd \"$DST_PUBLIC_DIR_PATH\" && \
-     wp search-replace \"https://${SRC_DOMAIN}\" \"https://${DST_DOMAIN}\" --all-tables" \
+    "cd $(shq "$DST_PUBLIC_DIR_PATH") && \
+     wp search-replace $(shq "https://${SRC_DOMAIN}") $(shq "https://${DST_DOMAIN}") --all-tables" \
     >> "$(get_log_file)" 2>&1; then
     log_success "【完了】"
   else

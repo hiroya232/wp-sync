@@ -5,13 +5,16 @@ setup_basic_auth() {
   log_info "【Basic認証の設定】"
   log_info "  対象: $DST_PUBLIC_DIR_PATH"
 
+  local htaccess
+  htaccess=$(shq "$DST_PUBLIC_DIR_PATH/.htaccess")
+
   if {
     ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
-        "sed -i '/^[[:space:]]*$/d' \"$DST_PUBLIC_DIR_PATH/.htaccess\""
+        "sed -i '/^[[:space:]]*$/d' $htaccess"
     ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
-        "echo -e \"\n\" >> \"$DST_PUBLIC_DIR_PATH/.htaccess\""
+        "echo -e \"\n\" >> $htaccess"
     ssh <"$SITE_DIR/.htaccess-basic-auth" "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
-        "cat >> \"$DST_PUBLIC_DIR_PATH\"/.htaccess"
+        "cat >> $htaccess"
     scp -P "$DST_SSH_PORT" \
         "$SITE_DIR/.htpasswd" \
         "${DST_SSH_DESTINATION}:.htpasswd"
@@ -28,18 +31,22 @@ remove_basic_auth() {
   log_info "【Basic認証の設定削除】"
   log_info "  対象: $DST_PUBLIC_DIR_PATH"
 
+  local htaccess htaccess_tmp
+  htaccess=$(shq "$DST_PUBLIC_DIR_PATH/.htaccess")
+  htaccess_tmp=$(shq "$DST_PUBLIC_DIR_PATH/.htaccess.tmp")
+
   # 空行は全行に一致してしまうため除外し、-x で行全体が一致する行だけを削除する
   # パターンは標準入力で渡し、リモートには何も転送しない
   if {
     grep -v '^[[:space:]]*$' "$SITE_DIR/.htaccess-basic-auth" |
       ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
         " \
-          grep -vxFf - \"$DST_PUBLIC_DIR_PATH\"/.htaccess >\"$DST_PUBLIC_DIR_PATH\"/.htaccess.tmp ; \
+          grep -vxFf - $htaccess >$htaccess_tmp ; \
           [ \$? -le 1 ] && \
-          mv \"$DST_PUBLIC_DIR_PATH\"/.htaccess.tmp \"$DST_PUBLIC_DIR_PATH\"/.htaccess \
+          mv $htaccess_tmp $htaccess \
         " &&
       ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
-        "sed -i '/^[[:space:]]*$/d' \"$DST_PUBLIC_DIR_PATH/.htaccess\""
+        "sed -i '/^[[:space:]]*$/d' $htaccess"
   } >> "$(get_log_file)" 2>&1; then
     log_success "【完了】"
   else

@@ -34,13 +34,11 @@ backup_db() {
   log_info "【DBをバックアップ】"
   log_info "  出力先: $DST_DB_DUMP_FILE_PATH"
 
+  # 標準出力だけをダンプに書き、警告やエラーはログに残す
   if ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
-    mysqldump \
-    -u"$DST_DB_USER" \
-    -p"$DST_DB_PASSWORD" \
-    -h"$DST_DB_HOST" \
-    "$DST_DB_NAME" \
-    --no-tablespaces >"$DST_DB_DUMP_FILE_PATH" 2>&1; then
+    "$(remote_mysql_cmd mysqldump "$DST_DB_USER" "$DST_DB_HOST" "$DST_DB_NAME" --no-tablespaces)" \
+    < <(printf '%s\n' "$DST_DB_PASSWORD") \
+    >"$DST_DB_DUMP_FILE_PATH" 2>>"$(get_log_file)"; then
     log_success "【完了】"
   else
     log_error "【失敗】DBバックアップに失敗しました"
