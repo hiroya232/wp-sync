@@ -13,6 +13,16 @@ _find_backup_zip() {
   echo "$latest"
 }
 
+# バックアップZIPから指定メンバーを展開し、出力をログに追記する
+# 引数: $1=展開先ディレクトリ, $2=ZIPファイルのパス, $3=展開するメンバー
+_extract_from_backup_zip() {
+  local tmp_dir="$1" zip_file="$2" member="$3"
+  if ! (cd "$tmp_dir" && unzip -o "${zip_file##*/}" "$member") >> "$(get_log_file)" 2>&1; then
+    log_error "ZIP解凍に失敗しました: $zip_file"
+    return 1
+  fi
+}
+
 # バックアップ完了フラグ
 BACKUP_COMPLETED=false
 
@@ -42,16 +52,7 @@ restore_db() {
     latest_zip="$(_find_backup_zip)"
     if [ -n "$latest_zip" ]; then
       log_info "ZIPからダンプファイルを解凍中: $latest_zip"
-      local tmp_dir="${DST_DB_DUMP_FILE_PATH%/*}"
-      local dump_base="${DST_DB_DUMP_FILE_PATH##*/}"
-      local log_file unzip_output
-      log_file="$(get_log_file)"
-      if ! unzip_output=$(cd "$tmp_dir" && unzip -o "${latest_zip##*/}" "$dump_base" 2>&1); then
-        [ -n "$log_file" ] && echo "$unzip_output" >> "$log_file"
-        log_error "ZIP解凍に失敗しました: $latest_zip"
-        return 1
-      fi
-      [ -n "$log_file" ] && echo "$unzip_output" >> "$log_file"
+      _extract_from_backup_zip "${DST_DB_DUMP_FILE_PATH%/*}" "$latest_zip" "${DST_DB_DUMP_FILE_PATH##*/}" || return 1
     else
       log_error "ダンプファイルが見つかりません: $DST_DB_DUMP_FILE_PATH"
       return 1
@@ -80,14 +81,7 @@ restore_files() {
     if [ -n "$latest_zip" ]; then
       log_info "ZIPからファイルバックアップを解凍中: $latest_zip"
       local tmp_dir="${DST_FILE_BACKUP_DIR_PATH%/*}"
-      local log_file unzip_output
-      log_file="$(get_log_file)"
-      if ! unzip_output=$(cd "$tmp_dir" && unzip -o "${latest_zip##*/}" "public_html/*" 2>&1); then
-        [ -n "$log_file" ] && echo "$unzip_output" >> "$log_file"
-        log_error "ZIP解凍に失敗しました: $latest_zip"
-        return 1
-      fi
-      [ -n "$log_file" ] && echo "$unzip_output" >> "$log_file"
+      _extract_from_backup_zip "$tmp_dir" "$latest_zip" "public_html/*" || return 1
       mv "${tmp_dir}/public_html" "$DST_FILE_BACKUP_DIR_PATH"
     else
       log_error "バックアップディレクトリが見つかりません: $DST_FILE_BACKUP_DIR_PATH"
@@ -114,18 +108,11 @@ restore_files() {
 # 引数: $1=方向（stg-to-prd または prd-to-stg）
 rollback() {
   local direction="$1"
-  local env_name
-  if [ "$direction" = "stg-to-prd" ]; then
-    env_name="本番"
-  else
-    env_name="ステージング"
-  fi
-
-  log_header "${env_name}環境ロールバック　開始"
 
   # ロールバックは BACKUP_COMPLETED 後（run-sync.sh が .env 読込済み）にのみ到達する
-
   setup_sync_env "$direction"
+
+  log_header "${DST_LABEL}環境ロールバック　開始"
 
   local rollback_failed=false
 
@@ -138,7 +125,7 @@ rollback() {
   fi
 
   if [ "$rollback_failed" = true ]; then
-    log_header "${env_name}環境ロールバック　失敗"
+    log_header "${DST_LABEL}環境ロールバック　失敗"
     log_error "手動でリストアが必要です"
     log_error "バックアップファイル:"
     log_error "  DB: $DST_DB_DUMP_FILE_PATH"
@@ -146,7 +133,7 @@ rollback() {
     return 1
   fi
 
-  log_header "${env_name}環境ロールバック　完了"
+  log_header "${DST_LABEL}環境ロールバック　完了"
 }
 
 # エラー時のロールバック処理

@@ -7,14 +7,8 @@ set -euo pipefail
 . "$WP_SYNC_DIR/lib/log.sh"
 . "$WP_SYNC_DIR/lib/env.sh"
 
-# カンマ区切りの各プラグイン名をクォートしてスペース区切りにする
-plugins=""
 # shellcheck disable=SC2153
-IFS=',' read -ra plugin_list <<<"$PLUGINS"
-for plugin in ${plugin_list[@]+"${plugin_list[@]}"}; do
-  plugin="${plugin//[[:space:]]/}"
-  plugins="$plugins $(shq "$plugin")"
-done
+plugins="$(quote_plugin_list "$PLUGINS")"
 stg_dir=$(shq "$STG_PUBLIC_DIR_PATH")
 
 # WordPress キャッシュをクリア（Redis含む全オブジェクトキャッシュ）

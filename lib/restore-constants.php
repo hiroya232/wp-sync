@@ -20,13 +20,12 @@ foreach ($constants as $constant) {
     $pattern = '/^[ \t]*define\s*\(\s*\'' . preg_quote($constant, '/') . '\'.*/m';
 
     if (preg_match($pattern, $tmp_content, $match)) {
+        $replacement = $match[0];
         if (preg_match($pattern, $wp_content)) {
-            $replacement = $match[0];
             $wp_content = preg_replace_callback($pattern, function() use ($replacement) {
                 return $replacement;
             }, $wp_content, 1);
         } else {
-            $replacement = $match[0];
             $wp_content = preg_replace_callback(
                 '/^(if\s*\(\s*!\s*defined)/m', function($m) use ($replacement) {
                     return $replacement . "\n" . $m[0];

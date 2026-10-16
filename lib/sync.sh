@@ -67,13 +67,11 @@ _run_remote_php() {
 # DST_SSH_DESTINATION / DST_SSH_PORT / DST_PUBLIC_DIR_PATH / WP_CONFIG_TMP_FILE を参照
 restore_wp_config_constants() {
   local preserve_constants="$1"
-  local script_dir
-  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
   log_info "【wp-config.phpの環境固有定数を復元】"
   log_info "  対象: $DST_PUBLIC_DIR_PATH/wp-config.php"
 
-  if _run_remote_php "$DST_SSH_DESTINATION" "$DST_SSH_PORT" "$script_dir/restore-constants.php" \
+  if _run_remote_php "$DST_SSH_DESTINATION" "$DST_SSH_PORT" "$WP_SYNC_DIR/lib/restore-constants.php" \
     "$preserve_constants" "$DST_PUBLIC_DIR_PATH/$WP_CONFIG_TMP_FILE" "$DST_PUBLIC_DIR_PATH/wp-config.php" \
     >> "$(get_log_file)"; then
     log_success "【完了】"
@@ -86,11 +84,8 @@ restore_wp_config_constants() {
 # wp-config.phpの環境固有定数を動的検出
 # DST_SSH_DESTINATION / DST_SSH_PORT / SRC_PUBLIC_DIR_PATH / DST_PUBLIC_DIR_PATH / WP_CONFIG_TMP_FILE を参照
 detect_preserve_constants() {
-  local script_dir
-  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
   local result
-  result=$(_run_remote_php "$DST_SSH_DESTINATION" "$DST_SSH_PORT" "$script_dir/diff-constants.php" \
+  result=$(_run_remote_php "$DST_SSH_DESTINATION" "$DST_SSH_PORT" "$WP_SYNC_DIR/lib/diff-constants.php" \
     "$SRC_PUBLIC_DIR_PATH/wp-config.php" \
     "$DST_PUBLIC_DIR_PATH/$WP_CONFIG_TMP_FILE")
   local exit_code=$?
