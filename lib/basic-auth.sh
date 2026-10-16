@@ -28,18 +28,17 @@ remove_basic_auth() {
   log_info "【Basic認証の設定削除】"
   log_info "  対象: $DST_PUBLIC_DIR_PATH"
 
+  # 空行は全行に一致してしまうため除外し、-x で行全体が一致する行だけを削除する
+  # パターンは標準入力で渡し、リモートには何も転送しない
   if {
-    scp -P "$DST_SSH_PORT" \
-        "$SITE_DIR/.htaccess-basic-auth" \
-        "$SITE_DIR/.env" \
-        "$DST_PUBLIC_DIR_SCP_PATH" &&
+    grep -v '^[[:space:]]*$' "$SITE_DIR/.htaccess-basic-auth" |
       ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
         " \
-          grep -vFf \"$DST_PUBLIC_DIR_PATH\"/.htaccess-basic-auth \"$DST_PUBLIC_DIR_PATH\"/.htaccess >\"$DST_PUBLIC_DIR_PATH\"/.htaccess.tmp && \
-          mv \"$DST_PUBLIC_DIR_PATH\"/.htaccess.tmp \"$DST_PUBLIC_DIR_PATH\"/.htaccess ; \
-          rm \"$DST_PUBLIC_DIR_PATH\"/.htaccess-basic-auth \"$DST_PUBLIC_DIR_PATH\"/.env \
-        "
-    ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
+          grep -vxFf - \"$DST_PUBLIC_DIR_PATH\"/.htaccess >\"$DST_PUBLIC_DIR_PATH\"/.htaccess.tmp ; \
+          [ \$? -le 1 ] && \
+          mv \"$DST_PUBLIC_DIR_PATH\"/.htaccess.tmp \"$DST_PUBLIC_DIR_PATH\"/.htaccess \
+        " &&
+      ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
         "sed -i '/^[[:space:]]*$/d' \"$DST_PUBLIC_DIR_PATH/.htaccess\""
   } >> "$(get_log_file)" 2>&1; then
     log_success "【完了】"
