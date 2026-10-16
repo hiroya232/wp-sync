@@ -63,35 +63,25 @@ case "$action" in
     echo "サイト設定を作成しました: $SITE_DIR"
     echo "$SITE_DIR/.env を編集して接続情報を設定してください。"
     ;;
-  prd-to-stg)
+  prd-to-stg|stg-to-prd)
     if [ ! -d "$SITE_DIR" ]; then
       echo "エラー: $SITE_DIR が見つかりません。" >&2
       echo "先に wp-sync init $domain を実行してください。" >&2
       exit 1
     fi
-    init_log "prd-to-stg"
-    set_restore_direction "prd-to-stg"
-    log_info "本番 → ステージング同期を開始します..."
-    log_info "ログファイル: $(get_log_file)"
-    echo ""
-    # shellcheck source=/dev/null
-    . "$WP_SYNC_DIR/scripts/run-sync.sh" "prd-to-stg"
-    log_success "本番 → ステージング同期が完了しました"
-    ;;
-  stg-to-prd)
-    if [ ! -d "$SITE_DIR" ]; then
-      echo "エラー: $SITE_DIR が見つかりません。" >&2
-      echo "先に wp-sync init $domain を実行してください。" >&2
-      exit 1
+    if [ "$action" = "prd-to-stg" ]; then
+      sync_label="本番 → ステージング同期"
+    else
+      sync_label="ステージング → 本番同期"
     fi
-    init_log "stg-to-prd"
-    set_restore_direction "stg-to-prd"
-    log_info "ステージング → 本番同期を開始します..."
+    init_log "$action"
+    set_restore_direction "$action"
+    log_info "${sync_label}を開始します..."
     log_info "ログファイル: $(get_log_file)"
     echo ""
     # shellcheck source=/dev/null
-    . "$WP_SYNC_DIR/scripts/run-sync.sh" "stg-to-prd"
-    log_success "ステージング → 本番同期が完了しました"
+    . "$WP_SYNC_DIR/scripts/run-sync.sh" "$action"
+    log_success "${sync_label}が完了しました"
     ;;
   -h|--help|help)
     echo "wp-sync - WordPress環境同期ツール"
