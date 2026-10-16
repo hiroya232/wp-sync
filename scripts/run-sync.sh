@@ -31,26 +31,14 @@ if [ "$DIRECTION" = "stg-to-prd" ]; then
 fi
 
 # バックアップ（同期先環境をバックアップ）
-if [ "$DIRECTION" = "stg-to-prd" ]; then
-  log_header "本番環境バックアップ　開始"
-else
-  log_header "ステージング環境バックアップ　開始"
-fi
+log_header "${DST_LABEL}環境バックアップ　開始"
 backup_db
 backup_files
 mark_backup_completed
-if [ "$DIRECTION" = "stg-to-prd" ]; then
-  log_header "本番環境バックアップ　完了"
-else
-  log_header "ステージング環境バックアップ　完了"
-fi
+log_header "${DST_LABEL}環境バックアップ　完了"
 
 # 同期処理
-if [ "$DIRECTION" = "stg-to-prd" ]; then
-  log_header "ステージング→本番環境同期　開始"
-else
-  log_header "本番→ステージング環境同期　開始"
-fi
+log_header "${SRC_LABEL}→${DST_LABEL}環境同期　開始"
 sync_db
 WP_CONFIG_TMP_FILE="wp-config-tmp.php"
 backup_wp_config || exit 1
@@ -69,11 +57,7 @@ else
   remove_wp_config_backup
 fi
 replace_domain
-if [ "$DIRECTION" = "stg-to-prd" ]; then
-  log_header "ステージング→本番環境同期　完了"
-else
-  log_header "本番→ステージング環境同期　完了"
-fi
+log_header "${SRC_LABEL}→${DST_LABEL}環境同期　完了"
 
 # バックアップのアーカイブ
 archive_backup

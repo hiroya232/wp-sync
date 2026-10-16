@@ -39,15 +39,29 @@ remote_mysql_cmd() {
   done
 }
 
-# 同期方向に応じて SRC_* / DST_* 中間変数を一括セット
+# カンマ区切りのプラグイン名から空白を除き、クォートして先頭スペース付きのスペース区切りで出力する
+# 引数: $1=プラグイン名(カンマ区切り)
+quote_plugin_list() {
+  local plugin_list plugin
+  IFS=',' read -ra plugin_list <<<"$1"
+  for plugin in ${plugin_list[@]+"${plugin_list[@]}"}; do
+    plugin="${plugin//[[:space:]]/}"
+    printf ' %s' "$(shq "$plugin")"
+  done
+}
+
+# 同期方向に応じて SRC_* / DST_* 中間変数と SRC_LABEL / DST_LABEL（本番・ステージングの表示名）を一括セット
 # 引数: $1=方向（stg-to-prd または prd-to-stg）
 setup_sync_env() {
   local direction="$1"
   local src dst
+  # shellcheck disable=SC2034
   if [ "$direction" = "stg-to-prd" ]; then
     src="STG"; dst="PRD"
+    SRC_LABEL="ステージング"; DST_LABEL="本番"
   else
     src="PRD"; dst="STG"
+    SRC_LABEL="本番"; DST_LABEL="ステージング"
   fi
 
   # バックアップパスのデフォルト設定（eval ループで DST_* に展開される）
