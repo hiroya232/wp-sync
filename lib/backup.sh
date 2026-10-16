@@ -40,7 +40,7 @@ backup_db() {
     -p"$DST_DB_PASSWORD" \
     -h"$DST_DB_HOST" \
     "$DST_DB_NAME" \
-    --no-tablespaces >"$DST_DB_DUMP_FILE_PATH" 2>&1; then
+    --no-tablespaces >"$DST_DB_DUMP_FILE_PATH" 2>>"$(get_log_file)"; then
     log_success "【完了】"
   else
     log_error "【失敗】DBバックアップに失敗しました"

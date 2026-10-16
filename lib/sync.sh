@@ -12,13 +12,13 @@ sync_db() {
     -p"$SRC_DB_PASSWORD" \
     -h"$SRC_DB_HOST" \
     "$SRC_DB_NAME" \
-    --no-tablespaces 2>/dev/null |
+    --no-tablespaces 2>>"$(get_log_file)" |
     ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
       mysql \
       -u"$DST_DB_USER" \
       -p"$DST_DB_PASSWORD" \
       -h"$DST_DB_HOST" \
-      "$DST_DB_NAME" 2>/dev/null; then
+      "$DST_DB_NAME" 2>>"$(get_log_file)"; then
     log_success "【完了】"
   else
     log_error "【失敗】DB同期に失敗しました"
