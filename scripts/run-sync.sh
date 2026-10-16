@@ -55,6 +55,10 @@ sync_db
 WP_CONFIG_TMP_FILE="wp-config-tmp.php"
 backup_wp_config || exit 1
 sync_files "$WP_CONFIG_TMP_FILE,$STG_DOMAIN,$EXCLUDES"
+# 本番の .htaccess で上書きされたステージングを、同期直後に保護する
+if [ "$DIRECTION" = "prd-to-stg" ]; then
+  setup_basic_auth
+fi
 log_info "【wp-config.phpの環境固有定数を自動検出】"
 PRESERVE_CONSTANTS=$(detect_preserve_constants) || exit 1
 log_info "  保持する定数: ${PRESERVE_CONSTANTS:-（なし）}"
@@ -77,13 +81,9 @@ archive_backup
 # 後処理
 log_header "後処理　開始"
 
-# Basic認証の処理（方向によって異なる）
+# 本番環境からBasic認証を削除（ステージングへの設定は同期直後に実施済み）
 if [ "$DIRECTION" = "stg-to-prd" ]; then
-  # 本番環境からBasic認証を削除
   remove_basic_auth
-else
-  # ステージング環境にBasic認証を設定
-  setup_basic_auth
 fi
 
 # プラグイン無効化（両方向で共通）
