@@ -7,18 +7,11 @@ sync_db() {
   log_info "  コピー先: $DST_DB_NAME@$DST_DB_HOST"
 
   if ssh "$SRC_SSH_DESTINATION" -p "$SRC_SSH_PORT" \
-    mysqldump \
-    -u"$SRC_DB_USER" \
-    -p"$SRC_DB_PASSWORD" \
-    -h"$SRC_DB_HOST" \
-    "$SRC_DB_NAME" \
-    --no-tablespaces 2>>"$(get_log_file)" |
+    "$(remote_mysql_cmd mysqldump "$SRC_DB_USER" "$SRC_DB_HOST" "$SRC_DB_NAME" --no-tablespaces)" \
+    < <(printf '%s\n' "$SRC_DB_PASSWORD") 2>/dev/null |
+    { printf '%s\n' "$DST_DB_PASSWORD" && cat; } |
     ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
-      mysql \
-      -u"$DST_DB_USER" \
-      -p"$DST_DB_PASSWORD" \
-      -h"$DST_DB_HOST" \
-      "$DST_DB_NAME" 2>>"$(get_log_file)"; then
+      "$(remote_mysql_cmd mysql "$DST_DB_USER" "$DST_DB_HOST" "$DST_DB_NAME")" 2>/dev/null; then
     log_success "【完了】"
   else
     log_error "【失敗】DB同期に失敗しました"
@@ -37,17 +30,12 @@ sync_files() {
   log_info "  コピー先: $DST_PUBLIC_DIR_PATH"
 
   local exclude_opts
-  exclude_opts="$(build_exclude_opts "$excludes")"
+  exclude_opts="$(build_exclude_opts "$excludes" remote)"
+  local remote_cmd
+  remote_cmd="rsync --checksum -arv --delete$exclude_opts $(shq "$SRC_PUBLIC_DIR_PATH")/ $(shq "$DST_PUBLIC_DIR_PATH")"
 
-  # shellcheck disable=SC2086
   if ssh "$SRC_SSH_DESTINATION" -p "$SRC_SSH_PORT" \
-    rsync \
-        --checksum \
-        -arv \
-        --delete \
-        $exclude_opts \
-        "$SRC_PUBLIC_DIR_PATH"/ \
-        "$DST_PUBLIC_DIR_PATH" >> "$(get_log_file)" 2>&1; then
+    "$remote_cmd" >> "$(get_log_file)" 2>&1; then
     log_success "【完了】"
   else
     log_error "【失敗】ファイル同期に失敗しました"
@@ -55,7 +43,8 @@ sync_files() {
   fi
 }
 
-# PHPスクリプトをリモートに転送して実行する共通ヘルパー
+# PHPスクリプトをリモートで実行する共通ヘルパー
+# スクリプトは ssh の標準入力で渡し、リモートに一時ファイルを作らない
 # 引数: $1=SSH接続先, $2=SSHポート, $3=ローカルPHPスクリプト, [追加引数...]
 # 標準出力は呼び出し元に返す。標準エラーはログに追記。
 _run_remote_php() {
@@ -63,20 +52,15 @@ _run_remote_php() {
   local ssh_port="$2"
   local local_script="$3"
   shift 3
-  local remote_script="/tmp/wp_php_$$.php"
-
-  if ! scp -P "$ssh_port" "$local_script" "$ssh_dest:$remote_script" >> "$(get_log_file)" 2>&1; then
-    return 1
-  fi
 
   local quoted_args=""
   for arg in "$@"; do
-    quoted_args="$quoted_args $(printf '%q' "$arg")"
+    quoted_args="$quoted_args $(shq "$arg")"
   done
 
   ssh "$ssh_dest" -p "$ssh_port" \
-    "php '$remote_script'$quoted_args; ec=\$?; rm -f '$remote_script'; exit \$ec" \
-    2>>"$(get_log_file)"
+    "php --$quoted_args" \
+    <"$local_script" 2>>"$(get_log_file)"
 }
 
 # wp-config.phpの環境固有定数を復元
@@ -124,7 +108,7 @@ detect_preserve_constants() {
 backup_wp_config() {
   log_info "【コピー先のwp-config.phpを退避】"
   if ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
-    "cp '$DST_PUBLIC_DIR_PATH/wp-config.php' '$DST_PUBLIC_DIR_PATH/$WP_CONFIG_TMP_FILE'" \
+    "cp $(shq "$DST_PUBLIC_DIR_PATH/wp-config.php") $(shq "$DST_PUBLIC_DIR_PATH/$WP_CONFIG_TMP_FILE")" \
     >> "$(get_log_file)" 2>&1; then
     log_success "【完了】"
   else
@@ -137,7 +121,7 @@ backup_wp_config() {
 # DST_SSH_DESTINATION / DST_SSH_PORT / DST_PUBLIC_DIR_PATH / WP_CONFIG_TMP_FILE を参照
 remove_wp_config_backup() {
   ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
-    "rm -f '$DST_PUBLIC_DIR_PATH/$WP_CONFIG_TMP_FILE'" >> "$(get_log_file)" 2>&1
+    "rm -f $(shq "$DST_PUBLIC_DIR_PATH/$WP_CONFIG_TMP_FILE")" >> "$(get_log_file)" 2>&1
 }
 
 # ドメインを置換
@@ -151,16 +135,16 @@ replace_domain() {
   local actual_db_name
   # ssh/wp 失敗時も set -e で無言終了せず、下の不一致エラーでログに残す
   actual_db_name=$(ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
-    "cd \"$DST_PUBLIC_DIR_PATH\" && wp config get DB_NAME" 2>>"$(get_log_file)") || actual_db_name=""
+    "cd $(shq "$DST_PUBLIC_DIR_PATH") && wp config get DB_NAME" 2>>"$(get_log_file)") || actual_db_name=""
   if [ "$actual_db_name" != "$DST_DB_NAME" ]; then
-    log_error "【失敗】wp-config.php のDB接続先が不正です（期待: $DST_DB_NAME, 実際: $actual_db_name）"
+    log_error "【失敗】wp-config.php のDB接続先が不正です（期待: ${DST_DB_NAME}, 実際: ${actual_db_name}）"
     log_error "  wp-config.php の内容を確認してください"
     return 1
   fi
 
   if ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
-    "cd \"$DST_PUBLIC_DIR_PATH\" && \
-     wp search-replace \"https://${SRC_DOMAIN}\" \"https://${DST_DOMAIN}\" --all-tables" \
+    "cd $(shq "$DST_PUBLIC_DIR_PATH") && \
+     wp search-replace $(shq "https://${SRC_DOMAIN}") $(shq "https://${DST_DOMAIN}") --all-tables" \
     >> "$(get_log_file)" 2>&1; then
     log_success "【完了】"
   else

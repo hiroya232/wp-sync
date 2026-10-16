@@ -58,12 +58,9 @@ restore_db() {
     fi
   fi
 
-  if ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
-    mysql \
-    -u"$DST_DB_USER" \
-    -p"$DST_DB_PASSWORD" \
-    -h"$DST_DB_HOST" \
-    "$DST_DB_NAME" < "$DST_DB_DUMP_FILE_PATH" 2>>"$(get_log_file)"; then
+  if { printf '%s\n' "$DST_DB_PASSWORD" && cat "$DST_DB_DUMP_FILE_PATH"; } |
+    ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
+      "$(remote_mysql_cmd mysql "$DST_DB_USER" "$DST_DB_HOST" "$DST_DB_NAME")" 2>/dev/null; then
     log_success "【完了】DBリストア成功"
   else
     log_error "【失敗】DBリストアに失敗しました"
@@ -127,6 +124,7 @@ rollback() {
   log_header "${env_name}環境ロールバック　開始"
 
   # ロールバックは BACKUP_COMPLETED 後（run-sync.sh が .env 読込済み）にのみ到達する
+
   setup_sync_env "$direction"
 
   local rollback_failed=false
