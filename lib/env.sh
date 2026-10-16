@@ -1,9 +1,11 @@
 #!/bin/bash
 
-# 値をリモートシェル向けにクォートして出力する
+# 値をリモートシェル向けにシングルクォートして出力する
+# リモートのログインシェルが bash でなくても解釈できるよう、$'...' 形式を使わない
 # 引数: $1=値
 shq() {
-  printf '%q' "$1"
+  local value="$1"
+  printf "'%s'" "${value//\'/\'\\\'\'}"
 }
 
 # リモートで実行する mysql / mysqldump のコマンド文字列を出力する
@@ -13,11 +15,11 @@ shq() {
 remote_mysql_cmd() {
   local cmd="$1" user="$2" host="$3" name="$4"
   shift 4
-  printf 'IFS= read -r MYSQL_PWD && export MYSQL_PWD && exec %s -u%q -h%q %q' \
-    "$cmd" "$user" "$host" "$name"
+  printf 'IFS= read -r MYSQL_PWD && export MYSQL_PWD && exec %s -u%s -h%s %s' \
+    "$cmd" "$(shq "$user")" "$(shq "$host")" "$(shq "$name")"
   local arg
   for arg in "$@"; do
-    printf ' %q' "$arg"
+    printf ' %s' "$(shq "$arg")"
   done
 }
 
