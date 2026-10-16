@@ -102,7 +102,7 @@ source ~/.zshrc
 
 ### 3. サイト設定を初期化
 
-同期対象のドメインごとに、`wp-sync init <domain>`でサイト設定を作成します。
+同期対象のドメインごとに、`wp-sync init <domain>`でサイト設定を作成します。  
 `template`ディレクトリの中身が`sites/<domain>/`にコピーされ、`.env.example`は`.env`にリネームされます。
 
 ```bash
