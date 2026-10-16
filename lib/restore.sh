@@ -98,13 +98,8 @@ restore_files() {
     fi
   fi
 
-  # 除外オプションを構築
-  local exclude_opts=""
-  IFS=','
-  for exclude in $BACKUP_EXCLUDES; do
-    exclude_opts="$exclude_opts --exclude $exclude"
-  done
-  unset IFS
+  local exclude_opts
+  exclude_opts="$(build_exclude_opts "$BACKUP_EXCLUDES")"
 
   # shellcheck disable=SC2086
   if rsync --checksum -arv --delete \

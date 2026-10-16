@@ -36,13 +36,8 @@ sync_files() {
   log_info "  コピー元: $SRC_PUBLIC_DIR_PATH"
   log_info "  コピー先: $DST_PUBLIC_DIR_PATH"
 
-  # 除外オプションを構築
-  local exclude_opts=""
-  IFS=','
-  for exclude in $excludes; do
-    exclude_opts="$exclude_opts --exclude $exclude"
-  done
-  unset IFS
+  local exclude_opts
+  exclude_opts="$(build_exclude_opts "$excludes")"
 
   # shellcheck disable=SC2086
   if ssh "$SRC_SSH_DESTINATION" -p "$SRC_SSH_PORT" \

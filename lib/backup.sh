@@ -54,13 +54,8 @@ backup_files() {
   log_info "  コピー元: $DST_PUBLIC_DIR_SCP_PATH"
   log_info "  コピー先: $DST_FILE_BACKUP_DIR_PATH"
 
-  # 除外オプションを構築
-  local exclude_opts=""
-  IFS=','
-  for exclude in $BACKUP_EXCLUDES; do
-    exclude_opts="$exclude_opts --exclude $exclude"
-  done
-  unset IFS
+  local exclude_opts
+  exclude_opts="$(build_exclude_opts "$BACKUP_EXCLUDES")"
 
   # shellcheck disable=SC2086
   if rsync \

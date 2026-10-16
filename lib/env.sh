@@ -1,5 +1,18 @@
 #!/bin/bash
 
+# カンマ区切りの除外パスを rsync の --exclude オプション列に変換して出力
+# 引数: $1=除外パス(カンマ区切り)
+# 呼び出し側は未クォートで展開する（bash 3.2 の set -u 下で空配列が使えないため文字列で返す）
+build_exclude_opts() {
+  local IFS=','
+  local opts="" exclude
+  # shellcheck disable=SC2086
+  for exclude in $1; do
+    opts="$opts --exclude $exclude"
+  done
+  echo "$opts"
+}
+
 # 同期方向に応じて SRC_* / DST_* 中間変数を一括セット
 # 引数: $1=方向（stg-to-prd または prd-to-stg）
 setup_sync_env() {
