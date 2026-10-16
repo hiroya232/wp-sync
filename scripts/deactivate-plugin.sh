@@ -5,15 +5,22 @@ set -euo pipefail
 
 . "$SITE_DIR/.env"
 . "$WP_SYNC_DIR/lib/log.sh"
+. "$WP_SYNC_DIR/lib/env.sh"
 
-# カンマ区切りをスペース区切りに変換
+# カンマ区切りの各プラグイン名をクォートしてスペース区切りにする
+plugins=""
 # shellcheck disable=SC2153
-plugins="${PLUGINS//,/ }"
+IFS=',' read -ra plugin_list <<<"$PLUGINS"
+for plugin in ${plugin_list[@]+"${plugin_list[@]}"}; do
+  plugin="${plugin//[[:space:]]/}"
+  plugins="$plugins $(shq "$plugin")"
+done
+stg_dir=$(shq "$STG_PUBLIC_DIR_PATH")
 
 # WordPress キャッシュをクリア（Redis含む全オブジェクトキャッシュ）
 log_info "【WordPress キャッシュを削除】"
 if ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
-    "cd \"$STG_PUBLIC_DIR_PATH\" && wp cache flush --allow-root" >/dev/null 2>&1; then
+    "cd $stg_dir && wp cache flush --allow-root" >/dev/null 2>&1; then
   log_success "【完了】"
 else
   log_error "【失敗】WordPress キャッシュの削除に失敗しました"
@@ -23,7 +30,7 @@ fi
 if [[ "$PLUGINS" == *"redis-cache"* ]]; then
     log_info "【Redis Object Cache を無効化】"
     if ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
-        "cd \"$STG_PUBLIC_DIR_PATH\" && wp redis disable --allow-root" >/dev/null 2>&1; then
+        "cd $stg_dir && wp redis disable --allow-root" >/dev/null 2>&1; then
       log_success "【完了】"
     else
       log_error "【失敗】Redis Object Cache の無効化に失敗しました"
@@ -34,7 +41,7 @@ fi
 if [[ "$PLUGINS" == *"autoptimize"* ]]; then
     log_info "【Autoptimize キャッシュを削除】"
     if ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
-        "cd \"$STG_PUBLIC_DIR_PATH\" && wp autoptimize clear --allow-root" >/dev/null 2>&1; then
+        "cd $stg_dir && wp autoptimize clear --allow-root" >/dev/null 2>&1; then
       log_success "【完了】"
     else
       log_error "【失敗】Autoptimize キャッシュの削除に失敗しました"
@@ -45,7 +52,7 @@ fi
 if [[ "$PLUGINS" == *"wp-optimize"* ]]; then
     log_info "【WP-Optimize キャッシュを削除】"
     if ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
-        "rm -rf \"$STG_PUBLIC_DIR_PATH/wp-content/cache/wpo-cache/\"" >/dev/null 2>&1; then
+        "rm -rf $(shq "$STG_PUBLIC_DIR_PATH/wp-content/cache/wpo-cache/")" >/dev/null 2>&1; then
       log_success "【完了】"
     else
       log_error "【失敗】WP-Optimize キャッシュの削除に失敗しました"
@@ -53,9 +60,8 @@ if [[ "$PLUGINS" == *"wp-optimize"* ]]; then
 fi
 
 log_info "【プラグインを無効化】"
-# shellcheck disable=SC2086 # $plugins は意図的なワードスプリット（複数プラグイン名を個別引数として渡す）
 if ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
-    "cd \"$STG_PUBLIC_DIR_PATH\" && wp plugin deactivate $plugins --allow-root" >/dev/null 2>&1; then
+    "cd $stg_dir && wp plugin deactivate$plugins --allow-root" >/dev/null 2>&1; then
   log_success "【完了】"
 else
   log_error "【失敗】プラグインの無効化に失敗しました"

@@ -1,5 +1,5 @@
 <?php
-// Usage: php diff-constants.php <src_wp_config> <dst_wp_config>
+// Usage: php -- <src_wp_config> <dst_wp_config> (スクリプトは標準入力で渡す)
 // 両ファイルに存在し値が異なる定数名をCSVで標準出力する
 $src_path = $argv[1];
 $dst_path = $argv[2];
@@ -8,7 +8,7 @@ $src_content = file_get_contents($src_path);
 $dst_content = file_get_contents($dst_path);
 
 if ($src_content === false || $dst_content === false) {
-    fwrite(STDERR, "ERROR: Cannot read input files\n");
+    file_put_contents('php://stderr', "ERROR: Cannot read input files\n");
     exit(1);
 }
 

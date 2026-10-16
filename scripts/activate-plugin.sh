@@ -5,15 +5,21 @@ set -euo pipefail
 
 . "$SITE_DIR/.env"
 . "$WP_SYNC_DIR/lib/log.sh"
+. "$WP_SYNC_DIR/lib/env.sh"
 
-# カンマ区切りをスペース区切りに変換
+# カンマ区切りの各プラグイン名をクォートしてスペース区切りにする
+plugins=""
 # shellcheck disable=SC2153
-plugins="${PLUGINS//,/ }"
+IFS=',' read -ra plugin_list <<<"$PLUGINS"
+for plugin in ${plugin_list[@]+"${plugin_list[@]}"}; do
+  plugin="${plugin//[[:space:]]/}"
+  plugins="$plugins $(shq "$plugin")"
+done
+stg_dir=$(shq "$STG_PUBLIC_DIR_PATH")
 
 log_info "【プラグインを有効化】"
-# shellcheck disable=SC2086 # $plugins は意図的なワードスプリット（複数プラグイン名を個別引数として渡す）
 if ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
-    "cd \"$STG_PUBLIC_DIR_PATH\" && wp plugin activate $plugins --allow-root" >/dev/null 2>&1; then
+    "cd $stg_dir && wp plugin activate$plugins --allow-root" >/dev/null 2>&1; then
   log_success "【完了】"
 else
   log_error "【失敗】プラグインの有効化に失敗しました"
@@ -23,7 +29,7 @@ fi
 if [[ "$PLUGINS" == *"redis-cache"* ]]; then
     log_info "【Redis Object Cache を有効化】"
     if ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
-        "cd \"$STG_PUBLIC_DIR_PATH\" && wp redis enable --allow-root" >/dev/null 2>&1; then
+        "cd $stg_dir && wp redis enable --allow-root" >/dev/null 2>&1; then
       log_success "【完了】"
     else
       log_error "【失敗】Redis Object Cache の有効化に失敗しました"

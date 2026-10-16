@@ -1,5 +1,28 @@
 #!/bin/bash
 
+# 値をリモートシェル向けにシングルクォートして出力する
+# リモートのログインシェルが bash でなくても解釈できるよう、$'...' 形式を使わない
+# 引数: $1=値
+shq() {
+  local value="$1"
+  printf "'%s'" "${value//\'/\'\\\'\'}"
+}
+
+# リモートで実行する mysql / mysqldump のコマンド文字列を出力する
+# DBパスワードは引数に含めず、リモートが標準入力の1行目から MYSQL_PWD に読み込む
+# 呼び出し側は、先頭にパスワード1行を付けた標準入力を渡す
+# 引数: $1=コマンド, $2=DBユーザー, $3=DBホスト, $4=DB名, [追加引数...]
+remote_mysql_cmd() {
+  local cmd="$1" user="$2" host="$3" name="$4"
+  shift 4
+  printf 'IFS= read -r MYSQL_PWD && export MYSQL_PWD && exec %s -u%s -h%s %s' \
+    "$cmd" "$(shq "$user")" "$(shq "$host")" "$(shq "$name")"
+  local arg
+  for arg in "$@"; do
+    printf ' %s' "$(shq "$arg")"
+  done
+}
+
 # 同期方向に応じて SRC_* / DST_* 中間変数を一括セット
 # 引数: $1=方向（stg-to-prd または prd-to-stg）
 setup_sync_env() {
