@@ -47,7 +47,8 @@ sync_files() {
   fi
 }
 
-# PHPスクリプトをリモートに転送して実行する共通ヘルパー
+# PHPスクリプトをリモートで実行する共通ヘルパー
+# スクリプトは ssh の標準入力で渡し、リモートに一時ファイルを作らない
 # 引数: $1=SSH接続先, $2=SSHポート, $3=ローカルPHPスクリプト, [追加引数...]
 # 標準出力は呼び出し元に返す。標準エラーはログに追記。
 _run_remote_php() {
@@ -55,20 +56,15 @@ _run_remote_php() {
   local ssh_port="$2"
   local local_script="$3"
   shift 3
-  local remote_script="/tmp/wp_php_$$.php"
-
-  if ! scp -P "$ssh_port" "$local_script" "$ssh_dest:$remote_script" >> "$(get_log_file)" 2>&1; then
-    return 1
-  fi
 
   local quoted_args=""
   for arg in "$@"; do
-    quoted_args="$quoted_args $(printf '%q' "$arg")"
+    quoted_args="$quoted_args $(shq "$arg")"
   done
 
   ssh "$ssh_dest" -p "$ssh_port" \
-    "php '$remote_script'$quoted_args; ec=\$?; rm -f '$remote_script'; exit \$ec" \
-    2>>"$(get_log_file)"
+    "php --$quoted_args" \
+    <"$local_script" 2>>"$(get_log_file)"
 }
 
 # wp-config.phpの環境固有定数を復元
