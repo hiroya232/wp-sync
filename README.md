@@ -147,6 +147,8 @@ wp-sync/
 | PRD_DB_PASSWORD | 本番環境のDBパスワード | （パスワード） |
 | STG_DB_PASSWORD | ステージング環境のDBパスワード | （パスワード） |
 | EXCLUDES | 同期対象外のパス（カンマ区切り） | wp-content/cache,wp-content/uploads/backwpup-*-logs |
+| PRD_PUBLIC_DIR_SCP_PATH | 本番環境の公開ディレクトリのSCP形式パス（ユーザ名@ホスト名:パス）で、バックアップ・リストア時のrsyncに使用 | xs◯◯◯◯◯◯@xs◯◯◯◯◯◯.xsrv.jp:/home/xs◯◯◯◯◯◯/example.com/public_html |
+| STG_PUBLIC_DIR_SCP_PATH | ステージング環境の公開ディレクトリのSCP形式パス | xs◯◯◯◯◯◯@xs◯◯◯◯◯◯.xsrv.jp:/home/xs◯◯◯◯◯◯/example.com/public_html/stg.example.com |
 | PLUGINS | ステージング環境で無効化するプラグイン（カンマ区切り） | wordfence,redis-cache,wp-optimize,autoptimize |
 
 ### Basic認証設定
@@ -155,10 +157,11 @@ wp-sync/
 
 #### .htaccess-basic-auth
 
-`AuthUserFile`にサーバ上での`.htpasswd`の絶対パスを設定します。
+`.htpasswd`はステージング環境のSSHユーザのホームディレクトリ直下（`~/.htpasswd`）にアップロードされます。  
+`AuthUserFile`にはその絶対パスを設定します。  
 
 ```apache
-AuthUserFile "/home/xxxxxxx/example.com/.htpasswd/stg.example.com"
+AuthUserFile "/home/xxxxxxx/.htpasswd"
 AuthName "Member Site"
 AuthType BASIC
 require valid-user
@@ -166,8 +169,8 @@ require valid-user
 
 #### .htpasswd
 
-ステージング環境で使用するBasic認証のユーザ名・パスワードを設定します。
-サーバ上の`.htpasswd`を参照して同様の値を設定してください。
+ステージング環境で使用するBasic認証のユーザ名・パスワードを設定します。  
+本番→ステージング同期のたびに、サーバ上の`~/.htpasswd`がこのファイルの内容で上書きされます。  
 
 ```text
 {ユーザ名}:{暗号化されたパスワード}

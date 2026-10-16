@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 # shellcheck source=/dev/null
-# ステージング環境では無効化するプラグイン（本番→ステージング同期後にステージング環境で無効化）
+# ステージング環境では無効化するプラグイン（両方向の同期後にステージング環境で無効化）
 
 . "$SITE_DIR/.env"
 . "$WP_SYNC_DIR/lib/log.sh"
