@@ -147,7 +147,7 @@ wp-sync/
 | PRD_DB_PASSWORD | 本番環境のDBパスワード | （パスワード） |
 | STG_DB_PASSWORD | ステージング環境のDBパスワード | （パスワード） |
 | EXCLUDES | 同期対象外のパス（カンマ区切り） | wp-content/cache,wp-content/uploads/backwpup-*-logs |
-| PRD_PUBLIC_DIR_SCP_PATH | 本番環境の公開ディレクトリのSCP形式パス（ユーザ名@ホスト名:パス）。バックアップ・リストア時のrsyncで使用 | xs◯◯◯◯◯◯@xs◯◯◯◯◯◯.xsrv.jp:/home/xs◯◯◯◯◯◯/example.com/public_html |
+| PRD_PUBLIC_DIR_SCP_PATH | 本番環境の公開ディレクトリのSCP形式パス（ユーザ名@ホスト名:パス）で、バックアップ・リストア時のrsyncに使用 | xs◯◯◯◯◯◯@xs◯◯◯◯◯◯.xsrv.jp:/home/xs◯◯◯◯◯◯/example.com/public_html |
 | STG_PUBLIC_DIR_SCP_PATH | ステージング環境の公開ディレクトリのSCP形式パス | xs◯◯◯◯◯◯@xs◯◯◯◯◯◯.xsrv.jp:/home/xs◯◯◯◯◯◯/example.com/public_html/stg.example.com |
 | PLUGINS | ステージング環境で無効化するプラグイン（カンマ区切り） | wordfence,redis-cache,wp-optimize,autoptimize |
 
