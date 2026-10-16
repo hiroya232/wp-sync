@@ -24,7 +24,6 @@ init_log() {
   mkdir -p "$LOG_DIR"
   LOG_FILE="$LOG_DIR/${timestamp}_${process_name}.log"
 
-  # ログファイルにヘッダーを出力
   {
     echo "========================================"
     echo "wp-sync ログ"
@@ -34,7 +33,6 @@ init_log() {
     echo ""
   } > "$LOG_FILE"
 
-  # 古いログを削除
   rotate_logs
 }
 
@@ -63,27 +61,22 @@ _log() {
   echo -e "${color}[$timestamp] [$level]${COLOR_RESET} $message"
 }
 
-# INFOログ
 log_info() {
   _log "INFO" "$COLOR_INFO" "$1"
 }
 
-# WARNログ
 log_warn() {
   _log "WARN" "$COLOR_WARN" "$1"
 }
 
-# ERRORログ
 log_error() {
   _log "ERROR" "$COLOR_ERROR" "$1"
 }
 
-# SUCCESSログ
 log_success() {
   _log "SUCCESS" "$COLOR_SUCCESS" "$1"
 }
 
-# ヘッダー出力（セクション区切り用）
 log_header() {
   local message="$1"
   local separator="------------------------------"
@@ -100,12 +93,10 @@ log_header() {
   echo -e "${COLOR_HEADER}${full_message}${COLOR_RESET}"
 }
 
-# ログファイルのパスを取得
 get_log_file() {
   echo "$LOG_FILE"
 }
 
-# ログ終了処理
 finalize_log() {
   if [ -n "$LOG_FILE" ] && [ -f "$LOG_FILE" ]; then
     {

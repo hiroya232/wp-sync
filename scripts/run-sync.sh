@@ -2,7 +2,6 @@
 # shellcheck source=/dev/null
 # 本番とステージングが同じサーバーにあることが前提
 
-# 方向の取得（prd-to-stg または stg-to-prd）
 DIRECTION="$1"
 
 if [ "$DIRECTION" != "prd-to-stg" ] && [ "$DIRECTION" != "stg-to-prd" ]; then
@@ -10,18 +9,14 @@ if [ "$DIRECTION" != "prd-to-stg" ] && [ "$DIRECTION" != "stg-to-prd" ]; then
   exit 1
 fi
 
-# 設定ファイルの読み込み
 . "$SITE_DIR/.env"
 
-# ライブラリの読み込み
 . "$WP_SYNC_DIR/lib/backup.sh"
 . "$WP_SYNC_DIR/lib/sync.sh"
 . "$WP_SYNC_DIR/lib/basic-auth.sh"
 
-# 中間変数のセットアップ
 setup_sync_env "$DIRECTION"
 
-# 前処理（stg-to-prd の場合のみ）
 if [ "$DIRECTION" = "stg-to-prd" ]; then
   log_header "前処理　開始"
   log_info "【本番環境で必要なプラグインの有効化】"
@@ -30,14 +25,12 @@ if [ "$DIRECTION" = "stg-to-prd" ]; then
   log_header "前処理　完了"
 fi
 
-# バックアップ（同期先環境をバックアップ）
 log_header "${DST_LABEL}環境バックアップ　開始"
 backup_db
 backup_files
 mark_backup_completed
 log_header "${DST_LABEL}環境バックアップ　完了"
 
-# 同期処理
 log_header "${SRC_LABEL}→${DST_LABEL}環境同期　開始"
 sync_db
 WP_CONFIG_TMP_FILE="wp-config-tmp.php"

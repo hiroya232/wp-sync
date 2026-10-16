@@ -20,7 +20,6 @@ else
   log_error "【失敗】WordPress キャッシュの削除に失敗しました"
 fi
 
-# Redis Object Cache を無効化（redis-cache がリストに含まれている場合）
 if [[ "$PLUGINS" == *"redis-cache"* ]]; then
     log_info "【Redis Object Cache を無効化】"
     if ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
@@ -31,7 +30,6 @@ if [[ "$PLUGINS" == *"redis-cache"* ]]; then
     fi
 fi
 
-# Autoptimize キャッシュを削除（autoptimize がリストに含まれている場合）
 if [[ "$PLUGINS" == *"autoptimize"* ]]; then
     log_info "【Autoptimize キャッシュを削除】"
     if ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
@@ -42,7 +40,6 @@ if [[ "$PLUGINS" == *"autoptimize"* ]]; then
     fi
 fi
 
-# WP-Optimize キャッシュを削除（wp-optimize がリストに含まれている場合）
 if [[ "$PLUGINS" == *"wp-optimize"* ]]; then
     log_info "【WP-Optimize キャッシュを削除】"
     if ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \
