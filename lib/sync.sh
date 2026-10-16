@@ -154,8 +154,9 @@ replace_domain() {
 
   # wp-config.php の DB接続先を検証（親ディレクトリへのフォールバック防止）
   local actual_db_name
+  # ssh/wp 失敗時も set -e で無言終了せず、下の不一致エラーでログに残す
   actual_db_name=$(ssh "$DST_SSH_DESTINATION" -p "$DST_SSH_PORT" \
-    "cd \"$DST_PUBLIC_DIR_PATH\" && wp config get DB_NAME" 2>/dev/null)
+    "cd \"$DST_PUBLIC_DIR_PATH\" && wp config get DB_NAME" 2>>"$(get_log_file)") || actual_db_name=""
   if [ "$actual_db_name" != "$DST_DB_NAME" ]; then
     log_error "【失敗】wp-config.php のDB接続先が不正です（期待: $DST_DB_NAME, 実際: $actual_db_name）"
     log_error "  wp-config.php の内容を確認してください"
