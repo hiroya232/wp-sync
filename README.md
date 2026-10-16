@@ -11,7 +11,7 @@ WordPressサイトのステージング環境と本番環境間で、DB・ファ
 - **Basic認証**: ステージング環境へのBasic認証を自動設定/解除
 - **プラグイン管理**: 環境に応じたプラグインの自動有効化/無効化
 - **キャッシュ削除**: Redis, Autoptimize, WP-Optimizeのキャッシュを自動削除
-- **ログ出力**: `.wp-sync/logs/`に保存（30日間保持）
+- **ログ出力**: `sites/<domain>/logs/`に保存（30日間保持）
 - **トランザクション処理**: エラー発生時に自動ロールバック
 
 ## 前提条件
@@ -56,24 +56,25 @@ wp-sync/
 ├── bin/
 │   └── wp-sync                 # ラッパースクリプト（エントリーポイント）
 ├── scripts/
-│   └── sync.sh                 # 同期処理（方向を引数で受け取る）
-├── lib/
+│   ├── run-sync.sh             # 同期処理（方向を引数で受け取る）
 │   ├── activate-plugin.sh      # プラグイン有効化
+│   └── deactivate-plugin.sh    # プラグイン無効化
+├── lib/
 │   ├── backup.sh               # バックアップ処理
 │   ├── basic-auth.sh           # Basic認証設定
-│   ├── deactivate-plugin.sh    # プラグイン無効化
+│   ├── env.sh                  # 同期方向に応じた変数のセットアップ
 │   ├── log.sh                  # ログ出力
 │   ├── diff-constants.php      # wp-config.php差分定数検出
 │   ├── restore-constants.php   # wp-config.php環境固有定数復元
 │   ├── restore.sh              # ロールバック処理
 │   └── sync.sh                 # 同期処理
-├── template/                   # 作業ディレクトリにコピーする設定
+├── template/                   # `wp-sync init`が sites/<domain>/ にコピーする設定
 │   ├── .env.example            # 環境変数テンプレート
-│   ├── .gitignore
 │   ├── .htaccess-basic-auth    # Basic認証用.htaccess
 │   ├── .htpasswd               # Basic認証用パスワード
 │   ├── logs/.gitkeep
 │   └── tmp/.gitkeep
+├── sites/                      # サイト別設定（`wp-sync init`で作成。git管理外）
 └── README.md
 ```
 
@@ -99,48 +100,33 @@ export PATH="/path/to/wp-sync/bin:$PATH"
 source ~/.zshrc
 ```
 
-### 3. 作業ディレクトリを作成
+### 3. サイト設定を初期化
 
-wp-syncはローカルの作業ディレクトリから実行します。同期対象のWordPressサイトごとに作業ディレクトリを用意してください。
-
-```bash
-mkdir ~/path/to/workdir
-cd ~/path/to/workdir
-```
-
-> **Note**: 作業ディレクトリの場所・名前は任意です。管理しやすい場所に作成してください。
-
-### 4. 設定ファイルをコピー
-
-`template`ディレクトリの中身を、作業ディレクトリに`.wp-sync`という名前でコピーします。
+同期対象のドメインごとに、`wp-sync init <domain>`でサイト設定を作成します。
+`template`ディレクトリの中身が`sites/<domain>/`にコピーされ、`.env.example`は`.env`にリネームされます。
 
 ```bash
-cp -r /path/to/wp-sync/template ./.wp-sync
+wp-sync init example.com
 ```
 
-コピー後のディレクトリ構成：
+作成されるディレクトリ構成：
 
 ```text
-workdir/                     ← 作成した作業ディレクトリ
-└── .wp-sync/                ← WordPress固有設定ファイル用ディレクトリ
-    ├── .env.example
-    ├── .gitignore
-    ├── .htaccess-basic-auth
-    ├── .htpasswd
-    ├── logs/
-    └── tmp/
+wp-sync/
+└── sites/
+    └── example.com/             ← WordPress固有設定ファイル用ディレクトリ
+        ├── .env
+        ├── .htaccess-basic-auth
+        ├── .htpasswd
+        ├── logs/
+        └── tmp/
 ```
 
 ## WordPress固有値の設定
 
 ### 環境変数（.env）
 
-`.env.example`を`.env`にコピーして編集します。
-
-```bash
-cd .wp-sync
-cp .env.example .env
-```
+`sites/<domain>/.env`を編集します。
 
 | 環境変数名 | 設定内容 | 設定例 |
 | --- | --- | --- |
@@ -195,29 +181,28 @@ require valid-user
 ssh-add ~/.ssh/id_rsa  # 秘密鍵のパスを指定
 ```
 
-作業ディレクトリで実行：
-
 ```bash
-wp-sync prd-to-stg    # 本番 → ステージング同期
-wp-sync stg-to-prd    # ステージング → 本番同期
-wp-sync help          # ヘルプ表示
+wp-sync init <domain>         # サイト設定を初期化
+wp-sync prd-to-stg <domain>   # 本番 → ステージング同期
+wp-sync stg-to-prd <domain>   # ステージング → 本番同期
+wp-sync help                  # ヘルプ表示
 ```
 
 ### 実行例
 
 ```bash
-$ wp-sync prd-to-stg
+$ wp-sync prd-to-stg example.com
 [2025-12-27 16:58:00] [INFO] 本番 → ステージング同期を開始します...
-[2025-12-27 16:58:00] [INFO] ログファイル: .wp-sync/logs/2025-12-27_165800_prd-to-stg.log
+[2025-12-27 16:58:00] [INFO] ログファイル: /path/to/wp-sync/sites/example.com/logs/20251227_165800_prd-to-stg.log
 
 
 ------------------------------ステージング環境バックアップ　開始------------------------------
 [2025-12-27 16:58:00] [INFO] 【DBをバックアップ】
-[2025-12-27 16:58:00] [INFO]   出力先: ./.wp-sync/tmp/stg_dump.sql
+[2025-12-27 16:58:00] [INFO]   出力先: /path/to/wp-sync/sites/example.com/tmp/stg_dump.sql
 [2025-12-27 16:58:00] [SUCCESS] 【完了】
 [2025-12-27 16:58:00] [INFO] 【public_htmlをバックアップ】
 [2025-12-27 16:58:00] [INFO]   コピー元: xxxxxxx@xxxxxxx.xsrv.jp:/home/xxxxxxx/example.com/public_html/stg.example.com
-[2025-12-27 16:58:00] [INFO]   コピー先: ./.wp-sync/tmp/stg_public_html
+[2025-12-27 16:58:00] [INFO]   コピー先: /path/to/wp-sync/sites/example.com/tmp/stg_public_html
 
 　・
 　・
