@@ -19,7 +19,6 @@ else
   log_error "【失敗】プラグインの有効化に失敗しました"
 fi
 
-# Redis Object Cache を有効化（redis-cache がリストに含まれている場合）
 if [[ "$PLUGINS" == *"redis-cache"* ]]; then
     log_info "【Redis Object Cache を有効化】"
     if ssh "$STG_SSH_DESTINATION" -p "$STG_SSH_PORT" \

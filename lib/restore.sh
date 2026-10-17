@@ -23,13 +23,11 @@ _extract_from_backup_zip() {
   fi
 }
 
-# バックアップ完了フラグ
 BACKUP_COMPLETED=false
 
 # リストア時の同期方向（stg-to-prd または prd-to-stg）
 RESTORE_DIRECTION=""
 
-# バックアップ完了をマーク
 mark_backup_completed() {
   BACKUP_COMPLETED=true
   log_info "バックアップ完了をマークしました"
@@ -136,7 +134,6 @@ rollback() {
   log_header "${DST_LABEL}環境ロールバック　完了"
 }
 
-# エラー時のロールバック処理
 perform_rollback() {
   if [ "$BACKUP_COMPLETED" != true ]; then
     log_warn "バックアップが完了していないため、ロールバックをスキップします"
