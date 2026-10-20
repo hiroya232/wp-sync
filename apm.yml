@@ -7,7 +7,7 @@ author: hiroya-akeoka
 # Accepted values: agent-skills, antigravity, claude, codex, copilot, cursor, gemini, grok-build, kiro, opencode, windsurf
 targets:
   - claude
-  - codex
+  - cursor
 dependencies:
   apm:
     - hiroya232/agent-kit/plugins/core
