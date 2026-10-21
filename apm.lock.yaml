@@ -4,7 +4,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: core
   host: github.com
-  resolved_commit: 20387dec8d85f9b69aa253cb15fd5e153ba8cd3d
+  resolved_commit: 07d9010bc6a0570e90e59937fa21ae408e8d6434
   version: 1.1.1
   virtual_path: plugins/core
   is_virtual: true
@@ -46,7 +46,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: dev
   host: github.com
-  resolved_commit: 20387dec8d85f9b69aa253cb15fd5e153ba8cd3d
+  resolved_commit: 07d9010bc6a0570e90e59937fa21ae408e8d6434
   version: 6.0.2
   virtual_path: plugins/dev
   is_virtual: true
