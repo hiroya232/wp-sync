@@ -4,7 +4,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: core
   host: github.com
-  resolved_commit: 26365bde5f6bdec7dc48fc29347652ff0bca5b8f
+  resolved_commit: 881f632f21278c7e0eeb7733a6c1c761c1da09d3
   version: 1.1.1
   virtual_path: plugins/core
   is_virtual: true
@@ -46,7 +46,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: dev
   host: github.com
-  resolved_commit: 26365bde5f6bdec7dc48fc29347652ff0bca5b8f
+  resolved_commit: 881f632f21278c7e0eeb7733a6c1c761c1da09d3
   version: 6.0.2
   virtual_path: plugins/dev
   is_virtual: true
@@ -61,7 +61,6 @@ dependencies:
   - .claude/agents/refactorer.md
   - .claude/agents/security-reviewer.md
   - .claude/agents/tester.md
-  - .claude/hooks/dev/.apm/hooks/scripts/dispatch-gate.sh
   - .claude/hooks/dev/.apm/hooks/scripts/lib/hook-target.sh
   - .claude/hooks/dev/.apm/hooks/scripts/scan-injection.sh
   - .claude/rules/development-policy.md
@@ -101,26 +100,25 @@ dependencies:
     .claude/agents/refactorer.md: sha256:0f81ac9edd0b2e247907800456abe261ed2184f7b017ddcccd9c9c72c19a00ab
     .claude/agents/security-reviewer.md: sha256:1ca05a0b9c2d35d4b0db8996c7c29d842a2f07442185b2912336b2aae7c9b23a
     .claude/agents/tester.md: sha256:c775c594f15fd039dd9c5e21b08d3ff66d76bec005be80e9e693a4bcc8ce8f6f
-    .claude/hooks/dev/.apm/hooks/scripts/dispatch-gate.sh: sha256:0e41c709cbbc87e6f8fa7f81f01f216d30428a1d43b06b89a7b3b7f4b153785b
     .claude/hooks/dev/.apm/hooks/scripts/lib/hook-target.sh: sha256:d59ef9fe8dac0265cd901b79026f977c6cdf3d50d149889cefb50cf71f5f164a
     .claude/hooks/dev/.apm/hooks/scripts/scan-injection.sh: sha256:830f747458b599c80323dce731c1eeae88948b1b7630e7bce7e6713a0abea07a
     .claude/rules/development-policy.md: sha256:dd49e2fd3731d83fdcff5d8a02b92ac0cd53a26d88a528f2045737a90ff2d36b
     .claude/rules/testing.md: sha256:3b417cdf378226d5266c5a826f9bd273ac3c429c6b5ce1008a0b54df265ca94a
-    .claude/rules/toolchain.md: sha256:0c7095f644e7432a15401e09e1306add33fbfe654cdb5e7481cc880ef87f5b4a
-    .claude/skills/auto-handle-pr-review/SKILL.md: sha256:e6bd5b8dbf554325bc67d9f1bf2b85d1912dcdb26c90b73d6eb36be5eacbc918
+    .claude/rules/toolchain.md: sha256:3bada046efb69051cea17a22d6e5e2651cb21a6d33a1eda77ee3e495a4d5548b
+    .claude/skills/auto-handle-pr-review/SKILL.md: sha256:acda9a22d6b5fabf09b5343f52fec481f025d250d9c3dfae2b91e06dbd55d5c4
     .claude/skills/auto-handle-pr-review/scripts/watch-pr.sh: sha256:3aa99fc2baa4381189a8fed10f21fede4b6e0bd7913cb16daf657ac064aef588
     .claude/skills/commit/SKILL.md: sha256:e14cee981b6c226d6ac07ebf671acdbb01a20e4983083cbc1e5b0911b30957c7
     .claude/skills/create-pr/SKILL.md: sha256:895fa50d321161832506f61a1a890d7016b38660ffd3ba077931119c7a057cb2
-    .claude/skills/dispatch/SKILL.md: sha256:c1c038829ac269956d555d2ff4231d03b792f187bf91f01cc0300c0a26ddc26d
+    .claude/skills/dispatch/SKILL.md: sha256:eecfb70d239ea5343e2f0bf868c994c6b6424cb3fcaace58b484b985ebbbba78
     .claude/skills/docker/SKILL.md: sha256:5814c1980a8b71517966ded8502d5ad23d01cb9562b886c03d52027e6e2e8c7b
     .claude/skills/docker/references/templates.md: sha256:0605d6489e05eb454b7d4b244ad1c2d9cd5cc80ef922d46f6cd46fe6831a226a
     .claude/skills/dotenvx/SKILL.md: sha256:10837fd19654b968c279203cd7caef6dcf175f78e038bac73b62f101d1631766
-    .claude/skills/git-worktree/SKILL.md: sha256:e32997422e2ebbe2744805d5b594d551b4d3fd985abc8fa20fcd2290a150e985
+    .claude/skills/git-worktree/SKILL.md: sha256:cb66b184203ed0d7d3946ab26dc8e981b84e99ba38700adb28bc9a13add9b76e
     .claude/skills/manage-issues/SKILL.md: sha256:ff3196f620a127c2754f5db049051dd74257154a93c3af29effb5fed92751686
     .claude/skills/review-plan/SKILL.md: sha256:db2291f31363e93e7ac9efc80dcde0871ddb5da192b23c45737a2b5cf52501cf
     .claude/skills/sync-projects/SKILL.md: sha256:646a37577a7af1cf3154ac93dc5f40bb5e7247de22d855841721b543751354b6
     .claude/skills/upstream-apm-plugin/SKILL.md: sha256:4208a6ae300fee8ba2730898e26358c440d1e6643995d792bc2fa6980d979aed
-  content_hash: sha256:3c028964cf82dfb6d0d0d2b52402f45825ce293ee9d724287d1e9abb63f74d1d
+  content_hash: sha256:3c412f44941a5fdc2406e2141871e2590d29af0d380762f6db72a49b8a336fe4
   declared_license: UNLICENSED
 deployments:
 - kind: project-relative
@@ -269,15 +267,6 @@ deployments:
   content_hash: sha256:e3cf16c7fcb5947d329a6bdb8a304a170dce5e72c5011f442ed6653531dfb7ac
 - kind: project-relative
   target: claude
-  value: .claude/hooks/dev/.apm/hooks/scripts/dispatch-gate.sh
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/agent-kit/plugins/dev
-  active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:0e41c709cbbc87e6f8fa7f81f01f216d30428a1d43b06b89a7b3b7f4b153785b
-- kind: project-relative
-  target: claude
   value: .claude/hooks/dev/.apm/hooks/scripts/lib/hook-target.sh
   runtime: null
   scope: project
@@ -329,7 +318,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:0c7095f644e7432a15401e09e1306add33fbfe654cdb5e7481cc880ef87f5b4a
+  content_hash: sha256:3bada046efb69051cea17a22d6e5e2651cb21a6d33a1eda77ee3e495a4d5548b
 - kind: project-relative
   target: claude
   value: .claude/skills/auto-handle-pr-review
@@ -347,7 +336,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:e6bd5b8dbf554325bc67d9f1bf2b85d1912dcdb26c90b73d6eb36be5eacbc918
+  content_hash: sha256:acda9a22d6b5fabf09b5343f52fec481f025d250d9c3dfae2b91e06dbd55d5c4
 - kind: project-relative
   target: claude
   value: .claude/skills/auto-handle-pr-review/scripts/watch-pr.sh
@@ -455,7 +444,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:c1c038829ac269956d555d2ff4231d03b792f187bf91f01cc0300c0a26ddc26d
+  content_hash: sha256:eecfb70d239ea5343e2f0bf868c994c6b6424cb3fcaace58b484b985ebbbba78
 - kind: project-relative
   target: claude
   value: .claude/skills/docker
@@ -518,7 +507,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:e32997422e2ebbe2744805d5b594d551b4d3fd985abc8fa20fcd2290a150e985
+  content_hash: sha256:cb66b184203ed0d7d3946ab26dc8e981b84e99ba38700adb28bc9a13add9b76e
 - kind: project-relative
   target: claude
   value: .claude/skills/manage-issues
