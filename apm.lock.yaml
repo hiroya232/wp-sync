@@ -4,7 +4,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: core
   host: github.com
-  resolved_commit: 07d9010bc6a0570e90e59937fa21ae408e8d6434
+  resolved_commit: 26365bde5f6bdec7dc48fc29347652ff0bca5b8f
   version: 1.1.1
   virtual_path: plugins/core
   is_virtual: true
@@ -46,7 +46,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: dev
   host: github.com
-  resolved_commit: 07d9010bc6a0570e90e59937fa21ae408e8d6434
+  resolved_commit: 26365bde5f6bdec7dc48fc29347652ff0bca5b8f
   version: 6.0.2
   virtual_path: plugins/dev
   is_virtual: true
@@ -118,9 +118,9 @@ dependencies:
     .claude/skills/git-worktree/SKILL.md: sha256:e32997422e2ebbe2744805d5b594d551b4d3fd985abc8fa20fcd2290a150e985
     .claude/skills/manage-issues/SKILL.md: sha256:ff3196f620a127c2754f5db049051dd74257154a93c3af29effb5fed92751686
     .claude/skills/review-plan/SKILL.md: sha256:db2291f31363e93e7ac9efc80dcde0871ddb5da192b23c45737a2b5cf52501cf
-    .claude/skills/sync-projects/SKILL.md: sha256:dd439d4a049a7080e2a80b4d23f91f73b5e4795f1bddc05d02857d2505fb7c0f
+    .claude/skills/sync-projects/SKILL.md: sha256:646a37577a7af1cf3154ac93dc5f40bb5e7247de22d855841721b543751354b6
     .claude/skills/upstream-apm-plugin/SKILL.md: sha256:4208a6ae300fee8ba2730898e26358c440d1e6643995d792bc2fa6980d979aed
-  content_hash: sha256:5e16bd622c322d258650bfbb76fb088d7a17093def56a19e72acfec40be59953
+  content_hash: sha256:3c028964cf82dfb6d0d0d2b52402f45825ce293ee9d724287d1e9abb63f74d1d
   declared_license: UNLICENSED
 deployments:
 - kind: project-relative
@@ -608,7 +608,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:dd439d4a049a7080e2a80b4d23f91f73b5e4795f1bddc05d02857d2505fb7c0f
+  content_hash: sha256:646a37577a7af1cf3154ac93dc5f40bb5e7247de22d855841721b543751354b6
 - kind: project-relative
   target: claude
   value: .claude/skills/upstream-apm-plugin
