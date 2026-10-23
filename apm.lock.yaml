@@ -4,7 +4,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: core
   host: github.com
-  resolved_commit: e844e8b0dd6ab730d1d7df06f2426216a9059c0b
+  resolved_commit: 8e9e74cd76afeeb4ef488feaf2c1516d7aca85d1
   version: 1.1.1
   virtual_path: plugins/core
   is_virtual: true
@@ -46,7 +46,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: dev
   host: github.com
-  resolved_commit: e844e8b0dd6ab730d1d7df06f2426216a9059c0b
+  resolved_commit: 8e9e74cd76afeeb4ef488feaf2c1516d7aca85d1
   version: 6.0.2
   virtual_path: plugins/dev
   is_virtual: true
@@ -104,7 +104,7 @@ dependencies:
     .claude/hooks/dev/.apm/hooks/scripts/block-dangerous-commands.sh: sha256:865c318d856012f53e3c2ca610ff34ac0fdf3c9d6086270617c9cab079ea76ed
     .claude/hooks/dev/.apm/hooks/scripts/lib/hook-target.sh: sha256:d59ef9fe8dac0265cd901b79026f977c6cdf3d50d149889cefb50cf71f5f164a
     .claude/hooks/dev/.apm/hooks/scripts/scan-injection.sh: sha256:830f747458b599c80323dce731c1eeae88948b1b7630e7bce7e6713a0abea07a
-    .claude/rules/development-policy.md: sha256:dd49e2fd3731d83fdcff5d8a02b92ac0cd53a26d88a528f2045737a90ff2d36b
+    .claude/rules/development-policy.md: sha256:f86815918159fe83e7c4bb0bb26f4446a8dd24d9df94d561a86678d05115ea5f
     .claude/rules/testing.md: sha256:3b417cdf378226d5266c5a826f9bd273ac3c429c6b5ce1008a0b54df265ca94a
     .claude/rules/toolchain.md: sha256:3bada046efb69051cea17a22d6e5e2651cb21a6d33a1eda77ee3e495a4d5548b
     .claude/skills/auto-handle-pr-review/SKILL.md: sha256:acda9a22d6b5fabf09b5343f52fec481f025d250d9c3dfae2b91e06dbd55d5c4
@@ -119,8 +119,8 @@ dependencies:
     .claude/skills/manage-issues/SKILL.md: sha256:ff3196f620a127c2754f5db049051dd74257154a93c3af29effb5fed92751686
     .claude/skills/review-plan/SKILL.md: sha256:db2291f31363e93e7ac9efc80dcde0871ddb5da192b23c45737a2b5cf52501cf
     .claude/skills/sync-projects/SKILL.md: sha256:46e46bfce1fda92894f94b42369c4b09fea03f82a227cceedaf0926287b50e8f
-    .claude/skills/upstream-apm-plugin/SKILL.md: sha256:4208a6ae300fee8ba2730898e26358c440d1e6643995d792bc2fa6980d979aed
-  content_hash: sha256:e5e10931b52f0a71650cfd7ad2cd1e0bc720dcc1dc5d85af7e47567e7e47243b
+    .claude/skills/upstream-apm-plugin/SKILL.md: sha256:41d4f459723f94b97362a8fa4ba0bfd4f4a1e66d6625997ca76badee0a5b4a82
+  content_hash: sha256:e311b9c0ac0bc3df870b5db2ad21e9c9727a26e8a95e8f7cfe9b054a2810d861
   declared_license: UNLICENSED
 deployments:
 - kind: project-relative
@@ -311,7 +311,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:dd49e2fd3731d83fdcff5d8a02b92ac0cd53a26d88a528f2045737a90ff2d36b
+  content_hash: sha256:f86815918159fe83e7c4bb0bb26f4446a8dd24d9df94d561a86678d05115ea5f
 - kind: project-relative
   target: claude
   value: .claude/rules/testing.md
@@ -626,4 +626,4 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:4208a6ae300fee8ba2730898e26358c440d1e6643995d792bc2fa6980d979aed
+  content_hash: sha256:41d4f459723f94b97362a8fa4ba0bfd4f4a1e66d6625997ca76badee0a5b4a82
