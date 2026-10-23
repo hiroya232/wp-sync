@@ -4,7 +4,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: core
   host: github.com
-  resolved_commit: 8e9e74cd76afeeb4ef488feaf2c1516d7aca85d1
+  resolved_commit: 4529ea7cd30887df7ff60347d78730b85311aea5
   version: 1.1.1
   virtual_path: plugins/core
   is_virtual: true
@@ -46,7 +46,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: dev
   host: github.com
-  resolved_commit: 8e9e74cd76afeeb4ef488feaf2c1516d7aca85d1
+  resolved_commit: 4529ea7cd30887df7ff60347d78730b85311aea5
   version: 6.0.2
   virtual_path: plugins/dev
   is_virtual: true
@@ -81,6 +81,8 @@ dependencies:
   - .claude/skills/docker/references/templates.md
   - .claude/skills/dotenvx
   - .claude/skills/dotenvx/SKILL.md
+  - .claude/skills/edit-agent-kit
+  - .claude/skills/edit-agent-kit/SKILL.md
   - .claude/skills/git-worktree
   - .claude/skills/git-worktree/SKILL.md
   - .claude/skills/manage-issues
@@ -89,8 +91,6 @@ dependencies:
   - .claude/skills/review-plan/SKILL.md
   - .claude/skills/sync-projects
   - .claude/skills/sync-projects/SKILL.md
-  - .claude/skills/upstream-apm-plugin
-  - .claude/skills/upstream-apm-plugin/SKILL.md
   deployed_file_hashes:
     .claude/agents/code-reviewer.md: sha256:c84eacab170ec2abeb184a5c17e0845f5e511bf99b786cb239ed13927292a55e
     .claude/agents/debugger.md: sha256:52d617fceee0331dd6d5041d0b97b6b15902f4324c83c46df57251a4efffc1a7
@@ -115,12 +115,12 @@ dependencies:
     .claude/skills/docker/SKILL.md: sha256:5814c1980a8b71517966ded8502d5ad23d01cb9562b886c03d52027e6e2e8c7b
     .claude/skills/docker/references/templates.md: sha256:0605d6489e05eb454b7d4b244ad1c2d9cd5cc80ef922d46f6cd46fe6831a226a
     .claude/skills/dotenvx/SKILL.md: sha256:10837fd19654b968c279203cd7caef6dcf175f78e038bac73b62f101d1631766
+    .claude/skills/edit-agent-kit/SKILL.md: sha256:ed47efb4b901a2aa84db88d1ec397c5346ff62df82a56250b07e07c4c2f14cd2
     .claude/skills/git-worktree/SKILL.md: sha256:cb66b184203ed0d7d3946ab26dc8e981b84e99ba38700adb28bc9a13add9b76e
     .claude/skills/manage-issues/SKILL.md: sha256:ff3196f620a127c2754f5db049051dd74257154a93c3af29effb5fed92751686
     .claude/skills/review-plan/SKILL.md: sha256:db2291f31363e93e7ac9efc80dcde0871ddb5da192b23c45737a2b5cf52501cf
     .claude/skills/sync-projects/SKILL.md: sha256:46e46bfce1fda92894f94b42369c4b09fea03f82a227cceedaf0926287b50e8f
-    .claude/skills/upstream-apm-plugin/SKILL.md: sha256:41d4f459723f94b97362a8fa4ba0bfd4f4a1e66d6625997ca76badee0a5b4a82
-  content_hash: sha256:e311b9c0ac0bc3df870b5db2ad21e9c9727a26e8a95e8f7cfe9b054a2810d861
+  content_hash: sha256:59d1d8879bf5ef2e6562a619fbf721bad63b4518c46d71e6c2783c2e6a59a04b
   declared_license: UNLICENSED
 deployments:
 - kind: project-relative
@@ -503,6 +503,24 @@ deployments:
   content_hash: sha256:10837fd19654b968c279203cd7caef6dcf175f78e038bac73b62f101d1631766
 - kind: project-relative
   target: claude
+  value: .claude/skills/edit-agent-kit
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/edit-agent-kit/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/agent-kit/plugins/dev
+  active_owner: hiroya232/agent-kit/plugins/dev
+  content_hash: sha256:ed47efb4b901a2aa84db88d1ec397c5346ff62df82a56250b07e07c4c2f14cd2
+- kind: project-relative
+  target: claude
   value: .claude/skills/git-worktree
   runtime: null
   scope: project
@@ -609,21 +627,3 @@ deployments:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
   content_hash: sha256:46e46bfce1fda92894f94b42369c4b09fea03f82a227cceedaf0926287b50e8f
-- kind: project-relative
-  target: claude
-  value: .claude/skills/upstream-apm-plugin
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/agent-kit/plugins/dev
-  active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: null
-- kind: project-relative
-  target: claude
-  value: .claude/skills/upstream-apm-plugin/SKILL.md
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/agent-kit/plugins/dev
-  active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:41d4f459723f94b97362a8fa4ba0bfd4f4a1e66d6625997ca76badee0a5b4a82
