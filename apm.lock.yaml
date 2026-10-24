@@ -4,7 +4,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: core
   host: github.com
-  resolved_commit: 3f2ad48435f0acc97e882391ff8098c8e26dde81
+  resolved_commit: b438142a82b72f07dce2413925b677efa3fb4663
   version: 1.1.1
   virtual_path: plugins/core
   is_virtual: true
@@ -46,7 +46,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: dev
   host: github.com
-  resolved_commit: 3f2ad48435f0acc97e882391ff8098c8e26dde81
+  resolved_commit: b438142a82b72f07dce2413925b677efa3fb4663
   version: 6.0.2
   virtual_path: plugins/dev
   is_virtual: true
@@ -107,7 +107,7 @@ dependencies:
     .claude/rules/development-policy.md: sha256:f86815918159fe83e7c4bb0bb26f4446a8dd24d9df94d561a86678d05115ea5f
     .claude/rules/testing.md: sha256:3b417cdf378226d5266c5a826f9bd273ac3c429c6b5ce1008a0b54df265ca94a
     .claude/rules/toolchain.md: sha256:3bada046efb69051cea17a22d6e5e2651cb21a6d33a1eda77ee3e495a4d5548b
-    .claude/skills/auto-handle-pr-review/SKILL.md: sha256:acda9a22d6b5fabf09b5343f52fec481f025d250d9c3dfae2b91e06dbd55d5c4
+    .claude/skills/auto-handle-pr-review/SKILL.md: sha256:693b8c34e46b477af8da00a9abddecc8db40b3f5808bef59e98d6281ac545f98
     .claude/skills/auto-handle-pr-review/scripts/watch-pr.sh: sha256:3aa99fc2baa4381189a8fed10f21fede4b6e0bd7913cb16daf657ac064aef588
     .claude/skills/commit/SKILL.md: sha256:e14cee981b6c226d6ac07ebf671acdbb01a20e4983083cbc1e5b0911b30957c7
     .claude/skills/create-pr/SKILL.md: sha256:895fa50d321161832506f61a1a890d7016b38660ffd3ba077931119c7a057cb2
@@ -120,7 +120,7 @@ dependencies:
     .claude/skills/manage-issues/SKILL.md: sha256:ff3196f620a127c2754f5db049051dd74257154a93c3af29effb5fed92751686
     .claude/skills/review-plan/SKILL.md: sha256:db2291f31363e93e7ac9efc80dcde0871ddb5da192b23c45737a2b5cf52501cf
     .claude/skills/sync-projects/SKILL.md: sha256:617c9c2ca1fb414be33c17f0a41f3d7ed675f26a7a8cc96db4596d6f95b16a5d
-  content_hash: sha256:a99911e191162db38fe0cbe607b701c50df718ab1a43d1cb2dfdd303def97a72
+  content_hash: sha256:66e81e6e8a1f59ab3d358e895233fa947291e4f3df6b898a4d693d26e36ed0ec
   declared_license: UNLICENSED
 deployments:
 - kind: project-relative
@@ -347,7 +347,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:acda9a22d6b5fabf09b5343f52fec481f025d250d9c3dfae2b91e06dbd55d5c4
+  content_hash: sha256:693b8c34e46b477af8da00a9abddecc8db40b3f5808bef59e98d6281ac545f98
 - kind: project-relative
   target: claude
   value: .claude/skills/auto-handle-pr-review/scripts/watch-pr.sh
