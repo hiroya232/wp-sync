@@ -4,7 +4,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: core
   host: github.com
-  resolved_commit: e74d8ea29290fbe75a7dabde240177490a165f71
+  resolved_commit: 3f2ad48435f0acc97e882391ff8098c8e26dde81
   version: 1.1.1
   virtual_path: plugins/core
   is_virtual: true
@@ -46,7 +46,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: dev
   host: github.com
-  resolved_commit: e74d8ea29290fbe75a7dabde240177490a165f71
+  resolved_commit: 3f2ad48435f0acc97e882391ff8098c8e26dde81
   version: 6.0.2
   virtual_path: plugins/dev
   is_virtual: true
@@ -115,12 +115,12 @@ dependencies:
     .claude/skills/docker/SKILL.md: sha256:5814c1980a8b71517966ded8502d5ad23d01cb9562b886c03d52027e6e2e8c7b
     .claude/skills/docker/references/templates.md: sha256:0605d6489e05eb454b7d4b244ad1c2d9cd5cc80ef922d46f6cd46fe6831a226a
     .claude/skills/dotenvx/SKILL.md: sha256:10837fd19654b968c279203cd7caef6dcf175f78e038bac73b62f101d1631766
-    .claude/skills/edit-agent-kit/SKILL.md: sha256:ed47efb4b901a2aa84db88d1ec397c5346ff62df82a56250b07e07c4c2f14cd2
-    .claude/skills/git-worktree/SKILL.md: sha256:cb66b184203ed0d7d3946ab26dc8e981b84e99ba38700adb28bc9a13add9b76e
+    .claude/skills/edit-agent-kit/SKILL.md: sha256:3ae21810b4da895e5b3c082694900207b534e22daf5437e9edf7c42eddc502fe
+    .claude/skills/git-worktree/SKILL.md: sha256:890e296c0bf5e36367c9a7df0ee75028a7302534dc7858bae1aca92b5934a784
     .claude/skills/manage-issues/SKILL.md: sha256:ff3196f620a127c2754f5db049051dd74257154a93c3af29effb5fed92751686
     .claude/skills/review-plan/SKILL.md: sha256:db2291f31363e93e7ac9efc80dcde0871ddb5da192b23c45737a2b5cf52501cf
-    .claude/skills/sync-projects/SKILL.md: sha256:46e46bfce1fda92894f94b42369c4b09fea03f82a227cceedaf0926287b50e8f
-  content_hash: sha256:59d1d8879bf5ef2e6562a619fbf721bad63b4518c46d71e6c2783c2e6a59a04b
+    .claude/skills/sync-projects/SKILL.md: sha256:617c9c2ca1fb414be33c17f0a41f3d7ed675f26a7a8cc96db4596d6f95b16a5d
+  content_hash: sha256:a99911e191162db38fe0cbe607b701c50df718ab1a43d1cb2dfdd303def97a72
   declared_license: UNLICENSED
 deployments:
 - kind: project-relative
@@ -518,7 +518,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:ed47efb4b901a2aa84db88d1ec397c5346ff62df82a56250b07e07c4c2f14cd2
+  content_hash: sha256:3ae21810b4da895e5b3c082694900207b534e22daf5437e9edf7c42eddc502fe
 - kind: project-relative
   target: claude
   value: .claude/skills/git-worktree
@@ -536,7 +536,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:cb66b184203ed0d7d3946ab26dc8e981b84e99ba38700adb28bc9a13add9b76e
+  content_hash: sha256:890e296c0bf5e36367c9a7df0ee75028a7302534dc7858bae1aca92b5934a784
 - kind: project-relative
   target: claude
   value: .claude/skills/manage-issues
@@ -626,4 +626,4 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:46e46bfce1fda92894f94b42369c4b09fea03f82a227cceedaf0926287b50e8f
+  content_hash: sha256:617c9c2ca1fb414be33c17f0a41f3d7ed675f26a7a8cc96db4596d6f95b16a5d
