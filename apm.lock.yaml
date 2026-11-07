@@ -4,7 +4,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: core
   host: github.com
-  resolved_commit: 5459448ec3e80db3866f75d1d121787a486725c6
+  resolved_commit: 8a6bce089a2ef281d07a3e86fb2ffdd2f66e47c3
   version: 1.1.1
   virtual_path: plugins/core
   is_virtual: true
@@ -41,12 +41,12 @@ dependencies:
     .claude/skills/deep-research/SKILL.md: sha256:a3473371982ba69d678469fcd8eec829618399af750972f617fc304a0830dee3
     .claude/skills/proofread/SKILL.md: sha256:b5ed7d443ce507edd2d3dbf38863a97a63f3fe8aa3f63cbb746d7c24e1976b8b
     .claude/skills/reply-message/SKILL.md: sha256:783ba35e095d3b1a4df2d13582e3ffa2d073d752e4c607e472e8eee355c44b0f
-  content_hash: sha256:d29b0d38c7da2b7bcce9ab62314200fba224e42e7a43cfdb1a7cbc4406a216ba
+  content_hash: sha256:d2d6bf6ad7ef7324480086b0dcc1f432f407c5e3ab4a112cb2ee058171d2af05
   declared_license: UNLICENSED
 - repo_url: hiroya232/agent-kit
   name: dev
   host: github.com
-  resolved_commit: 5459448ec3e80db3866f75d1d121787a486725c6
+  resolved_commit: 8a6bce089a2ef281d07a3e86fb2ffdd2f66e47c3
   version: 6.0.2
   virtual_path: plugins/dev
   is_virtual: true
@@ -112,17 +112,17 @@ dependencies:
     .claude/skills/auto-handle-pr-review/SKILL.md: sha256:693b8c34e46b477af8da00a9abddecc8db40b3f5808bef59e98d6281ac545f98
     .claude/skills/auto-handle-pr-review/scripts/watch-pr.sh: sha256:3aa99fc2baa4381189a8fed10f21fede4b6e0bd7913cb16daf657ac064aef588
     .claude/skills/commit/SKILL.md: sha256:e14cee981b6c226d6ac07ebf671acdbb01a20e4983083cbc1e5b0911b30957c7
-    .claude/skills/create-pr/SKILL.md: sha256:895fa50d321161832506f61a1a890d7016b38660ffd3ba077931119c7a057cb2
-    .claude/skills/dispatch/SKILL.md: sha256:eecfb70d239ea5343e2f0bf868c994c6b6424cb3fcaace58b484b985ebbbba78
+    .claude/skills/create-pr/SKILL.md: sha256:77a83b6b141524f2ee6fead946e7ac56a311e2980402a9518915bf50698863ff
+    .claude/skills/dispatch/SKILL.md: sha256:553c70cd2b766125b942670a6c88705cba00da2ee5887c7374c3c2de465c79f5
     .claude/skills/docker/SKILL.md: sha256:5814c1980a8b71517966ded8502d5ad23d01cb9562b886c03d52027e6e2e8c7b
     .claude/skills/docker/references/templates.md: sha256:0605d6489e05eb454b7d4b244ad1c2d9cd5cc80ef922d46f6cd46fe6831a226a
     .claude/skills/dotenvx/SKILL.md: sha256:10837fd19654b968c279203cd7caef6dcf175f78e038bac73b62f101d1631766
-    .claude/skills/edit-agent-kit/SKILL.md: sha256:7671175b8c65c484aeecdce6b4be69d739cd449e0e4e470e667fb6984a9d5f13
+    .claude/skills/edit-agent-kit/SKILL.md: sha256:b4acc180df4394b37281f6c285d0fff322e68cdc59ff06da64ddd863ed12a64d
     .claude/skills/git-worktree/SKILL.md: sha256:890e296c0bf5e36367c9a7df0ee75028a7302534dc7858bae1aca92b5934a784
     .claude/skills/manage-issues/SKILL.md: sha256:ff3196f620a127c2754f5db049051dd74257154a93c3af29effb5fed92751686
     .claude/skills/review-plan/SKILL.md: sha256:db2291f31363e93e7ac9efc80dcde0871ddb5da192b23c45737a2b5cf52501cf
     .claude/skills/sync-projects/SKILL.md: sha256:afe85f61ae0bbf2a265b3261cbe241b14dff0219708ed6e4f5131bc6e4014496
-  content_hash: sha256:b5d9fac23243f5ab0fa2ae115f0b9ffac85b71d9e00eca1e4c090616db254ab0
+  content_hash: sha256:db6a7c300e86225a8765c504df7642c1a3693faa3c6de3c0001a4b597025ff10
   declared_license: UNLICENSED
 deployments:
 - kind: project-relative
@@ -430,7 +430,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:895fa50d321161832506f61a1a890d7016b38660ffd3ba077931119c7a057cb2
+  content_hash: sha256:77a83b6b141524f2ee6fead946e7ac56a311e2980402a9518915bf50698863ff
 - kind: project-relative
   target: claude
   value: .claude/skills/deep-research
@@ -466,7 +466,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:eecfb70d239ea5343e2f0bf868c994c6b6424cb3fcaace58b484b985ebbbba78
+  content_hash: sha256:553c70cd2b766125b942670a6c88705cba00da2ee5887c7374c3c2de465c79f5
 - kind: project-relative
   target: claude
   value: .claude/skills/docker
@@ -529,7 +529,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:7671175b8c65c484aeecdce6b4be69d739cd449e0e4e470e667fb6984a9d5f13
+  content_hash: sha256:b4acc180df4394b37281f6c285d0fff322e68cdc59ff06da64ddd863ed12a64d
 - kind: project-relative
   target: claude
   value: .claude/skills/git-worktree
