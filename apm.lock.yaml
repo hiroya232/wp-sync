@@ -4,7 +4,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: core
   host: github.com
-  resolved_commit: 4d83c90ce7871531ed34a82fb73836653fa0d816
+  resolved_commit: 730dcffa06329b556e651163727eeb06f9580547
   version: 1.1.1
   virtual_path: plugins/core
   is_virtual: true
@@ -46,7 +46,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: dev
   host: github.com
-  resolved_commit: 4d83c90ce7871531ed34a82fb73836653fa0d816
+  resolved_commit: 730dcffa06329b556e651163727eeb06f9580547
   version: 6.0.2
   virtual_path: plugins/dev
   is_virtual: true
@@ -124,12 +124,12 @@ dependencies:
     .claude/skills/dotenvx/SKILL.md: sha256:10837fd19654b968c279203cd7caef6dcf175f78e038bac73b62f101d1631766
     .claude/skills/edit-agent-kit/SKILL.md: sha256:7149a8f40bca6207a5561ca11209dd07919d4fec4e1df99389d5ef5a2d9ab275
     .claude/skills/git-worktree/SKILL.md: sha256:890e296c0bf5e36367c9a7df0ee75028a7302534dc7858bae1aca92b5934a784
-    .claude/skills/manage-issues/SKILL.md: sha256:1d6f8220d170de8b29b07d867a826015e68015b5772771b4939d3aae350bfc89
+    .claude/skills/manage-issues/SKILL.md: sha256:f798272ef9699664fa09fbea7c3245a787a5c3f16d1bf1b2175defb5f85ece13
     .claude/skills/manage-issues/issue-template.md: sha256:eb612ea7dd810794dc4c4ed346761b56186f0d964e666636e322f0932ef2c994
     .claude/skills/review-plan/SKILL.md: sha256:db2291f31363e93e7ac9efc80dcde0871ddb5da192b23c45737a2b5cf52501cf
     .claude/skills/sync-projects/SKILL.md: sha256:8672fd21d72bdbac4551a1ee80dea5f27d9aa57b005c269fa2644a108361a293
     .claude/skills/verify-ui/SKILL.md: sha256:0986cd2c2fa976052fcea7810689c64bd12116c38248948aad820118288aefbd
-  content_hash: sha256:6b3c20c69a40c4297e6a58c8dffa418e7a26790705535ab1544b1d583a34e86e
+  content_hash: sha256:7d21b5c9ad0954b95918c1403263a349d7f9ff73a1dd5c5058617ca9f0889916
   declared_license: UNLICENSED
 deployments:
 - kind: project-relative
@@ -581,7 +581,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:1d6f8220d170de8b29b07d867a826015e68015b5772771b4939d3aae350bfc89
+  content_hash: sha256:f798272ef9699664fa09fbea7c3245a787a5c3f16d1bf1b2175defb5f85ece13
 - kind: project-relative
   target: claude
   value: .claude/skills/manage-issues/issue-template.md
