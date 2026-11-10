@@ -4,7 +4,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: core
   host: github.com
-  resolved_commit: 3dd8b77bcb26066e38a26e9154d568a58e236b2d
+  resolved_commit: 047128bb7661055e2921f7d74e12a43f7ff517c7
   version: 1.1.1
   virtual_path: plugins/core
   is_virtual: true
@@ -46,7 +46,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: dev
   host: github.com
-  resolved_commit: 3dd8b77bcb26066e38a26e9154d568a58e236b2d
+  resolved_commit: 047128bb7661055e2921f7d74e12a43f7ff517c7
   version: 6.0.2
   virtual_path: plugins/dev
   is_virtual: true
@@ -116,9 +116,9 @@ dependencies:
     .claude/skills/auto-handle-pr-review/SKILL.md: sha256:693b8c34e46b477af8da00a9abddecc8db40b3f5808bef59e98d6281ac545f98
     .claude/skills/auto-handle-pr-review/scripts/watch-pr.sh: sha256:3aa99fc2baa4381189a8fed10f21fede4b6e0bd7913cb16daf657ac064aef588
     .claude/skills/commit/SKILL.md: sha256:e14cee981b6c226d6ac07ebf671acdbb01a20e4983083cbc1e5b0911b30957c7
-    .claude/skills/create-pr/SKILL.md: sha256:79c7d2c5f579c41731ba53328ca110369a040dab49a5d7a73066ff5c8854284a
-    .claude/skills/create-pr/pr-template.md: sha256:30611fa91d251765b9b3071732d9a596099b7a0f0a3a10fe3ff266d88467bbe3
-    .claude/skills/dispatch/SKILL.md: sha256:33af2f04ca735fecfed0f07cd3245a38f9d708454ffc26fcbcd1cf5b02289aa5
+    .claude/skills/create-pr/SKILL.md: sha256:0f2dcca1fcd3f98c1f50cc2670e13c26cfbeef452b98aef02b32176011bed0f2
+    .claude/skills/create-pr/pr-template.md: sha256:09a2afed484ba7ae6a235c236db1db87b3be6052172a83930ae27308c24b9580
+    .claude/skills/dispatch/SKILL.md: sha256:f9bff5ff2e42547449b6f3f24f68c8385824a7ee45466b9454ae19be7433b9ff
     .claude/skills/docker/SKILL.md: sha256:5814c1980a8b71517966ded8502d5ad23d01cb9562b886c03d52027e6e2e8c7b
     .claude/skills/docker/references/templates.md: sha256:0605d6489e05eb454b7d4b244ad1c2d9cd5cc80ef922d46f6cd46fe6831a226a
     .claude/skills/dotenvx/SKILL.md: sha256:10837fd19654b968c279203cd7caef6dcf175f78e038bac73b62f101d1631766
@@ -129,7 +129,7 @@ dependencies:
     .claude/skills/review-plan/SKILL.md: sha256:db2291f31363e93e7ac9efc80dcde0871ddb5da192b23c45737a2b5cf52501cf
     .claude/skills/sync-projects/SKILL.md: sha256:8672fd21d72bdbac4551a1ee80dea5f27d9aa57b005c269fa2644a108361a293
     .claude/skills/verify-ui/SKILL.md: sha256:0986cd2c2fa976052fcea7810689c64bd12116c38248948aad820118288aefbd
-  content_hash: sha256:63b3dfb592be698153bb4b6edfb908a7461cfc49cf316e1ecca481205986af5d
+  content_hash: sha256:52e7ef3ffd1b09edf8c6b14407ace8c291962cb498f3ab9803c2e33a469caeb8
   declared_license: UNLICENSED
 deployments:
 - kind: project-relative
@@ -437,7 +437,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:79c7d2c5f579c41731ba53328ca110369a040dab49a5d7a73066ff5c8854284a
+  content_hash: sha256:0f2dcca1fcd3f98c1f50cc2670e13c26cfbeef452b98aef02b32176011bed0f2
 - kind: project-relative
   target: claude
   value: .claude/skills/create-pr/pr-template.md
@@ -446,7 +446,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:30611fa91d251765b9b3071732d9a596099b7a0f0a3a10fe3ff266d88467bbe3
+  content_hash: sha256:09a2afed484ba7ae6a235c236db1db87b3be6052172a83930ae27308c24b9580
 - kind: project-relative
   target: claude
   value: .claude/skills/deep-research
@@ -482,7 +482,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/dev
   active_owner: hiroya232/agent-kit/plugins/dev
-  content_hash: sha256:33af2f04ca735fecfed0f07cd3245a38f9d708454ffc26fcbcd1cf5b02289aa5
+  content_hash: sha256:f9bff5ff2e42547449b6f3f24f68c8385824a7ee45466b9454ae19be7433b9ff
 - kind: project-relative
   target: claude
   value: .claude/skills/docker
