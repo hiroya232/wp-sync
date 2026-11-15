@@ -4,7 +4,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: core
   host: github.com
-  resolved_commit: ed4977c733789d321d9a2e026a7557b6917c9c09
+  resolved_commit: 9d73d09fb04c3f5293e821a2e0475e94c4395fe2
   version: 1.0.0
   virtual_path: plugins/core
   is_virtual: true
@@ -84,7 +84,7 @@ dependencies:
     .claude/hooks/core/.apm/hooks/scripts/rename-session-title.sh: sha256:e3cf16c7fcb5947d329a6bdb8a304a170dce5e72c5011f442ed6653531dfb7ac
     .claude/hooks/core/.apm/hooks/scripts/scan-injection.sh: sha256:830f747458b599c80323dce731c1eeae88948b1b7630e7bce7e6713a0abea07a
     .claude/rules/base.md: sha256:ce470eef52e8a687f5b52b0c600a2b9ff9da036defec5f4f4012b05b2656b9d9
-    .claude/rules/development-policy.md: sha256:b9b7db08ccb46f6cbb035fb05c2f9c9342e40185f10c581944768f9d4a1ef045
+    .claude/rules/development-policy.md: sha256:85f237364c68d469ef34bc2fe7e7c82f3552881747aa4765393f6ff010d58398
     .claude/rules/environment.md: sha256:914be8c5cb535b597a79e561dc2b4c36fe9d7c904f5891130f8645cf2b34c99b
     .claude/skills/auto-handle-pr-review/SKILL.md: sha256:727384ac519a1e9b35e0bbc1bd32e2f27e22170953131deb33b9276e3a7239b7
     .claude/skills/auto-handle-pr-review/scripts/watch-pr.sh: sha256:3aa99fc2baa4381189a8fed10f21fede4b6e0bd7913cb16daf657ac064aef588
@@ -106,12 +106,12 @@ dependencies:
     .claude/skills/review-plan/SKILL.md: sha256:35105dcd89470ae3bc714b9cf7812081f086dd37db08c35e7444fe5c01dc6a11
     .claude/skills/sync-projects/SKILL.md: sha256:522641faac35b302e0817e605ba8b0ae67e3c2593da86c5595d3abd3b35f2fb7
     .claude/skills/verify-ui/SKILL.md: sha256:0986cd2c2fa976052fcea7810689c64bd12116c38248948aad820118288aefbd
-  content_hash: sha256:f468da60011eaaeaf380caebf199c8ed94d8a82bdd6862fce4655c288d74c8c0
+  content_hash: sha256:3e026847d76e1b6c5745764fa6e17b4e48967cdd77cdbf3343ee62c01b9f618b
   declared_license: UNLICENSED
 - repo_url: hiroya232/agent-kit
   name: dev
   host: github.com
-  resolved_commit: ed4977c733789d321d9a2e026a7557b6917c9c09
+  resolved_commit: 9d73d09fb04c3f5293e821a2e0475e94c4395fe2
   version: 1.0.0
   virtual_path: plugins/dev
   is_virtual: true
@@ -306,7 +306,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/core
   active_owner: hiroya232/agent-kit/plugins/core
-  content_hash: sha256:b9b7db08ccb46f6cbb035fb05c2f9c9342e40185f10c581944768f9d4a1ef045
+  content_hash: sha256:85f237364c68d469ef34bc2fe7e7c82f3552881747aa4765393f6ff010d58398
 - kind: project-relative
   target: claude
   value: .claude/rules/environment.md
