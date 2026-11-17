@@ -4,7 +4,7 @@ dependencies:
 - repo_url: hiroya232/agent-kit
   name: core
   host: github.com
-  resolved_commit: 2707575f4353959963d51d4d07546876a8776abe
+  resolved_commit: f9611059eb4e097cf02ee1708ac54fd36d5aadb4
   version: 1.0.0
   virtual_path: plugins/core
   is_virtual: true
@@ -96,18 +96,18 @@ dependencies:
     .claude/skills/dotenvx/SKILL.md: sha256:10837fd19654b968c279203cd7caef6dcf175f78e038bac73b62f101d1631766
     .claude/skills/edit-agent-kit/SKILL.md: sha256:04ee516e05673c71659299f577a4accfd7a24cac0e26a2b48090a4f93190bab0
     .claude/skills/git-worktree/SKILL.md: sha256:b94f413d70b9983d44fcb6488ca439cf29a89e04483837cf2ea7863878cc3e72
-    .claude/skills/manage-issues/SKILL.md: sha256:d19ceaf34ba70b876caa95a33e5617dc783a5e363eddabe29241cb6caab3ca00
+    .claude/skills/manage-issues/SKILL.md: sha256:40746772ee27fafc3a587bb48fa3aecb56550ded87f48f6692af5a03d5207869
     .claude/skills/manage-issues/issue-template.md: sha256:eb612ea7dd810794dc4c4ed346761b56186f0d964e666636e322f0932ef2c994
     .claude/skills/reply-message/SKILL.md: sha256:783ba35e095d3b1a4df2d13582e3ffa2d073d752e4c607e472e8eee355c44b0f
     .claude/skills/review-plan/SKILL.md: sha256:35105dcd89470ae3bc714b9cf7812081f086dd37db08c35e7444fe5c01dc6a11
     .claude/skills/sync-projects/SKILL.md: sha256:7d1ccd7bafaa8e069cde23c082cfcefdc37faafee4621e597854b868740257a7
     .claude/skills/verify-ui/SKILL.md: sha256:0986cd2c2fa976052fcea7810689c64bd12116c38248948aad820118288aefbd
-  content_hash: sha256:98b0d2648da3c9035fc45bd44abc31175c7f5b50411788c7f988118851378390
+  content_hash: sha256:04329d09a51ca26c149bed7f578e56f1482f277a9176f82c4e1f4bbb5f76d24b
   declared_license: UNLICENSED
 - repo_url: hiroya232/agent-kit
   name: dev
   host: github.com
-  resolved_commit: 2707575f4353959963d51d4d07546876a8776abe
+  resolved_commit: f9611059eb4e097cf02ee1708ac54fd36d5aadb4
   version: 1.0.0
   virtual_path: plugins/dev
   is_virtual: true
@@ -545,7 +545,7 @@ deployments:
   owners:
   - hiroya232/agent-kit/plugins/core
   active_owner: hiroya232/agent-kit/plugins/core
-  content_hash: sha256:d19ceaf34ba70b876caa95a33e5617dc783a5e363eddabe29241cb6caab3ca00
+  content_hash: sha256:40746772ee27fafc3a587bb48fa3aecb56550ded87f48f6692af5a03d5207869
 - kind: project-relative
   target: claude
   value: .claude/skills/manage-issues/issue-template.md
