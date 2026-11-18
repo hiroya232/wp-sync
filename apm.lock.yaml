@@ -4,7 +4,7 @@ dependencies:
 - repo_url: hiroya232/aidd
   name: core
   host: github.com
-  resolved_commit: 1f58e5bc78f6f1a28f2f60b4a06ff1937e1240d1
+  resolved_commit: 786f0c60dc4a745a2137714d07cae575a8e0e6df
   version: 1.0.0
   virtual_path: plugins/core
   is_virtual: true
@@ -107,7 +107,7 @@ dependencies:
 - repo_url: hiroya232/aidd
   name: dev
   host: github.com
-  resolved_commit: 1f58e5bc78f6f1a28f2f60b4a06ff1937e1240d1
+  resolved_commit: 786f0c60dc4a745a2137714d07cae575a8e0e6df
   version: 1.0.0
   virtual_path: plugins/dev
   is_virtual: true
