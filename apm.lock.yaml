@@ -4,7 +4,7 @@ dependencies:
 - repo_url: hiroya232/aidd
   name: core
   host: github.com
-  resolved_commit: ece15ab048a1f494f52182c890370057a4059ab9
+  resolved_commit: 6b28f54e4d2451e038e12d863f7e27241efea050
   version: 1.0.0
   virtual_path: plugins/core
   is_virtual: true
@@ -22,10 +22,6 @@ dependencies:
   - .claude/agents/security-reviewer.md
   - .claude/hooks/core/.apm/hooks/scripts/block-dangerous-commands.sh
   - .claude/hooks/core/.apm/hooks/scripts/lib/hook-target.sh
-  - .claude/hooks/core/.apm/hooks/scripts/lib/session-title-excerpt.sh
-  - .claude/hooks/core/.apm/hooks/scripts/lib/session-title-support.sh
-  - .claude/hooks/core/.apm/hooks/scripts/rename-session-title-worker.py
-  - .claude/hooks/core/.apm/hooks/scripts/rename-session-title.sh
   - .claude/hooks/core/.apm/hooks/scripts/scan-injection.sh
   - .claude/rules/base.md
   - .claude/skills/auto-handle-pr-review
@@ -76,10 +72,6 @@ dependencies:
     .claude/agents/security-reviewer.md: sha256:1ca05a0b9c2d35d4b0db8996c7c29d842a2f07442185b2912336b2aae7c9b23a
     .claude/hooks/core/.apm/hooks/scripts/block-dangerous-commands.sh: sha256:865c318d856012f53e3c2ca610ff34ac0fdf3c9d6086270617c9cab079ea76ed
     .claude/hooks/core/.apm/hooks/scripts/lib/hook-target.sh: sha256:d59ef9fe8dac0265cd901b79026f977c6cdf3d50d149889cefb50cf71f5f164a
-    .claude/hooks/core/.apm/hooks/scripts/lib/session-title-excerpt.sh: sha256:3f825db98ae8a4f9bfcdaffbc522f413abad45eff4b24b48b5f3365103bb3252
-    .claude/hooks/core/.apm/hooks/scripts/lib/session-title-support.sh: sha256:73fbfc9f361495f085de130b1b60e5067cf40381060c152eb77449256d26a68d
-    .claude/hooks/core/.apm/hooks/scripts/rename-session-title-worker.py: sha256:3db9afbf7069eb959348ec7ccdba8e48eff37b120c9915b2168fc592188e9151
-    .claude/hooks/core/.apm/hooks/scripts/rename-session-title.sh: sha256:e3cf16c7fcb5947d329a6bdb8a304a170dce5e72c5011f442ed6653531dfb7ac
     .claude/hooks/core/.apm/hooks/scripts/scan-injection.sh: sha256:830f747458b599c80323dce731c1eeae88948b1b7630e7bce7e6713a0abea07a
     .claude/rules/base.md: sha256:d10df472a74e5c4b63c355575ac93b83de155b697e93d6dfa3adbf25afa053b3
     .claude/skills/auto-handle-pr-review/SKILL.md: sha256:af3922dd0ae17b3e131dd6908ad9468e3e212f386c845dc71854f0f7c39d2f15
@@ -102,12 +94,12 @@ dependencies:
     .claude/skills/review-plan/SKILL.md: sha256:35105dcd89470ae3bc714b9cf7812081f086dd37db08c35e7444fe5c01dc6a11
     .claude/skills/sync-projects/SKILL.md: sha256:8614fe90710b4b4f5ef65da3d821696764692b1412d5ec25baf2754d2f7feb85
     .claude/skills/verify-ui/SKILL.md: sha256:0986cd2c2fa976052fcea7810689c64bd12116c38248948aad820118288aefbd
-  content_hash: sha256:8dccceb87373991fd76fa30289e4a8ed3458446ac98ced33689f504ce6ba6604
+  content_hash: sha256:c6664cc93057dba36671842f81253c9bc586d71b11e2adbac07dfdcac0f84ffb
   declared_license: UNLICENSED
 - repo_url: hiroya232/aidd
   name: dev
   host: github.com
-  resolved_commit: ece15ab048a1f494f52182c890370057a4059ab9
+  resolved_commit: 6b28f54e4d2451e038e12d863f7e27241efea050
   version: 1.0.0
   virtual_path: plugins/dev
   is_virtual: true
@@ -231,42 +223,6 @@ deployments:
   - hiroya232/aidd/plugins/core
   active_owner: hiroya232/aidd/plugins/core
   content_hash: sha256:d59ef9fe8dac0265cd901b79026f977c6cdf3d50d149889cefb50cf71f5f164a
-- kind: project-relative
-  target: claude
-  value: .claude/hooks/core/.apm/hooks/scripts/lib/session-title-excerpt.sh
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/aidd/plugins/core
-  active_owner: hiroya232/aidd/plugins/core
-  content_hash: sha256:3f825db98ae8a4f9bfcdaffbc522f413abad45eff4b24b48b5f3365103bb3252
-- kind: project-relative
-  target: claude
-  value: .claude/hooks/core/.apm/hooks/scripts/lib/session-title-support.sh
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/aidd/plugins/core
-  active_owner: hiroya232/aidd/plugins/core
-  content_hash: sha256:73fbfc9f361495f085de130b1b60e5067cf40381060c152eb77449256d26a68d
-- kind: project-relative
-  target: claude
-  value: .claude/hooks/core/.apm/hooks/scripts/rename-session-title-worker.py
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/aidd/plugins/core
-  active_owner: hiroya232/aidd/plugins/core
-  content_hash: sha256:3db9afbf7069eb959348ec7ccdba8e48eff37b120c9915b2168fc592188e9151
-- kind: project-relative
-  target: claude
-  value: .claude/hooks/core/.apm/hooks/scripts/rename-session-title.sh
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/aidd/plugins/core
-  active_owner: hiroya232/aidd/plugins/core
-  content_hash: sha256:e3cf16c7fcb5947d329a6bdb8a304a170dce5e72c5011f442ed6653531dfb7ac
 - kind: project-relative
   target: claude
   value: .claude/hooks/core/.apm/hooks/scripts/scan-injection.sh
