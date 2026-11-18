@@ -10,8 +10,8 @@ targets:
   - cursor
 dependencies:
   apm:
-    - hiroya232/agent-kit/plugins/core
-    - hiroya232/agent-kit/plugins/dev
+    - hiroya232/aidd/plugins/core
+    - hiroya232/aidd/plugins/dev
   mcp: []
 includes: auto
 scripts: {}
