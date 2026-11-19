@@ -4,7 +4,7 @@ dependencies:
 - repo_url: hiroya232/aidd
   name: core
   host: github.com
-  resolved_commit: 6b28f54e4d2451e038e12d863f7e27241efea050
+  resolved_commit: 9ea8c3f4ef6d872c472ff8044a81e2c82d755208
   version: 1.0.0
   virtual_path: plugins/core
   is_virtual: true
@@ -22,6 +22,7 @@ dependencies:
   - .claude/agents/security-reviewer.md
   - .claude/hooks/core/.apm/hooks/scripts/block-dangerous-commands.sh
   - .claude/hooks/core/.apm/hooks/scripts/lib/hook-target.sh
+  - .claude/hooks/core/.apm/hooks/scripts/pull-aidd-updates.sh
   - .claude/hooks/core/.apm/hooks/scripts/scan-injection.sh
   - .claude/rules/base.md
   - .claude/skills/auto-handle-pr-review
@@ -55,8 +56,6 @@ dependencies:
   - .claude/skills/reply-message/SKILL.md
   - .claude/skills/review-plan
   - .claude/skills/review-plan/SKILL.md
-  - .claude/skills/sync-projects
-  - .claude/skills/sync-projects/SKILL.md
   - .claude/skills/verify-ui
   - .claude/skills/verify-ui/SKILL.md
   deployed_file_hashes:
@@ -72,6 +71,7 @@ dependencies:
     .claude/agents/security-reviewer.md: sha256:1ca05a0b9c2d35d4b0db8996c7c29d842a2f07442185b2912336b2aae7c9b23a
     .claude/hooks/core/.apm/hooks/scripts/block-dangerous-commands.sh: sha256:865c318d856012f53e3c2ca610ff34ac0fdf3c9d6086270617c9cab079ea76ed
     .claude/hooks/core/.apm/hooks/scripts/lib/hook-target.sh: sha256:d59ef9fe8dac0265cd901b79026f977c6cdf3d50d149889cefb50cf71f5f164a
+    .claude/hooks/core/.apm/hooks/scripts/pull-aidd-updates.sh: sha256:bfdeedc50e6aae03e9a02b155359bae482473cdaf52d882a234e503ee89e89ac
     .claude/hooks/core/.apm/hooks/scripts/scan-injection.sh: sha256:830f747458b599c80323dce731c1eeae88948b1b7630e7bce7e6713a0abea07a
     .claude/rules/base.md: sha256:d10df472a74e5c4b63c355575ac93b83de155b697e93d6dfa3adbf25afa053b3
     .claude/skills/auto-handle-pr-review/SKILL.md: sha256:af3922dd0ae17b3e131dd6908ad9468e3e212f386c845dc71854f0f7c39d2f15
@@ -86,20 +86,19 @@ dependencies:
     .claude/skills/docker/SKILL.md: sha256:5814c1980a8b71517966ded8502d5ad23d01cb9562b886c03d52027e6e2e8c7b
     .claude/skills/docker/references/templates.md: sha256:0605d6489e05eb454b7d4b244ad1c2d9cd5cc80ef922d46f6cd46fe6831a226a
     .claude/skills/dotenvx/SKILL.md: sha256:10837fd19654b968c279203cd7caef6dcf175f78e038bac73b62f101d1631766
-    .claude/skills/edit-aidd/SKILL.md: sha256:470431d4ea1d5f0fa0a67ef2d2e301e6fae439365e697df691013c7803f9a7d8
+    .claude/skills/edit-aidd/SKILL.md: sha256:12780f3cdd9919a6d12c713092bf20ab826b5579623ae457566c1e3754f75400
     .claude/skills/git-worktree/SKILL.md: sha256:93e8e2e66fa8c6d30d1adf466181eb91cf0d7509884fb90e0f624b0213920ae7
     .claude/skills/manage-issues/SKILL.md: sha256:3bebaa94d979189314f31647afc1f57ddde3a0056ba8f98ee00c9a281ac0041f
     .claude/skills/manage-issues/issue-template.md: sha256:eb612ea7dd810794dc4c4ed346761b56186f0d964e666636e322f0932ef2c994
     .claude/skills/reply-message/SKILL.md: sha256:783ba35e095d3b1a4df2d13582e3ffa2d073d752e4c607e472e8eee355c44b0f
     .claude/skills/review-plan/SKILL.md: sha256:35105dcd89470ae3bc714b9cf7812081f086dd37db08c35e7444fe5c01dc6a11
-    .claude/skills/sync-projects/SKILL.md: sha256:8614fe90710b4b4f5ef65da3d821696764692b1412d5ec25baf2754d2f7feb85
     .claude/skills/verify-ui/SKILL.md: sha256:0986cd2c2fa976052fcea7810689c64bd12116c38248948aad820118288aefbd
-  content_hash: sha256:c6664cc93057dba36671842f81253c9bc586d71b11e2adbac07dfdcac0f84ffb
+  content_hash: sha256:280b878c2e3658d53e71c4580d248f6357df229a438e473cc1b68e318eafe45e
   declared_license: UNLICENSED
 - repo_url: hiroya232/aidd
   name: dev
   host: github.com
-  resolved_commit: 6b28f54e4d2451e038e12d863f7e27241efea050
+  resolved_commit: 9ea8c3f4ef6d872c472ff8044a81e2c82d755208
   version: 1.0.0
   virtual_path: plugins/dev
   is_virtual: true
@@ -223,6 +222,15 @@ deployments:
   - hiroya232/aidd/plugins/core
   active_owner: hiroya232/aidd/plugins/core
   content_hash: sha256:d59ef9fe8dac0265cd901b79026f977c6cdf3d50d149889cefb50cf71f5f164a
+- kind: project-relative
+  target: claude
+  value: .claude/hooks/core/.apm/hooks/scripts/pull-aidd-updates.sh
+  runtime: null
+  scope: project
+  owners:
+  - hiroya232/aidd/plugins/core
+  active_owner: hiroya232/aidd/plugins/core
+  content_hash: sha256:bfdeedc50e6aae03e9a02b155359bae482473cdaf52d882a234e503ee89e89ac
 - kind: project-relative
   target: claude
   value: .claude/hooks/core/.apm/hooks/scripts/scan-injection.sh
@@ -465,7 +473,7 @@ deployments:
   owners:
   - hiroya232/aidd/plugins/core
   active_owner: hiroya232/aidd/plugins/core
-  content_hash: sha256:470431d4ea1d5f0fa0a67ef2d2e301e6fae439365e697df691013c7803f9a7d8
+  content_hash: sha256:12780f3cdd9919a6d12c713092bf20ab826b5579623ae457566c1e3754f75400
 - kind: project-relative
   target: claude
   value: .claude/skills/git-worktree
@@ -547,24 +555,6 @@ deployments:
   - hiroya232/aidd/plugins/core
   active_owner: hiroya232/aidd/plugins/core
   content_hash: sha256:35105dcd89470ae3bc714b9cf7812081f086dd37db08c35e7444fe5c01dc6a11
-- kind: project-relative
-  target: claude
-  value: .claude/skills/sync-projects
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/aidd/plugins/core
-  active_owner: hiroya232/aidd/plugins/core
-  content_hash: null
-- kind: project-relative
-  target: claude
-  value: .claude/skills/sync-projects/SKILL.md
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/aidd/plugins/core
-  active_owner: hiroya232/aidd/plugins/core
-  content_hash: sha256:8614fe90710b4b4f5ef65da3d821696764692b1412d5ec25baf2754d2f7feb85
 - kind: project-relative
   target: claude
   value: .claude/skills/verify-ui
