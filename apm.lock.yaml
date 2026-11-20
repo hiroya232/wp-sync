@@ -4,7 +4,7 @@ dependencies:
 - repo_url: hiroya232/aidd
   name: core
   host: github.com
-  resolved_commit: 9ea8c3f4ef6d872c472ff8044a81e2c82d755208
+  resolved_commit: 3fddac9792ffbf5f99d68bce14d05c40b41f54c5
   version: 1.0.0
   virtual_path: plugins/core
   is_virtual: true
@@ -19,15 +19,11 @@ dependencies:
   - .claude/agents/plan-risk-reviewer.md
   - .claude/agents/plan-scope-reviewer.md
   - .claude/agents/plan-simplicity-reviewer.md
-  - .claude/agents/security-reviewer.md
   - .claude/hooks/core/.apm/hooks/scripts/block-dangerous-commands.sh
   - .claude/hooks/core/.apm/hooks/scripts/lib/hook-target.sh
   - .claude/hooks/core/.apm/hooks/scripts/pull-aidd-updates.sh
   - .claude/hooks/core/.apm/hooks/scripts/scan-injection.sh
   - .claude/rules/base.md
-  - .claude/skills/auto-handle-pr-review
-  - .claude/skills/auto-handle-pr-review/SKILL.md
-  - .claude/skills/auto-handle-pr-review/scripts/watch-pr.sh
   - .claude/skills/collect-doc-links
   - .claude/skills/collect-doc-links/SKILL.md
   - .claude/skills/collect-doc-links/collect-doc-links.py
@@ -38,17 +34,11 @@ dependencies:
   - .claude/skills/create-pr/pr-template.md
   - .claude/skills/deep-research
   - .claude/skills/deep-research/SKILL.md
-  - .claude/skills/dispatch
-  - .claude/skills/dispatch/SKILL.md
   - .claude/skills/docker
   - .claude/skills/docker/SKILL.md
   - .claude/skills/docker/references/templates.md
   - .claude/skills/dotenvx
   - .claude/skills/dotenvx/SKILL.md
-  - .claude/skills/edit-aidd
-  - .claude/skills/edit-aidd/SKILL.md
-  - .claude/skills/git-worktree
-  - .claude/skills/git-worktree/SKILL.md
   - .claude/skills/manage-issues
   - .claude/skills/manage-issues/SKILL.md
   - .claude/skills/manage-issues/issue-template.md
@@ -56,8 +46,6 @@ dependencies:
   - .claude/skills/reply-message/SKILL.md
   - .claude/skills/review-plan
   - .claude/skills/review-plan/SKILL.md
-  - .claude/skills/verify-ui
-  - .claude/skills/verify-ui/SKILL.md
   deployed_file_hashes:
     .claude/agents/code-reviewer.md: sha256:49f89f1aad3c635a07f0f37e15c19eed9e5b7b27971de6db5ee81854347cec56
     .claude/agents/debugger.md: sha256:52d617fceee0331dd6d5041d0b97b6b15902f4324c83c46df57251a4efffc1a7
@@ -68,52 +56,92 @@ dependencies:
     .claude/agents/plan-risk-reviewer.md: sha256:f7acbfba8e9562988fa342aaa6a9ee4a2201a49d48a7240843e67f53c6ac20dd
     .claude/agents/plan-scope-reviewer.md: sha256:59c04d108277263f1d42a09cbbeefbcd8195c877befd8d20d2e1950ff6221662
     .claude/agents/plan-simplicity-reviewer.md: sha256:860b749f994a9707c1fc43d9a4522f3ee2a79cf6339dbc30386af19434183ced
-    .claude/agents/security-reviewer.md: sha256:1ca05a0b9c2d35d4b0db8996c7c29d842a2f07442185b2912336b2aae7c9b23a
     .claude/hooks/core/.apm/hooks/scripts/block-dangerous-commands.sh: sha256:865c318d856012f53e3c2ca610ff34ac0fdf3c9d6086270617c9cab079ea76ed
     .claude/hooks/core/.apm/hooks/scripts/lib/hook-target.sh: sha256:d59ef9fe8dac0265cd901b79026f977c6cdf3d50d149889cefb50cf71f5f164a
     .claude/hooks/core/.apm/hooks/scripts/pull-aidd-updates.sh: sha256:bfdeedc50e6aae03e9a02b155359bae482473cdaf52d882a234e503ee89e89ac
     .claude/hooks/core/.apm/hooks/scripts/scan-injection.sh: sha256:830f747458b599c80323dce731c1eeae88948b1b7630e7bce7e6713a0abea07a
     .claude/rules/base.md: sha256:d10df472a74e5c4b63c355575ac93b83de155b697e93d6dfa3adbf25afa053b3
-    .claude/skills/auto-handle-pr-review/SKILL.md: sha256:af3922dd0ae17b3e131dd6908ad9468e3e212f386c845dc71854f0f7c39d2f15
-    .claude/skills/auto-handle-pr-review/scripts/watch-pr.sh: sha256:3aa99fc2baa4381189a8fed10f21fede4b6e0bd7913cb16daf657ac064aef588
     .claude/skills/collect-doc-links/SKILL.md: sha256:d38fcbe75c0dcbf433b7dc520bbf968c4a99ac2682a993b713ad194023da88fd
     .claude/skills/collect-doc-links/collect-doc-links.py: sha256:9332e5e47c6f51a006e065c031014cdf0032a5cf4a44fce6dbfe63736ee79aa9
     .claude/skills/commit/SKILL.md: sha256:001281197dc705a4a5ff343d2ac4c4b72b42c13b4aeeb85660aea04a2879ea2c
     .claude/skills/create-pr/SKILL.md: sha256:906aa3df33c6ca0f168c85d9e45707335be0c97c0b5ee734ff5995782e1a7255
     .claude/skills/create-pr/pr-template.md: sha256:09a2afed484ba7ae6a235c236db1db87b3be6052172a83930ae27308c24b9580
     .claude/skills/deep-research/SKILL.md: sha256:1a478bd80d572d04bb9198554bb00c72bf3bff7e8edf2a7e7178c4cfbd3e6af0
-    .claude/skills/dispatch/SKILL.md: sha256:8ae72fc2835cb2b2ee49a958f7d947bcd112b45114cfd86b00820c34d3fce06d
     .claude/skills/docker/SKILL.md: sha256:5814c1980a8b71517966ded8502d5ad23d01cb9562b886c03d52027e6e2e8c7b
     .claude/skills/docker/references/templates.md: sha256:0605d6489e05eb454b7d4b244ad1c2d9cd5cc80ef922d46f6cd46fe6831a226a
     .claude/skills/dotenvx/SKILL.md: sha256:10837fd19654b968c279203cd7caef6dcf175f78e038bac73b62f101d1631766
-    .claude/skills/edit-aidd/SKILL.md: sha256:12780f3cdd9919a6d12c713092bf20ab826b5579623ae457566c1e3754f75400
-    .claude/skills/git-worktree/SKILL.md: sha256:93e8e2e66fa8c6d30d1adf466181eb91cf0d7509884fb90e0f624b0213920ae7
     .claude/skills/manage-issues/SKILL.md: sha256:3bebaa94d979189314f31647afc1f57ddde3a0056ba8f98ee00c9a281ac0041f
     .claude/skills/manage-issues/issue-template.md: sha256:eb612ea7dd810794dc4c4ed346761b56186f0d964e666636e322f0932ef2c994
     .claude/skills/reply-message/SKILL.md: sha256:783ba35e095d3b1a4df2d13582e3ffa2d073d752e4c607e472e8eee355c44b0f
     .claude/skills/review-plan/SKILL.md: sha256:35105dcd89470ae3bc714b9cf7812081f086dd37db08c35e7444fe5c01dc6a11
-    .claude/skills/verify-ui/SKILL.md: sha256:0986cd2c2fa976052fcea7810689c64bd12116c38248948aad820118288aefbd
-  content_hash: sha256:280b878c2e3658d53e71c4580d248f6357df229a438e473cc1b68e318eafe45e
+  content_hash: sha256:5b0e386bd476f6b65c1ce36754414196f551265149b895da10445541b4337d74
   declared_license: UNLICENSED
 - repo_url: hiroya232/aidd
   name: dev
   host: github.com
-  resolved_commit: 9ea8c3f4ef6d872c472ff8044a81e2c82d755208
+  resolved_commit: 3fddac9792ffbf5f99d68bce14d05c40b41f54c5
   version: 1.0.0
   virtual_path: plugins/dev
   is_virtual: true
   package_type: apm_package
   deployed_files:
+  - .claude/agents/security-reviewer.md
   - .claude/rules/browser.md
   - .claude/rules/test.md
   - .claude/rules/toolchain.md
+  - .claude/skills/verify-ui
+  - .claude/skills/verify-ui/SKILL.md
   deployed_file_hashes:
+    .claude/agents/security-reviewer.md: sha256:1ca05a0b9c2d35d4b0db8996c7c29d842a2f07442185b2912336b2aae7c9b23a
     .claude/rules/browser.md: sha256:7d063a40cf44d8d68ec515df2ad6eae44deb2a946890795be83a153451d025a4
     .claude/rules/test.md: sha256:a3fa4789b94adedb422fd878ffbce99f36a06eca875cdab3a55ae83d9d8763d8
     .claude/rules/toolchain.md: sha256:1013e1f4cc585a80a05b5a8b999642d8a29296d02a88f5e7dd2e5ad61d828b47
-  content_hash: sha256:c30ee6b9f6401128dc0cfc11e3090de0d27a119507011a0d917c244573cee1c5
+    .claude/skills/verify-ui/SKILL.md: sha256:0986cd2c2fa976052fcea7810689c64bd12116c38248948aad820118288aefbd
+  content_hash: sha256:ae91a116dc8b369914ee58c19268ab47f0ea64f782e129f712550c4f3aba5bfb
   declared_license: UNLICENSED
+- repo_url: microsoft/apm
+  name: apm-guide
+  host: github.com
+  resolved_commit: 67936cd7d27c93b9104234e595982734edf1e881
+  version: 1.0.0
+  virtual_path: packages/apm-guide
+  is_virtual: true
+  package_type: apm_package
+  deployed_files:
+  - .claude/agents/apm-expert.md
+  - .claude/skills/apm-usage
+  - .claude/skills/apm-usage/SKILL.md
+  - .claude/skills/apm-usage/authentication.md
+  - .claude/skills/apm-usage/commands.md
+  - .claude/skills/apm-usage/dependencies.md
+  - .claude/skills/apm-usage/governance.md
+  - .claude/skills/apm-usage/installation.md
+  - .claude/skills/apm-usage/package-authoring.md
+  - .claude/skills/apm-usage/troubleshooting.md
+  - .claude/skills/apm-usage/workflow.md
+  deployed_file_hashes:
+    .claude/agents/apm-expert.md: sha256:f6cded3e7eef97ad8fff06208bcfd5a0beafb9cfe810f78e10294c90e16fd8ae
+    .claude/skills/apm-usage/SKILL.md: sha256:8dbe24ad3a18e5e830ef865bcee0de78bbf0efdeea7c8458303b37107078399b
+    .claude/skills/apm-usage/authentication.md: sha256:d88fac7d46d5831b144b7ce7703a3b97fc57295bec3066102c955103ca8b2ab9
+    .claude/skills/apm-usage/commands.md: sha256:7cffa0c6b199e57c8b2382080ed76d33b02fec660dc71a61b4d8f9db7268e804
+    .claude/skills/apm-usage/dependencies.md: sha256:dda7f5e76ab1457bcea8f2d9de14f056a46455d409bd5f4f3ff632bfc1b38f71
+    .claude/skills/apm-usage/governance.md: sha256:e99fbd5581b564d4bf62900b2777d28335873af10498b66076756040e3d291ee
+    .claude/skills/apm-usage/installation.md: sha256:a8d33ceeb41626d809ed07e0cdd16ba74f0510b5842bab64b7f6dc3e3fdb1057
+    .claude/skills/apm-usage/package-authoring.md: sha256:6f6351f3bac8bc9aa22209d4c36d03d2a1eb1c2cd56cb988184c4866b6bf079f
+    .claude/skills/apm-usage/troubleshooting.md: sha256:77df15a82731dedf8ba5757bc7f21f6839c4270a1c028091ad4c56ff9570a944
+    .claude/skills/apm-usage/workflow.md: sha256:62c62140fa3ea47167c0b2d8d1d0e9ad7232d1ddae2073f652345b767642b07d
+  content_hash: sha256:7fa56688b7c991975c33622cc6fd45013fa38ac7d9285a9779d6f337c20a8908
+  declared_license: Apache-2.0
 deployments:
+- kind: project-relative
+  target: claude
+  value: .claude/agents/apm-expert.md
+  runtime: null
+  scope: project
+  owners:
+  - microsoft/apm/packages/apm-guide
+  active_owner: microsoft/apm/packages/apm-guide
+  content_hash: sha256:f6cded3e7eef97ad8fff06208bcfd5a0beafb9cfe810f78e10294c90e16fd8ae
 - kind: project-relative
   target: claude
   value: .claude/agents/code-reviewer.md
@@ -201,8 +229,8 @@ deployments:
   runtime: null
   scope: project
   owners:
-  - hiroya232/aidd/plugins/core
-  active_owner: hiroya232/aidd/plugins/core
+  - hiroya232/aidd/plugins/dev
+  active_owner: hiroya232/aidd/plugins/dev
   content_hash: sha256:1ca05a0b9c2d35d4b0db8996c7c29d842a2f07442185b2912336b2aae7c9b23a
 - kind: project-relative
   target: claude
@@ -278,31 +306,94 @@ deployments:
   content_hash: sha256:1013e1f4cc585a80a05b5a8b999642d8a29296d02a88f5e7dd2e5ad61d828b47
 - kind: project-relative
   target: claude
-  value: .claude/skills/auto-handle-pr-review
+  value: .claude/skills/apm-usage
   runtime: null
   scope: project
   owners:
-  - hiroya232/aidd/plugins/core
-  active_owner: hiroya232/aidd/plugins/core
+  - microsoft/apm/packages/apm-guide
+  active_owner: microsoft/apm/packages/apm-guide
   content_hash: null
 - kind: project-relative
   target: claude
-  value: .claude/skills/auto-handle-pr-review/SKILL.md
+  value: .claude/skills/apm-usage/SKILL.md
   runtime: null
   scope: project
   owners:
-  - hiroya232/aidd/plugins/core
-  active_owner: hiroya232/aidd/plugins/core
-  content_hash: sha256:af3922dd0ae17b3e131dd6908ad9468e3e212f386c845dc71854f0f7c39d2f15
+  - microsoft/apm/packages/apm-guide
+  active_owner: microsoft/apm/packages/apm-guide
+  content_hash: sha256:8dbe24ad3a18e5e830ef865bcee0de78bbf0efdeea7c8458303b37107078399b
 - kind: project-relative
   target: claude
-  value: .claude/skills/auto-handle-pr-review/scripts/watch-pr.sh
+  value: .claude/skills/apm-usage/authentication.md
   runtime: null
   scope: project
   owners:
-  - hiroya232/aidd/plugins/core
-  active_owner: hiroya232/aidd/plugins/core
-  content_hash: sha256:3aa99fc2baa4381189a8fed10f21fede4b6e0bd7913cb16daf657ac064aef588
+  - microsoft/apm/packages/apm-guide
+  active_owner: microsoft/apm/packages/apm-guide
+  content_hash: sha256:d88fac7d46d5831b144b7ce7703a3b97fc57295bec3066102c955103ca8b2ab9
+- kind: project-relative
+  target: claude
+  value: .claude/skills/apm-usage/commands.md
+  runtime: null
+  scope: project
+  owners:
+  - microsoft/apm/packages/apm-guide
+  active_owner: microsoft/apm/packages/apm-guide
+  content_hash: sha256:7cffa0c6b199e57c8b2382080ed76d33b02fec660dc71a61b4d8f9db7268e804
+- kind: project-relative
+  target: claude
+  value: .claude/skills/apm-usage/dependencies.md
+  runtime: null
+  scope: project
+  owners:
+  - microsoft/apm/packages/apm-guide
+  active_owner: microsoft/apm/packages/apm-guide
+  content_hash: sha256:dda7f5e76ab1457bcea8f2d9de14f056a46455d409bd5f4f3ff632bfc1b38f71
+- kind: project-relative
+  target: claude
+  value: .claude/skills/apm-usage/governance.md
+  runtime: null
+  scope: project
+  owners:
+  - microsoft/apm/packages/apm-guide
+  active_owner: microsoft/apm/packages/apm-guide
+  content_hash: sha256:e99fbd5581b564d4bf62900b2777d28335873af10498b66076756040e3d291ee
+- kind: project-relative
+  target: claude
+  value: .claude/skills/apm-usage/installation.md
+  runtime: null
+  scope: project
+  owners:
+  - microsoft/apm/packages/apm-guide
+  active_owner: microsoft/apm/packages/apm-guide
+  content_hash: sha256:a8d33ceeb41626d809ed07e0cdd16ba74f0510b5842bab64b7f6dc3e3fdb1057
+- kind: project-relative
+  target: claude
+  value: .claude/skills/apm-usage/package-authoring.md
+  runtime: null
+  scope: project
+  owners:
+  - microsoft/apm/packages/apm-guide
+  active_owner: microsoft/apm/packages/apm-guide
+  content_hash: sha256:6f6351f3bac8bc9aa22209d4c36d03d2a1eb1c2cd56cb988184c4866b6bf079f
+- kind: project-relative
+  target: claude
+  value: .claude/skills/apm-usage/troubleshooting.md
+  runtime: null
+  scope: project
+  owners:
+  - microsoft/apm/packages/apm-guide
+  active_owner: microsoft/apm/packages/apm-guide
+  content_hash: sha256:77df15a82731dedf8ba5757bc7f21f6839c4270a1c028091ad4c56ff9570a944
+- kind: project-relative
+  target: claude
+  value: .claude/skills/apm-usage/workflow.md
+  runtime: null
+  scope: project
+  owners:
+  - microsoft/apm/packages/apm-guide
+  active_owner: microsoft/apm/packages/apm-guide
+  content_hash: sha256:62c62140fa3ea47167c0b2d8d1d0e9ad7232d1ddae2073f652345b767642b07d
 - kind: project-relative
   target: claude
   value: .claude/skills/collect-doc-links
@@ -395,24 +486,6 @@ deployments:
   content_hash: sha256:1a478bd80d572d04bb9198554bb00c72bf3bff7e8edf2a7e7178c4cfbd3e6af0
 - kind: project-relative
   target: claude
-  value: .claude/skills/dispatch
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/aidd/plugins/core
-  active_owner: hiroya232/aidd/plugins/core
-  content_hash: null
-- kind: project-relative
-  target: claude
-  value: .claude/skills/dispatch/SKILL.md
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/aidd/plugins/core
-  active_owner: hiroya232/aidd/plugins/core
-  content_hash: sha256:8ae72fc2835cb2b2ee49a958f7d947bcd112b45114cfd86b00820c34d3fce06d
-- kind: project-relative
-  target: claude
   value: .claude/skills/docker
   runtime: null
   scope: project
@@ -456,42 +529,6 @@ deployments:
   - hiroya232/aidd/plugins/core
   active_owner: hiroya232/aidd/plugins/core
   content_hash: sha256:10837fd19654b968c279203cd7caef6dcf175f78e038bac73b62f101d1631766
-- kind: project-relative
-  target: claude
-  value: .claude/skills/edit-aidd
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/aidd/plugins/core
-  active_owner: hiroya232/aidd/plugins/core
-  content_hash: null
-- kind: project-relative
-  target: claude
-  value: .claude/skills/edit-aidd/SKILL.md
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/aidd/plugins/core
-  active_owner: hiroya232/aidd/plugins/core
-  content_hash: sha256:12780f3cdd9919a6d12c713092bf20ab826b5579623ae457566c1e3754f75400
-- kind: project-relative
-  target: claude
-  value: .claude/skills/git-worktree
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/aidd/plugins/core
-  active_owner: hiroya232/aidd/plugins/core
-  content_hash: null
-- kind: project-relative
-  target: claude
-  value: .claude/skills/git-worktree/SKILL.md
-  runtime: null
-  scope: project
-  owners:
-  - hiroya232/aidd/plugins/core
-  active_owner: hiroya232/aidd/plugins/core
-  content_hash: sha256:93e8e2e66fa8c6d30d1adf466181eb91cf0d7509884fb90e0f624b0213920ae7
 - kind: project-relative
   target: claude
   value: .claude/skills/manage-issues
@@ -561,8 +598,8 @@ deployments:
   runtime: null
   scope: project
   owners:
-  - hiroya232/aidd/plugins/core
-  active_owner: hiroya232/aidd/plugins/core
+  - hiroya232/aidd/plugins/dev
+  active_owner: hiroya232/aidd/plugins/dev
   content_hash: null
 - kind: project-relative
   target: claude
@@ -570,6 +607,6 @@ deployments:
   runtime: null
   scope: project
   owners:
-  - hiroya232/aidd/plugins/core
-  active_owner: hiroya232/aidd/plugins/core
+  - hiroya232/aidd/plugins/dev
+  active_owner: hiroya232/aidd/plugins/dev
   content_hash: sha256:0986cd2c2fa976052fcea7810689c64bd12116c38248948aad820118288aefbd
