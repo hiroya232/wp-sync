@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# clone・worktree 作成・checkout の後に、APM の展開物が無ければ apm install する。
+# 展開物は git で追跡しないため、新しい worktree には含まれない。
+# 展開済みかは、apm_modules/（apm install が target によらず必ず作る）と、
+# apm.lock.yaml に記録された最初の展開先ファイルの両方があるかで判定する。
+# 後者は、追跡していた展開物を checkout が消し、apm_modules/ だけ残った場合に備える。
+# checkout の結果を変えないよう、失敗しても 0 で終わる。
+# 有効化: git config core.hooksPath .githooks
+
+[ "${SKIP_APM_INSTALL:-}" = "1" ] && exit 0
+[ -f apm.yml ] || exit 0
+first_deployed=$(awk '/^  deployed_files:$/ { f = 1; next } f && /^  - / { sub(/^  - /, ""); print; exit } { f = 0 }' apm.lock.yaml 2>/dev/null)
+if [ -d apm_modules ] && { [ -z "${first_deployed}" ] || [ -e "${first_deployed}" ]; }; then
+  exit 0
+fi
+
+if ! command -v apm >/dev/null 2>&1; then
+  echo "[!] apm が見つからないため、APM の展開物を作れませんでした" >&2
+  exit 0
+fi
+
+echo "[i] APM の展開物が無いため apm install を実行します" >&2
+# macOS には timeout が無いため、ある場合だけ上限を付ける
+if command -v timeout >/dev/null 2>&1; then
+  timeout 120 apm install </dev/null
+else
+  apm install </dev/null
+fi || echo "[!] apm install に失敗しました。手動で apm install を実行してください" >&2
+exit 0

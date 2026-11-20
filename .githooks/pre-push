@@ -1,0 +1,144 @@
+#!/usr/bin/env bash
+# CoDD（codd-dev）を使うリポジトリで、push する差分に文書を合わせ、整合性を検査する。
+# - codd propagate --update: push する差分を、文書の frontmatter の modules に対応づけ、その文書を AI が書き換える。
+#   書き換えた文書はコミットし、push を止める。もう一度 push すると、文書のコミットも含めて送る。
+#   push 中のコミットには文書を足せないため、別のコミットにしている。
+#   AI のモデルと effort は codd/codd.yaml の ai_command で決まり、claude の使用量がかかる。
+#   更新が要る文書が無ければ、AI は呼ばない。
+# - codd impact: 変更したファイルから依存グラフ（depends_on と conventions）をたどり、影響を受ける文書を表示する。
+#   候補は修正漏れとは限らないため、表示するだけで push は止めない。
+#   確度の低い候補（Gray）は表示しない。
+# - codd check: 文書と実装の整合性を検査し、gate が失敗したら push を止める。
+# 更新する文書に、コミットしていない変更があるか、git で追跡していなければ、push を止める。
+# 文書の更新と検査を飛ばすときは git push --no-verify。
+# codd/codd.yaml が無いリポジトリでは何もしない。
+# 有効化: git config core.hooksPath .githooks
+
+# aidd リポジトリでは、先に決定的テスト一式を通す。利用側にはこのスクリプトが無い。
+# 標準入力の ref の一覧は、後の CoDD の処理が読むので渡さない。
+if [ -x scripts/run-fast-checks.sh ]; then
+  scripts/run-fast-checks.sh </dev/null || exit $?
+fi
+
+[ -f codd/codd.yaml ] || exit 0
+# uv の dev 依存として入れた codd は .venv にあり、mise の shim では PATH に載らない。
+[ -x .venv/bin/codd ] && PATH="$PWD/.venv/bin:$PATH"
+if ! command -v codd >/dev/null 2>&1; then
+  echo "[!] codd が見つからないため、文書の整合性を確かめませんでした" >&2
+  exit 0
+fi
+
+stop() {
+  [ -n "${2:-}" ] && printf '%s\n' "$2" >&2
+  echo "[x] $1" >&2
+  exit 1
+}
+
+# propagate は「  [needs review] docs/x.md (node_id)」「  [UPDATED] docs/x.md (node_id)」の形で文書を出す。
+docs_in() { sed -n "s/^  \[$1\] \(.*\) ([^()]*)\$/\1/p"; }
+
+# このフックが作る文書のコミットの印。次の push では、この印より後の差分だけを文書に反映する。
+trailer="CoDD-Propagated: true"
+graph_dir=$(sed -n '/^graph:/,/^[^ #]/s/^  path: *["'"'"']\{0,1\}\([^"'"'"']*\)["'"'"']\{0,1\} *$/\1/p' codd/codd.yaml)
+graph_dir=${graph_dir:-codd/scan}
+zero=$(git hash-object --stdin </dev/null | tr '0-9a-f' '0')
+default_branch=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null || echo origin/main)
+# codd と AI のコマンドが標準入力を読んでも ref の一覧が欠けないよう、先に読み切る。
+refs=$(cat)
+scanned=
+
+while read -r local_ref local_sha _ remote_sha; do
+  # タグなどブランチ以外の ref は、文書のコミットを足しても動かないため見ない。
+  case "${local_ref}" in refs/heads/*) ;; *) continue ;; esac
+  [ "${local_sha}" = "${zero}" ] && continue
+  if [ "${remote_sha}" = "${zero}" ]; then
+    base=$(git merge-base "${default_branch}" "${local_sha}" 2>/dev/null) || continue
+  else
+    base=${remote_sha}
+  fi
+  [ "${base}" = "${local_sha}" ] && continue
+
+  if [ -z "${scanned}" ]; then
+    out=$(codd scan 2>&1) || stop "codd scan が失敗したため、push を止めました" "${out}"
+    scanned=1
+  fi
+  range="${base}..${local_sha}"
+  short="${base:0:7}..${local_sha:0:7}"
+
+  # 前回このフックが文書を直した後の差分だけを、文書に反映する。
+  docs=()
+  last=$(git log -1 --format=%H --grep="^${trailer}\$" "${range}")
+  if [ "${last}" != "${local_sha}" ]; then
+    update_range="${last:-${base}}..${local_sha}"
+    out=$(codd propagate --diff "${update_range}" 2>&1) || stop "codd propagate が失敗したため、push を止めました" "${out}"
+    # mapfile は macOS 標準の bash 3.2 に無いため、while read で読む。
+    while IFS= read -r doc; do
+      docs+=("${doc}")
+    done < <(printf '%s\n' "${out}" | docs_in '[^]]*')
+  fi
+  if [ "${#docs[@]}" -gt 0 ]; then
+    # 文書のコミットは、作業中のブランチの先にしか足せない。
+    [ "${local_sha}" = "$(git rev-parse HEAD)" ] ||
+      stop "${short} は更新が要る文書（${docs[*]}）があります。そのブランチを checkout してから push してください"
+    for doc in "${docs[@]}"; do
+      # git diff は追跡していないファイルの変更を出さないため、未追跡の文書は先に止める。
+      git ls-files --error-unmatch -- "${doc}" >/dev/null 2>&1 ||
+        stop "${doc} が git で追跡されていないため、push を止めました（コミットしてから、もう一度 push してください）"
+      # 作業ツリーとインデックスを別々に見る。ステージ後に作業ツリーだけ戻した変更も守るため。
+      if ! git diff --quiet -- "${doc}" || ! git diff --cached --quiet -- "${doc}"; then
+        stop "${doc} にコミットしていない変更があるため、push を止めました（コミットするか退避してから、もう一度 push してください）"
+      fi
+    done
+    echo "[i] codd propagate --update で文書を更新します: ${docs[*]}" >&2
+    out=$(codd propagate --diff "${update_range}" --update 2>&1) ||
+      stop "codd propagate --update が失敗したため、push を止めました" "${out}"
+    updated=()
+    while IFS= read -r doc; do
+      # AI が書き換えなかった文書も UPDATED と出るため、実際に変わった文書だけを扱う。
+      [ -n "${doc}" ] && ! git diff --quiet -- "${doc}" && updated+=("${doc}")
+    done < <(printf '%s\n' "${out}" | docs_in 'UPDATED')
+    subject="docs: 📝 CoDD で文書を実装に合わせる"
+    if [ "${#updated[@]}" -gt 0 ]; then
+      # パスを指定したコミットは、ステージ済みのほかの変更を含めない。
+      git commit --quiet --no-verify -m "${subject}" -m "${trailer}" -- "${updated[@]}" ||
+        stop "更新した文書をコミットできなかったため、push を止めました"
+      stop "文書を更新してコミットしました（${updated[*]}）。内容を確かめて、もう一度 push してください"
+    fi
+    # 直す所が無くても印のコミットを作り、次の push で同じ差分に AI を呼ばないようにする。
+    # git commit --allow-empty はステージ済みの変更を含めるため、木を変えないコミットを直接作る。
+    if ! marker=$(git commit-tree "HEAD^{tree}" -p HEAD -m "${subject}" -m "${trailer}") ||
+      ! git update-ref -m "pre-push: CoDD" HEAD "${marker}"; then
+      stop "印のコミットを作れなかったため、push を止めました"
+    fi
+    stop "文書に直す所はありませんでした。印のコミットを作ったので、もう一度 push してください"
+  fi
+
+  if ! report=$(codd impact --diff "${range}" 2>&1); then
+    printf '%s\n' "${report}" >&2
+    echo "[!] codd impact が失敗したため、${short} の影響を受ける文書を探せませんでした" >&2
+    continue
+  fi
+  # 影響を受けるノードは、Green・Amber の表の Target と、Convention Alerts の Source に出る。
+  # 文書のパスは、codd scan が書いたグラフ（codd.yaml の graph.path）から引く。
+  # frontmatter を自前で読むと、YAML の書き方（引用符の有無など）で取りこぼすため。
+  impacted=$(printf '%s\n' "${report}" | awk -F'`' '
+    /^## /  { section = $0; band = "" }
+    /^### / { band = $0 }
+    band ~ /^### (Green|Amber) Band/ && /^\| `/ { print $2 }
+    section ~ /^## Convention Alerts/ && /^- \*\*Source\*\*: `/ { print $2 }
+  ' | sort -u | while IFS= read -r node; do
+    grep -F -- "\"id\": \"${node}\"," "${graph_dir}/nodes.jsonl" 2>/dev/null |
+      sed -n 's/.*"path": "\([^"]*\)".*/\1/p' | head -1
+  done | sort -u)
+  changed=$(git -c core.quotePath=false diff --name-only "${base}" "${local_sha}")
+  while IFS= read -r doc; do
+    [ -n "${doc}" ] || continue
+    printf '%s\n' "${changed}" | grep -qx -- "${doc}" && continue
+    echo "[!] ${doc} が ${short} の影響を受けるかもしれません（codd impact --diff ${range} で理由が分かります）" >&2
+  done <<<"${impacted}"
+done <<<"${refs}"
+
+# 削除だけの push など、検査する差分が無ければ check も飛ばす。
+[ -n "${scanned}" ] || exit 0
+out=$(codd check 2>&1) || stop "codd check が失敗したため、push を止めました（codd check で詳細が分かります）" "${out}"
+exit 0

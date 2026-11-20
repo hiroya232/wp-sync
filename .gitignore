@@ -1,3 +1,121 @@
+# >>>>>>>>>> aidd:start >>>>>>>>>>
+# このブロックは .aidd/sync.sh が aidd の最新版で上書きする。編集しない。
+# 利用側の追加や例外は、このブロックの下に書く（後ろの行が勝つ）。
+
+# 依存パッケージ
+node_modules/
+apm_modules/
+
+# ビルド成果物
+dist/
+
+# 環境変数
+.env
+.env.*
+!.env.example
+.env.keys
+
+# Terraform の state と変数値はローカルに置く
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+
+# 秘密鍵・認証情報
+*.pem
+*.key
+credentials.json
+token.json
+secrets/
+.dev.vars
+.dev.vars.*
+credentials.tfrc.json
+
+# ログ・OS が作るファイル
+*.log
+.DS_Store
+
+# APM の展開物（apm install で作り直す）。展開先は APM 公式の Targets matrix のとおり
+# https://microsoft.github.io/apm/reference/targets-matrix/
+# APM は追跡を推奨するが、フックの二重実行や clone ごとの差が出るため追跡しない
+# hooks.json・mcp.json は、`.apm/hooks/hooks.json` のようなパッケージの定義を無視しないよう、ターゲットのディレクトリ直下だけを無視する。
+# .agents/skills/ は複数のターゲットが共有する。apm-hooks.json はフックの登録の記録で、ターゲットごとのディレクトリにできる。
+.claude/agents/
+.claude/commands/
+.claude/hooks/
+.claude/rules/
+.claude/skills/
+.claude/settings.json
+
+.codex/agents/
+.codex/hooks/
+
+.cursor/agents/
+.cursor/commands/
+.cursor/rules/
+
+.github/agents/
+.github/hooks/
+.github/instructions/
+.github/prompts/
+
+.gemini/commands/
+.gemini/settings.json
+
+.opencode/agents/
+.opencode/commands/
+
+.windsurf/rules/
+.windsurf/workflows/
+
+.agents/rules/
+
+.kiro/agents/
+.kiro/skills/
+.kiro/steering/
+.kiro/hooks/
+
+.agents/skills/
+
+.mcp.json
+.*/mcp.json
+.*/hooks.json
+apm-hooks.json
+
+# git-worktree スキルが worktree を作るディレクトリ
+.wt/
+
+# Claude Code が作るファイル
+.claude/settings.local.json
+.claude/worktrees/
+.claude/scheduled_tasks.lock
+
+# mise の個人用の上書き
+mise.local.toml
+
+# uv の仮想環境
+.venv/
+
+# Python のバイトコードとパッケージ・カバレッジの生成物
+__pycache__/
+*.pyc
+*.egg-info/
+.coverage
+
+# TypeScript のインクリメンタルビルド・カバレッジ・Next.js の出力
+*.tsbuildinfo
+coverage/
+.next/
+
+# Playwright Test の出力
+playwright-report/
+test-results/
+
+# Playwright CLI の出力。状態ファイル（state-save）は平文でトークンを含むため追跡しない
+.playwright-cli/
+# <<<<<<<<<< aidd:end <<<<<<<<<<
+
 # 認証情報
 .env
 .htaccess-basic-auth

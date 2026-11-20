@@ -1,0 +1,9 @@
+# aidd リポジトリが配るツール。同期で利用側に配られるので、利用側では編集しない。
+# 利用側の mise.toml に同じツールがあれば、mise.toml が優先される。
+# ロックは .mise/mise.lock と .mise/locks/ にあり、利用側の mise.lock とは別である。
+
+[tools]
+# Playwright CLI の実行に使う。
+node = "22"
+# 0.1.x は版ごとに仕様が変わり、スキルも同じ版のものが要るので、版を固定する。
+"npm:@playwright/cli" = "0.1.23"

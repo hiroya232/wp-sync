@@ -1,0 +1,44 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    # mise.lock に無いツールの導入を拒否する。
+    # mise run が lock にない版を自動で導入して、検査が通るのを防ぐ。
+    env:
+      MISE_LOCKED: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      # mise.toml のツールを導入する。mise.lock があれば --locked で導入される。
+      # mise 本体の版を固定する。
+      - uses: jdx/mise-action@8418fedb1110381a0d3ba51a7a415d7c1b884550 # v5.2.2
+        with:
+          version: 2026.10.7
+
+      # 利用側の mise.toml に定義されたタスクだけを実行する。未定義のタスクはスキップする。
+      # hide = true のタスクも定義済みとして扱うため --hidden を付け、alias も名前として数える。
+      # shell: bash は pipefail を有効にする。mise tasks ls が失敗したとき、空の一覧で全タスクをスキップして成功させないため。
+      - name: Run check tasks
+        shell: bash
+        run: |
+          tasks=$(mise tasks ls --hidden --json | jq -r '.[] | .name, (.aliases // [])[]')
+          for task in lint test build; do
+            if grep -qx "$task" <<<"$tasks"; then
+              mise run "$task"
+            else
+              echo "::notice::mise task '$task' is not defined, skipped"
+            fi
+          done
