@@ -117,24 +117,8 @@ test-results/
 # <<<<<<<<<< aidd:end <<<<<<<<<<
 
 # 認証情報
-.env
 .htaccess-basic-auth
 .htpasswd
 
 # サイト別設定
 /sites
-
-
-# APM dependencies
-apm_modules/
-
-# APM-generated project artifacts
-/.agents/
-/.claude/
-/.codex/
-/.cursor/
-/.github/agents/
-/.github/instructions/
-/.github/prompts/
-/.github/hooks/
-/.github/skills/
